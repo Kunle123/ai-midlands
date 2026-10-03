@@ -664,12 +664,12 @@
 .aim-hero .animated-workspace { min-height: 430px; justify-content: center; gap: 14px; }
 .aim-hero .beat-label { display:flex; align-items:center; gap:10px; color:#607a9c; font-size:12px; font-weight:650; letter-spacing:.02em; }
 .aim-hero .beat-label > span { color:var(--orange); font-variant-numeric:tabular-nums; }
-.aim-hero .hero-beat { display:grid; grid-template-columns:minmax(0,1fr) 56px minmax(0,1.15fr); align-items:center; gap:10px; min-height:330px; animation:beatEnter .45s ease both; }
+.aim-hero .hero-beat { display:grid; grid-template-columns:minmax(0,1fr) 56px minmax(0,1.15fr); align-items:center; gap:10px; min-height:330px; animation:beatEnter .45s ease both; position:relative; overflow:hidden; border-radius:14px; }
 .aim-hero .hero-beat .app { width:100%; }
 .aim-hero .beat-progress { display:flex; gap:6px; align-items:center; }
 .aim-hero .beat-progress span { width:22px; height:2px; border-radius:2px; background:#e7e2dc; transition:background .25s ease,width .25s ease; }
 .aim-hero .beat-progress span.active { width:38px; background:var(--orange); }
-.aim-hero .ai-sweep { position:absolute; z-index:4; top:0; bottom:0; left:-24%; width:18%; pointer-events:none; opacity:0; transform:skewX(-9deg); background:linear-gradient(90deg,transparent,rgba(239,77,19,.08),rgba(239,77,19,.22),rgba(239,77,19,.06),transparent); animation:aiSweep 1s cubic-bezier(.25,.7,.3,1) 1s both; }
+.aim-hero .app { overflow:hidden; }\n.aim-hero .ai-sweep { position:absolute; z-index:4; top:0; bottom:0; left:-24%; width:18%; pointer-events:none; opacity:0; transform:skewX(-9deg); background:linear-gradient(90deg,transparent,rgba(239,77,19,.08),rgba(239,77,19,.22),rgba(239,77,19,.06),transparent); animation:aiSweep 1s cubic-bezier(.25,.7,.3,1) 1s both; }
 .aim-hero mark { background:transparent; color:inherit; animation:meaning 5.8s ease 1.55s both; border-radius:3px; }
 .aim-hero .motion-arrow { justify-self:center; color:rgba(226,106,53,.62); font-size:24px; animation:arrowPulse 1.4s ease 2s both; }
 .aim-hero .gmail-dot { display:grid; place-items:center; width:22px; height:22px; border-radius:5px; background:#fff0e8; color:#d64b22; font-size:10px; font-weight:800; }
