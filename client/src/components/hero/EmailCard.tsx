@@ -9,18 +9,6 @@ function MailMark() {
   );
 }
 
-function PdfMark() {
-  return (
-    <svg className="pdf" width="28" height="32" viewBox="0 0 28 32" aria-hidden="true">
-      <path d="M4 1.5h12.2L24 9.2V30.5H4Z" fill="#fff" stroke="#e24b3c" strokeWidth="1.2" />
-      <path d="M16 1.8V9.2H23.4" fill="#fdeceb" stroke="#e24b3c" strokeWidth="1.2" />
-      <text x="14" y="22" textAnchor="middle" fontSize="7" fontWeight="700" fill="#d93025" fontFamily="Inter, sans-serif">
-        PDF
-      </text>
-    </svg>
-  );
-}
-
 export function EmailCard() {
   return (
     <article className="app mail">
@@ -31,26 +19,18 @@ export function EmailCard() {
       </div>
       <div className="mail-from">
         <span className="mail-avatar" aria-hidden="true">
-          A
+          S
         </span>
         <div>
-          <strong>Acme Ltd</strong>
-          <span>to me</span>
+          <strong>Sarah Mitchell</strong>
+          <span>Acme Ltd · to me</span>
         </div>
       </div>
-      <h3>Customer Enquiry</h3>
+      <h3>Installation enquiry</h3>
       <p>
-        Please find our requirements
-        <br />
-        for installation attached...
+        Hi, we're looking for someone to install equipment at our Birmingham site.
+        Our budget is around £12,000. Could someone contact me to discuss it?
       </p>
-      <div className="attachment">
-        <PdfMark />
-        <span>
-          <strong>Customer Enquiry.pdf</strong>
-          <small>324 KB</small>
-        </span>
-      </div>
     </article>
   );
 }
