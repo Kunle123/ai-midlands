@@ -259,24 +259,25 @@ export default function Home() {
       <header className="relative z-20 border-b border-orange-100/80 bg-[#faf8f5]/90 backdrop-blur-md sticky top-0">
         <div className="container py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-orange-700 to-amber-500 flex items-center justify-center shadow-md shadow-orange-500/10">
-              <span className="font-mono font-bold text-white text-sm tracking-tighter">AM</span>
+            <div className="w-8 h-8 rounded-lg bg-[#e85d2a] flex items-center justify-center">
+              <span className="font-sans font-bold text-white text-[11px] tracking-tight">AM</span>
             </div>
-            <span className="font-bold tracking-tight text-slate-900 text-base">AI Midlands</span>
+            <span className="font-semibold tracking-tight text-slate-900 text-[15px]">AI Midlands</span>
           </div>
-          <nav className="hidden md:flex items-center gap-6">
-            <a href="#private-ai" className="text-sm text-slate-600 hover:text-orange-700 font-medium transition-colors">Private AI</a>
-            <a href="#skills" className="text-sm text-slate-600 hover:text-orange-700 transition-colors">Business Skills</a>
-            <a href="#deployment" className="text-sm text-slate-600 hover:text-orange-700 transition-colors">Deployment</a>
+          <nav className="hidden lg:flex items-center gap-7">
+            <a href="#skills" className="text-sm text-slate-600 hover:text-[#e85d2a] transition-colors">AI Solutions</a>
+            <a href="#demo" className="text-sm text-slate-600 hover:text-[#e85d2a] transition-colors">Integration & Automation</a>
+            <a href="#deployment" className="text-sm text-slate-600 hover:text-[#e85d2a] transition-colors">Private AI</a>
+            <a href="#why" className="text-sm text-slate-600 hover:text-[#e85d2a] transition-colors">Why AI Midlands</a>
           </nav>
-          <div className="flex items-center gap-3">
-            <a href="tel:07966461005" className="hidden md:flex items-center gap-1.5 text-sm text-slate-500 hover:text-orange-700 transition-colors">
-              <span className="w-1.5 h-1.5 rounded-full bg-orange-600 animate-pulse" />
+          <div className="flex items-center gap-4">
+            <a href="tel:07966461005" className="hidden md:flex items-center gap-2 text-sm text-slate-600 hover:text-[#e85d2a] transition-colors">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#e85d2a]" />
               07966 461005
             </a>
             <Button
               variant="default"
-              className="rounded-full bg-orange-700 hover:bg-orange-800 text-white text-sm h-9 px-5 shadow-sm"
+              className="rounded-full bg-[#e85d2a] hover:bg-[#d14e1e] text-white text-sm h-9 px-4 shadow-none"
               asChild
             >
               <a href="https://calendly.com/kunle2000/30min" target="_blank" rel="noreferrer">
@@ -799,7 +800,7 @@ export default function Home() {
         </section>
 
         {/* ── SECTION 7: PROOF ─────────────────────────────────────────────── */}
-        <section className="container py-16 md:py-20">
+        <section id="why" className="container py-16 md:py-20">
           <div className="max-w-5xl mx-auto">
             <div className="grid md:grid-cols-2 gap-12 items-start">
 
