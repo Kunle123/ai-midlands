@@ -1,11 +1,10 @@
-// AI Midlands — Rebuilt with unified "Skills" proposition
-// Design: Warm consultancy aesthetic, Fraunces headings, Inter body
-// Proposition: "Secure ChatGPT for your business + a growing library of business skills"
-// Story: Install secure AI → Teach it to do useful work (Skills are upgrades, not a separate product)
-// Workman motif: illustrated figures interact directly with page elements
+// AI Midlands homepage.
+// Hero positioning: practical AI implementation. Remaining sections are unchanged.
+// Design: Warm consultancy aesthetic, Fraunces headings, Inter body.
 
 import { useState, useRef } from "react";
 import { Link } from "wouter";
+import { Hero } from "@/components/hero/Hero";
 import { Button } from "@/components/ui/button";
 import {
   Search, ArrowRight, CheckCircle2, FileText, Download,
@@ -16,7 +15,6 @@ import {
 
 // ─── CDN illustration URLs ────────────────────────────────────────────────────
 const ILLUS = {
-  hero:        "https://d2xsxph8kpxj0f.cloudfront.net/103623629/g3uJTK4M5N34fhqeNUfPfT/illus_hero-9iPxXdR4LnbBvu8meVqHWV.webp",
   problem:     "https://d2xsxph8kpxj0f.cloudfront.net/103623629/g3uJTK4M5N34fhqeNUfPfT/illus_problem-QZdRy5pLGyxPgfUSPkPYHn.webp",
   vault:       "https://d2xsxph8kpxj0f.cloudfront.net/103623629/g3uJTK4M5N34fhqeNUfPfT/illus_vault-UuNoxgj4wtqiUHrtnSKvkS.webp",
   permissions: "https://d2xsxph8kpxj0f.cloudfront.net/103623629/g3uJTK4M5N34fhqeNUfPfT/illus_permissions-3rFnGe6UsYoCQHDi2p9WBo.webp",
@@ -25,7 +23,6 @@ const ILLUS = {
 
 // ─── Workman motif illustrations (transparent bg, interact with page) ─────────
 const WORKMAN = {
-  painter:   "https://d2xsxph8kpxj0f.cloudfront.net/103623629/g3uJTK4M5N34fhqeNUfPfT/workman_painter-Dc6oee6VjvKEmnjRGwpUaV.webp",
   sign:      "https://d2xsxph8kpxj0f.cloudfront.net/103623629/g3uJTK4M5N34fhqeNUfPfT/workman_sign-ff2QkuKk7jiskPh67L4EEz.webp",
   mechanic:  "https://d2xsxph8kpxj0f.cloudfront.net/103623629/g3uJTK4M5N34fhqeNUfPfT/workman_mechanic-TE2LwhnFh6yYPf9mWjTYtJ.webp",
   builder:   "https://d2xsxph8kpxj0f.cloudfront.net/103623629/g3uJTK4M5N34fhqeNUfPfT/workman_builder-dzAvgYzy6Z7xowF8yYwKyG.webp",
@@ -292,84 +289,7 @@ export default function Home() {
 
       <main className="relative z-10 flex-1">
 
-        {/* ── SECTION 1: HERO ──────────────────────────────────────────────── */}
-        <section id="private-ai" className="container pt-16 pb-0 md:pt-24">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-
-            {/* Left: headline + CTAs */}
-            <div className="pb-12 md:pb-16 relative">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 text-orange-400 text-xs font-semibold mb-6">
-                <Lock className="w-3 h-3" />
-                On-Premise · Private Cloud · Air-Gapped · Offline
-              </div>
-
-              <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.05] mb-6">
-                Use AI with the information{" "}
-                <span className="relative text-orange-700">
-                  you can't put into ChatGPT.
-                  <svg className="absolute left-0 -bottom-2 w-full h-3 text-orange-300/70" viewBox="0 0 300 12" preserveAspectRatio="none">
-                    <path d="M0,8 Q75,2 150,8 Q225,14 300,8" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" />
-                  </svg>
-                </span>
-              </h1>
-
-              <p className="text-lg md:text-xl text-slate-600 max-w-xl leading-relaxed mb-8">
-                AI Midlands installs a secure AI that knows your business — then teaches it to produce the documents your team creates every week, without sending confidential information to public AI services.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button
-                  className="rounded-full bg-orange-700 hover:bg-orange-800 text-white h-12 px-8 text-base font-semibold shadow-lg shadow-orange-700/20"
-                  asChild
-                >
-                  <a href="https://calendly.com/kunle2000/30min" target="_blank" rel="noreferrer">
-                    Book a Private AI Discovery Call
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </a>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="rounded-full border-slate-300 bg-white hover:bg-slate-50 text-slate-700 h-12 px-8 text-base"
-                  onClick={() => document.getElementById('demo')?.scrollIntoView({ behavior: 'smooth' })}
-                >
-                  See what it does
-                  <ChevronDown className="w-4 h-4 ml-2" />
-                </Button>
-              </div>
-
-              {/* Trust strip */}
-              <div className="mt-10 pt-8 border-t border-slate-200">
-                <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-3">20+ years delivering for</p>
-                <div className="flex flex-wrap gap-2">
-                  {["Transport for London", "RBS", "National Grid", "UK Government"].map(org => (
-                    <span key={org} className="px-3 py-1 bg-white border border-slate-200 rounded-full text-xs font-medium text-slate-600 shadow-sm">
-                      {org}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Workman painter — positioned to look like he's painting the orange underline */}
-              <img
-                src={WORKMAN.painter}
-                alt=""
-                aria-hidden="true"
-                className="absolute -right-4 -top-4 w-24 h-24 object-contain pointer-events-none hidden lg:block opacity-90"
-              />
-            </div>
-
-            {/* Right: hero illustration */}
-            <div className="hidden md:flex items-end justify-center pb-0">
-              <img
-                src={ILLUS.hero}
-                alt="Professional using a secure private AI system at his desk"
-                className="w-full max-w-lg object-contain drop-shadow-sm"
-                loading="eager"
-              />
-            </div>
-
-          </div>
-        </section>
+        <Hero />
 
         {/* ── BBC MEDIA CREDENTIAL ─────────────────────────────────────── */}
         <section className="border-b border-slate-200 bg-white py-0">
