@@ -7,20 +7,16 @@ import { SpreadsheetCard } from "./SpreadsheetCard";
 
 export function BusinessWorkspace() {
   return (
-    <div className="workspace-slot">
-    <div className="workspace-fit">
-      <section className="workspace" aria-label="Familiar business systems connected by automation">
-        <Connectors />
-        <EmailCard />
-        <SpreadsheetCard />
-        <AssistantCard />
-        <CustomerRecord />
-        <InvoiceCard />
-        <div className="ai-node" aria-hidden="true">
-          AM
-        </div>
-      </section>
-    </div>
-    </div>
+    <section className="workspace" aria-label="Familiar business systems connected by automation">
+      <Connectors />
+      <EmailCard />
+      <SpreadsheetCard />
+      <AssistantCard />
+      <CustomerRecord />
+      <InvoiceCard />
+      <div className="ai-node" aria-hidden="true">
+        AM
+      </div>
+    </section>
   );
 }

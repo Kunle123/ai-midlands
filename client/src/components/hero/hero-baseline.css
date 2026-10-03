@@ -1,3 +1,6 @@
+/* Scoped port of design-references/ai-midlands-hero-baseline/hero-baseline.css.
+   Nav rules are omitted because the existing site header is kept. */
+
 .aim-hero {
   --navy: #0e1a34;
   --slate: #536b8c;
@@ -16,6 +19,7 @@
   background: radial-gradient(circle at 72% 48%, rgba(255, 237, 219, 0.42), transparent 39%);
   color: var(--navy);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 16px;
 }
 
 .aim-hero .copy {
@@ -49,6 +53,12 @@
   max-width: 535px;
 }
 
+.aim-hero button,
+.aim-hero .primary {
+  border: 0;
+  border-radius: 18px;
+}
+
 .aim-hero .primary {
   display: inline-flex;
   gap: 28px;
@@ -59,8 +69,6 @@
   padding: 19px 27px;
   font-size: 18px;
   font-weight: 650;
-  border: 0;
-  border-radius: 18px;
   box-shadow: 0 10px 24px rgba(220, 74, 18, 0.13);
 }
 
@@ -76,31 +84,14 @@
   font-weight: 700;
 }
 
-.aim-hero .workspace-slot {
-  width: 100%;
-  container-type: inline-size;
-}
-
-.aim-hero .workspace-fit {
-  width: 100%;
-  height: calc(100cqw * 650 / 900);
-  position: relative;
-}
-
 .aim-hero .workspace {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 900px;
   height: 650px;
-  min-width: 900px;
-  transform: scale(calc(100cqw / 900px));
-  transform-origin: left top;
+  position: relative;
+  min-width: 760px;
 }
 
 .aim-hero .app {
   position: absolute;
-  z-index: 1;
   background: rgba(255, 255, 255, 0.96);
   border: 1px solid #e4dfd8;
   border-radius: 17px;
@@ -118,7 +109,6 @@
 
 .aim-hero .app-title strong {
   font-size: 15px;
-  font-weight: 700;
 }
 
 .aim-hero .time,
@@ -137,15 +127,13 @@
   color: #8294af;
 }
 
-.aim-hero .online .led {
+.aim-hero .online::first-letter {
   color: var(--green);
 }
 
 .aim-hero .gmail-mark {
   font-weight: 900;
   color: #e84032;
-  font-size: 18px;
-  line-height: 1;
 }
 
 .aim-hero .sheet-mark {
@@ -153,7 +141,6 @@
   color: #fff;
   border-radius: 7px;
   padding: 4px 7px;
-  line-height: 1;
 }
 
 .aim-hero .chat-mark {
@@ -161,13 +148,10 @@
   color: #fff;
   border-radius: 7px;
   padding: 5px 7px;
-  line-height: 1;
 }
 
 .aim-hero .cloud {
   color: #1d9bea;
-  font-size: 18px;
-  line-height: 1;
 }
 
 .aim-hero .invoice-mark {
@@ -175,16 +159,15 @@
   color: #fff;
   border-radius: 6px;
   padding: 5px 7px;
-  line-height: 1;
 }
 
 .aim-hero .app h3 {
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 15px;
   font-weight: 700;
-  letter-spacing: 0;
-  line-height: 1.2;
-  color: #18243a;
+  letter-spacing: normal;
+  line-height: normal;
+  color: inherit;
   margin: 14px 0 7px;
 }
 
@@ -212,17 +195,10 @@
   gap: 12px;
 }
 
-.aim-hero .attachment strong {
-  display: block;
-  font-size: 13px;
-  font-weight: 700;
-}
-
 .aim-hero .attachment small {
   display: block;
   color: #8498b4;
   margin-top: 3px;
-  font-size: 12px;
 }
 
 .aim-hero .pdf {
@@ -254,7 +230,6 @@
   border: 1px solid #ece8e3;
   padding: 10px 12px;
   text-align: left;
-  font-weight: 400;
 }
 
 .aim-hero .sheet th {
@@ -269,7 +244,6 @@
   border-radius: 10px;
   font-size: 12px;
   font-weight: 600;
-  line-height: 1.2;
 }
 
 .aim-hero .blue {
@@ -301,7 +275,6 @@
   font-size: 14px;
   width: max-content;
   max-width: 300px;
-  line-height: 1.45;
 }
 
 .aim-hero .customer {
@@ -316,16 +289,16 @@
 }
 
 .aim-hero .mini-am {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  font-size: 11px;
-  flex: none;
   display: grid;
   place-items: center;
   background: linear-gradient(145deg, #ff9c00, #f14b00);
   color: #fff;
   font-weight: 700;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 11px;
+  flex: none;
 }
 
 .aim-hero .answer {
@@ -341,10 +314,8 @@
   padding: 11px 18px;
   font-size: 14px;
   margin-top: 10px;
-  border: 0;
   border-radius: 9px;
   font-family: inherit;
-  line-height: 1.2;
 }
 
 .aim-hero .crm {
@@ -368,7 +339,6 @@
 
 .aim-hero .crm-grid small {
   color: #8296b3;
-  font-size: 12px;
 }
 
 .aim-hero .crm-fields {
@@ -379,12 +349,10 @@
   gap: 10px;
   font-size: 12px;
   color: #7388a5;
-  align-items: center;
 }
 
 .aim-hero .crm-fields strong {
   color: #263650;
-  font-weight: 700;
 }
 
 .aim-hero .ghost {
@@ -420,12 +388,6 @@
 
 .aim-hero .invoice-row small {
   color: #8296b3;
-  font-size: 13px;
-}
-
-.aim-hero .invoice-row > strong {
-  font-size: 16px;
-  font-weight: 700;
 }
 
 .aim-hero .ai-node {
@@ -459,12 +421,29 @@
   stroke-linecap: round;
 }
 
-@media (max-width: 1199px) {
+@media (max-width: 1050px) {
+  .aim-hero {
+    grid-template-columns: 1fr;
+    padding-top: 55px;
+  }
+
+  .aim-hero .copy {
+    max-width: 650px;
+  }
+
+  .aim-hero .workspace {
+    transform-origin: left top;
+    transform: scale(0.82);
+    margin-top: 30px;
+    height: 535px;
+  }
+}
+
+@media (max-width: 600px) {
   .aim-hero {
     display: block;
-    min-height: 0;
     padding: 48px 22px 50px;
-    overflow: visible;
+    min-height: auto;
   }
 
   .aim-hero .eyebrow {
@@ -483,74 +462,21 @@
   .aim-hero .primary {
     font-size: 15px;
     padding: 16px 18px;
-    gap: 16px;
-  }
-
-  .aim-hero .workspace-slot {
-    container-type: normal;
-    margin-top: 36px;
-  }
-
-  .aim-hero .workspace-fit {
-    height: auto;
   }
 
   .aim-hero .workspace {
-    position: static;
-    width: auto;
-    height: auto;
-    min-width: 0;
-    transform: none;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    width: 880px;
+    min-width: 880px;
+    transform: scale(0.42);
+    height: 280px;
+    margin-top: 40px;
   }
 
-  .aim-hero .app {
-    position: static;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    height: auto;
-    left: auto;
-    top: auto;
-  }
-
-  .aim-hero .connectors,
   .aim-hero .ai-node {
     display: none;
   }
 
-  .aim-hero .sheet {
-    overflow-x: auto;
-  }
-}
-
-@media (max-width: 600px) {
-  .aim-hero h1 {
-    font-size: 36px;
-  }
-
-  .aim-hero .sheet th,
-  .aim-hero .sheet td {
-    padding: 8px 6px;
-    font-size: 12px;
-  }
-
-  .aim-hero .pill {
-    padding: 3px 8px;
-    font-size: 11px;
-  }
-
-  .aim-hero .crm-grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-
-  .aim-hero .crm-fields {
-    border-left: 0;
-    border-top: 1px solid #e6e7ea;
-    padding-left: 0;
-    padding-top: 12px;
+  .aim-hero .connectors {
+    opacity: 0.45;
   }
 }

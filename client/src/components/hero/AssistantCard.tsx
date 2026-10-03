@@ -4,9 +4,7 @@ export function AssistantCard() {
       <div className="app-title">
         <span className="chat-mark">▣</span>
         <strong>Website assistant</strong>
-        <span className="online">
-          Online&nbsp; <span className="led">●</span>
-        </span>
+        <span className="online">Online&nbsp; ●</span>
       </div>
       <div className="bubble customer">Do you install in Birmingham?</div>
       <div className="answer-row">
