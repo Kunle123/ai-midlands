@@ -1,0 +1,220 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+  ═══════════════════════════════════════════════════════════════
+  AI MIDLANDS — DESIGN SYSTEM
+  Theme: Warm Consultancy — Terracotta + Cream + Deep Slate
+  
+  TYPOGRAPHY SYSTEM:
+  - Display/Headings: Fraunces (warm, editorial, high-personality)
+  - Body/UI: Inter (gold-standard screen legibility)
+  - Mono labels: JetBrains Mono (prices, tags, metadata)
+  
+  READABILITY PRINCIPLES:
+  - Minimum body text: 16px (1rem) — never smaller for paragraphs
+  - Minimum line-height: 1.6 for body, 1.2 for headings
+  - Minimum contrast: 4.5:1 for body text (WCAG AA)
+  - Muted text: slate-600 (#475569) minimum — never slate-400 for prose
+  - Labels/metadata: slate-500 (#64748b) minimum
+  ═══════════════════════════════════════════════════════════════
+*/
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius: 0.85rem;
+  --background: #faf8f5;
+  --foreground: #1a2332; /* Deeper than slate-800 for stronger contrast */
+  --card: #ffffff;
+  --card-foreground: #1a2332;
+  --popover: #ffffff;
+  --popover-foreground: #1a2332;
+  --primary: #b83d0a; /* Slightly deeper terracotta for better contrast on light bg */
+  --primary-foreground: #ffffff;
+  --secondary: #f5f2eb;
+  --secondary-foreground: #431407;
+  --muted: #f0ece4;
+  --muted-foreground: #4a5568; /* Upgraded from slate-500 to ensure 4.5:1 contrast */
+  --accent: #b45309; /* Amber-700 for better contrast */
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #ddd8d0; /* Slightly warmer border */
+  --input: #ddd8d0;
+  --ring: #b83d0a;
+}
+
+:root {
+  --background: #faf8f5;
+  --foreground: #1a2332;
+  --card: #ffffff;
+  --card-foreground: #1a2332;
+  --popover: #ffffff;
+  --popover-foreground: #1a2332;
+  --primary: #b83d0a;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f2eb;
+  --secondary-foreground: #431407;
+  --muted: #f0ece4;
+  --muted-foreground: #4a5568;
+  --accent: #b45309;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #ddd8d0;
+  --input: #ddd8d0;
+  --ring: #b83d0a;
+  --radius: 0.85rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    /* 
+      Base font size: 17px — slightly above browser default (16px).
+      This single change improves readability across every element
+      that uses rem units without touching individual components.
+    */
+    font-size: 17px;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    @apply bg-[#faf8f5] text-[#1a2332] antialiased selection:bg-orange-200 selection:text-orange-900;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  }
+
+  /* 
+    Fraunces for all headings: warm, editorial, high-personality.
+    Prevents the "generic Inter everywhere" look.
+  */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Fraunces', Georgia, serif;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    color: #1a2332;
+  }
+
+  /* 
+    Monospace: JetBrains Mono for prices, tags, and metadata labels only.
+  */
+  .font-mono, code, kbd, pre {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+
+  p {
+    line-height: 1.7;
+    color: #374151; /* gray-700 — strong enough for comfortable reading */
+  }
+
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  [type="reset"]:not(:disabled),
+  a[href],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    @apply cursor-pointer;
+  }
+
+  /* Improve input readability */
+  input, textarea, select {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 1rem;
+    color: #1a2332;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: #9ca3af; /* gray-400 — clearly distinguishable from real content */
+  }
+}
+
+@layer components {
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .flex {
+    min-height: 0;
+    min-width: 0;
+  }
+
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2.5rem;
+      padding-right: 2.5rem;
+      max-width: 1280px;
+    }
+  }
+
+  /* Premium card with warm shadow */
+  .glow-card {
+    position: relative;
+    background: #ffffff;
+    border: 1px solid #ddd8d0;
+    box-shadow: 0 2px 12px -2px rgba(184, 61, 10, 0.04), 0 1px 4px -1px rgba(0, 0, 0, 0.03);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .glow-card:hover {
+    border-color: #f97316;
+    box-shadow: 0 16px 32px -12px rgba(184, 61, 10, 0.1), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+    transform: translateY(-2px);
+  }
+
+  .glow-card-active {
+    border-color: #b83d0a;
+    box-shadow: 0 16px 32px -12px rgba(184, 61, 10, 0.12), 0 4px 12px -2px rgba(184, 61, 10, 0.05);
+  }
+
+  /* 
+    Utility: heading font override for components that inherit body font
+  */
+  .heading-font {
+    font-family: 'Fraunces', Georgia, serif;
+  }
+}
