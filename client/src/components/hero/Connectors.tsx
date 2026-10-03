@@ -1,11 +1,17 @@
-export function Connectors() {
+export function FlowCue({ direction = "down" }: { direction?: "down" | "right" }) {
+  const across = direction === "right";
+
   return (
-    <svg className="connectors" viewBox="0 0 900 650" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M245 180 C275 180 275 265 310 265" />
-      <path d="M310 265 C340 265 335 150 380 150" />
-      <path d="M310 265 C380 265 425 265 485 305" />
-      <path d="M310 265 L310 350" />
-      <path d="M470 420 C535 420 500 500 565 500" />
-    </svg>
+    <span className={`flow-cue is-${direction}`} aria-hidden="true">
+      <svg width={across ? 28 : 12} height={across ? 12 : 22} viewBox={across ? "0 0 28 12" : "0 0 12 22"} fill="none">
+        <path
+          d={across ? "M1 6h22M19 2.5 23.5 6 19 9.5" : "M6 1v16M2.5 14 6 18.5 9.5 14"}
+          stroke="currentColor"
+          strokeWidth="1.25"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </span>
   );
 }

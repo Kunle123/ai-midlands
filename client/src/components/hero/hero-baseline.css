@@ -1,6 +1,3 @@
-/* Scoped port of design-references/ai-midlands-hero-baseline/hero-baseline.css.
-   Nav rules are omitted because the existing site header is kept. */
-
 .aim-hero {
   --navy: #0e1a34;
   --slate: #536b8c;
@@ -12,11 +9,12 @@
   --green: #159455;
   min-height: 760px;
   display: grid;
-  grid-template-columns: 40% 60%;
+  grid-template-columns: minmax(500px, 42%) minmax(0, 1fr);
+  column-gap: 40px;
   align-items: center;
   padding: 55px 4.6% 70px;
   overflow: hidden;
-  background: radial-gradient(circle at 72% 48%, rgba(255, 237, 219, 0.42), transparent 39%);
+  background: transparent;
   color: var(--navy);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 16px;
@@ -85,30 +83,80 @@
 }
 
 .aim-hero .workspace {
-  height: 650px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  min-width: 0;
+  height: auto;
   position: relative;
-  min-width: 760px;
+}
+
+.aim-hero .flow-admin {
+  display: grid;
+  grid-template-columns: 270px 28px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.aim-hero .flow-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  min-width: 0;
+  width: 100%;
+}
+
+.aim-hero .flow-admin .sheet,
+.aim-hero .flow-stack {
+  width: 100%;
+}
+
+.aim-hero .flow-ops {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr);
+  gap: 8px 10px;
+  align-items: start;
+}
+
+.aim-hero .flow-cue {
+  display: flex;
+  color: rgba(226, 106, 53, 0.55);
+  line-height: 0;
+}
+
+.aim-hero .flow-stack .flow-cue.is-down {
+  margin-left: 0;
+  align-self: center;
+}
+
+.aim-hero .flow-cue.is-right {
+  justify-self: center;
 }
 
 .aim-hero .app {
-  position: absolute;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid #e4dfd8;
-  border-radius: 17px;
-  box-shadow: 0 15px 30px rgba(32, 42, 58, 0.11);
-  padding: 18px;
+  position: relative;
+  background: #fff;
+  border: 1px solid #ebe6e0;
+  border-radius: 12px;
+  box-shadow: 0 8px 18px rgba(23, 32, 51, 0.05);
+  padding: 10px 12px;
   color: #18243a;
+  min-width: 0;
 }
 
 .aim-hero .app-title {
   display: flex;
   align-items: center;
-  gap: 11px;
-  min-height: 25px;
+  gap: 8px;
+  min-height: 22px;
 }
 
 .aim-hero .app-title strong {
-  font-size: 15px;
+  font-size: 13px;
+  font-weight: 650;
 }
 
 .aim-hero .time,
@@ -119,312 +167,404 @@
 
 .aim-hero .time {
   color: #8ca1be;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .aim-hero .online {
-  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
   color: #8294af;
 }
 
-.aim-hero .online::first-letter {
-  color: var(--green);
+.aim-hero .led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #159455;
 }
 
 .aim-hero .gmail-mark {
-  font-weight: 900;
-  color: #e84032;
+  display: block;
+  flex: none;
 }
 
 .aim-hero .sheet-mark {
-  background: #14a05a;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  background: #18884a;
   color: #fff;
-  border-radius: 7px;
-  padding: 4px 7px;
+  flex: none;
 }
 
 .aim-hero .chat-mark {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
   background: #101b36;
   color: #fff;
-  border-radius: 7px;
-  padding: 5px 7px;
+  flex: none;
 }
 
 .aim-hero .cloud {
-  color: #1d9bea;
+  color: #3aa0e0;
+  display: flex;
+  flex: none;
 }
 
 .aim-hero .invoice-mark {
-  background: #575bd8;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  background: #5b4db8;
   color: #fff;
-  border-radius: 6px;
-  padding: 5px 7px;
+  flex: none;
 }
 
 .aim-hero .app h3 {
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: normal;
-  line-height: normal;
+  line-height: 1.25;
   color: inherit;
-  margin: 14px 0 7px;
+  margin: 8px 0 3px;
 }
 
 .aim-hero .app p {
   color: #657c9b;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.45;
   margin: 0;
 }
 
-.aim-hero .mail {
-  left: 15px;
-  top: 75px;
-  width: 295px;
-  height: 225px;
+.aim-hero .mail,
+.aim-hero .assistant,
+.aim-hero .crm,
+.aim-hero .invoice {
+  width: 100%;
+}
+
+.aim-hero .mail-from {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.aim-hero .mail-from strong {
+  display: block;
+  font-size: 13px;
+}
+
+.aim-hero .mail-from span {
+  display: block;
+  color: #8ca1be;
+  font-size: 11px;
+}
+
+.aim-hero .mail-avatar {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #e7eef8;
+  color: #3d5f8a;
+  font-size: 12px;
+  font-weight: 700;
+  flex: none;
 }
 
 .aim-hero .attachment {
-  margin-top: 15px;
-  background: #f7f5f2;
-  border-radius: 13px;
-  padding: 12px;
+  margin-top: 10px;
+  background: #f6f4f1;
+  border-radius: 8px;
+  padding: 8px 10px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+}
+
+.aim-hero .attachment strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 650;
 }
 
 .aim-hero .attachment small {
   display: block;
   color: #8498b4;
-  margin-top: 3px;
-}
-
-.aim-hero .pdf {
-  background: #f12d24;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 800;
-  padding: 12px 6px;
-  border-radius: 5px;
+  margin-top: 2px;
+  font-size: 11px;
 }
 
 .aim-hero .sheet {
-  left: 365px;
-  top: 45px;
-  width: 515px;
-  height: 260px;
-  padding: 17px;
+  padding: 10px 10px 8px;
+}
+
+.aim-hero .sheet-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 4px 8px;
+}
+
+.aim-hero .sheet-bar strong {
+  font-size: 13px;
+  font-weight: 650;
 }
 
 .aim-hero .sheet table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 14px;
-  font-size: 13px;
+  table-layout: fixed;
+  font-size: 12px;
+}
+
+.aim-hero .sheet .col-customer {
+  width: 30%;
+}
+
+.aim-hero .sheet .col-product {
+  width: 22%;
+}
+
+.aim-hero .sheet .col-value {
+  width: 18%;
+}
+
+.aim-hero .sheet .col-status {
+  width: 24%;
 }
 
 .aim-hero .sheet th,
 .aim-hero .sheet td {
-  border: 1px solid #ece8e3;
-  padding: 10px 12px;
+  border: 1px solid #e4e4e4;
+  padding: 5px 8px;
+  text-align: left;
+  font-weight: 400;
+  background: #fff;
+}
+
+.aim-hero .sheet-letters th {
+  background: #f3f4f6;
+  color: #7b8794;
+  font-weight: 500;
+  text-align: center;
+}
+
+.aim-hero .sheet .row-gutter {
+  background: #f3f4f6;
+  color: #7b8794;
+  font-weight: 500;
+  text-align: center;
+  width: 26px;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.aim-hero .sheet thead tr:last-child th {
+  background: #f7f8f8;
+  color: #4d5d73;
+  font-weight: 600;
   text-align: left;
 }
 
-.aim-hero .sheet th {
-  font-weight: 500;
-  color: #637998;
-  background: #fafafa;
+.aim-hero .sheet thead tr:last-child .row-gutter {
+  text-align: center;
+}
+
+.aim-hero .sheet .num {
+  font-variant-numeric: tabular-nums;
 }
 
 .aim-hero .pill {
   display: inline-block;
-  padding: 4px 12px;
-  border-radius: 10px;
-  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
   font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
 }
 
 .aim-hero .blue {
-  background: #e4f0ff;
-  color: #2681e5;
+  background: #e7f1ff;
+  color: #2d74c4;
 }
 
 .aim-hero .amber {
-  background: #fff0d8;
-  color: #e78816;
+  background: #fff1dc;
+  color: #c56f12;
 }
 
 .aim-hero .green {
-  background: #dcf5e6;
-  color: #14864c;
+  background: #e5f6ec;
+  color: #17864c;
 }
 
-.aim-hero .assistant {
-  left: 15px;
-  top: 350px;
-  width: 385px;
-  height: 265px;
+.aim-hero .assistant::after {
+  content: "";
+  display: block;
+  clear: both;
 }
 
 .aim-hero .bubble {
-  background: #f5f3f0;
-  border-radius: 14px;
-  padding: 10px 14px;
-  font-size: 14px;
-  width: max-content;
-  max-width: 300px;
+  background: #f4f2ef;
+  border-radius: 12px;
+  padding: 8px 10px;
+  font-size: 13px;
+  line-height: 1.4;
+  max-width: 100%;
 }
 
 .aim-hero .customer {
-  margin-top: 18px;
+  margin-top: 12px;
 }
 
 .aim-hero .answer-row {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  margin-top: 14px;
+  gap: 8px;
+  margin-top: 10px;
 }
 
 .aim-hero .mini-am {
   display: grid;
   place-items: center;
-  background: linear-gradient(145deg, #ff9c00, #f14b00);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #e85d2a;
   color: #fff;
   font-weight: 700;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  font-size: 11px;
+  font-size: 8px;
   flex: none;
 }
 
 .aim-hero .answer {
   background: #fff;
   border: 1px solid #eee6df;
-  line-height: 1.45;
 }
 
 .aim-hero .book {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   float: right;
+  clear: both;
   background: #101a33;
   color: #fff;
-  padding: 11px 18px;
-  font-size: 14px;
+  padding: 7px 12px;
+  font-size: 12px;
   margin-top: 10px;
-  border-radius: 9px;
+  border-radius: 8px;
   font-family: inherit;
 }
 
-.aim-hero .crm {
-  left: 500px;
-  top: 330px;
-  width: 380px;
-  height: 185px;
+.aim-hero .record-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
 }
 
-.aim-hero .crm-grid {
+.aim-hero .record-icon {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 20px;
-  margin-top: 12px;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #f3f1ee;
+  color: #6d7c90;
+  flex: none;
 }
 
-.aim-hero .crm-grid h3 {
-  font-size: 17px;
-  margin: 6px 0 2px;
+.aim-hero .record-head h3 {
+  margin: 0;
 }
 
-.aim-hero .crm-grid small {
+.aim-hero .record-head small,
+.aim-hero .invoice-row small {
   color: #8296b3;
+  font-size: 12px;
 }
 
 .aim-hero .crm-fields {
-  border-left: 1px solid #e6e7ea;
-  padding-left: 18px;
+  margin: 10px 0 0;
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
+  gap: 0;
+}
+
+.aim-hero .crm-fields div {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 8px;
+  align-items: center;
+  padding: 5px 0;
+  border-top: 1px solid #eeeae6;
   font-size: 12px;
   color: #7388a5;
 }
 
+.aim-hero .crm-fields dt {
+  margin: 0;
+}
+
+.aim-hero .crm-fields dd {
+  margin: 0;
+  color: #263650;
+  text-align: right;
+}
+
 .aim-hero .crm-fields strong {
   color: #263650;
-}
-
-.aim-hero .ghost {
-  height: 12px;
-  background: #f0f1f2;
-  border-radius: 8px;
-  margin-top: 24px;
-  width: 120px;
-}
-
-.aim-hero .ghost.short {
-  margin-top: 10px;
-  width: 82px;
-}
-
-.aim-hero .invoice {
-  left: 500px;
-  top: 535px;
-  width: 380px;
-  height: 105px;
+  font-weight: 700;
 }
 
 .aim-hero .invoice-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  margin-top: 4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eeeae6;
 }
 
 .aim-hero .invoice-row h3 {
-  font-size: 17px;
-  margin: 8px 0 3px;
+  font-size: 15px;
+  margin: 8px 0 2px;
 }
 
-.aim-hero .invoice-row small {
-  color: #8296b3;
+.aim-hero .invoice-amount {
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
-.aim-hero .ai-node {
-  position: absolute;
-  left: 300px;
-  top: 245px;
-  width: 62px;
-  height: 62px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  color: #fff;
-  font-weight: 800;
-  background: linear-gradient(145deg, #ff9b00, #ef4b00);
-  box-shadow: 0 9px 22px rgba(238, 84, 13, 0.22);
-  z-index: 2;
-}
-
-.aim-hero .connectors {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-}
-
-.aim-hero .connectors path {
-  fill: none;
-  stroke: #f47b45;
-  stroke-width: 2;
-  stroke-linecap: round;
+.aim-hero .invoice-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #5d6e86;
 }
 
 @media (max-width: 1050px) {
   .aim-hero {
     grid-template-columns: 1fr;
     padding-top: 55px;
+    overflow: visible;
   }
 
   .aim-hero .copy {
@@ -432,10 +572,28 @@
   }
 
   .aim-hero .workspace {
-    transform-origin: left top;
-    transform: scale(0.82);
-    margin-top: 30px;
-    height: 535px;
+    margin-top: 36px;
+    gap: 28px;
+  }
+
+  .aim-hero .flow-admin,
+  .aim-hero .flow-ops {
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+
+  .aim-hero .flow-cue.is-right {
+    transform: rotate(90deg);
+    margin-left: 0;
+    align-self: center;
+  }
+
+  .aim-hero .mail,
+  .aim-hero .assistant,
+  .aim-hero .crm,
+  .aim-hero .invoice {
+    width: 100%;
+    max-width: 520px;
   }
 }
 
@@ -451,7 +609,7 @@
   }
 
   .aim-hero h1 {
-    font-size: 45px;
+    font-size: 36px;
   }
 
   .aim-hero .copy p {
@@ -462,21 +620,41 @@
   .aim-hero .primary {
     font-size: 15px;
     padding: 16px 18px;
+    gap: 16px;
   }
 
-  .aim-hero .workspace {
-    width: 880px;
-    min-width: 880px;
-    transform: scale(0.42);
-    height: 280px;
-    margin-top: 40px;
+  .aim-hero .mail,
+  .aim-hero .assistant,
+  .aim-hero .crm,
+  .aim-hero .invoice,
+  .aim-hero .sheet {
+    width: 100%;
+    max-width: none;
   }
 
-  .aim-hero .ai-node {
-    display: none;
+  .aim-hero .sheet th,
+  .aim-hero .sheet td {
+    padding: 4px 3px;
+    font-size: 11px;
   }
 
-  .aim-hero .connectors {
-    opacity: 0.45;
+  .aim-hero .sheet .row-gutter {
+    width: 18px;
+  }
+
+  .aim-hero .sheet .col-customer { width: 28%; }
+  .aim-hero .sheet .col-product { width: 22%; }
+  .aim-hero .sheet .col-value { width: 18%; }
+  .aim-hero .sheet .col-status { width: 24%; }
+
+  .aim-hero .pill {
+    padding: 1px 4px;
+    font-size: 10px;
+  }
+
+  .aim-hero .flow-cue.is-down,
+  .aim-hero .flow-cue.is-right {
+    margin-left: 0;
+    align-self: center;
   }
 }
