@@ -117,12 +117,12 @@ export function BusinessWorkspace() {
         <div className="workflow-column workflow-column-primary">
           <section className="workflow-tile"><div className="beat-label"><span>01</span>{beats[0]}</div><BeatOne /></section>
           <section className="workflow-tile"><div className="beat-label"><span>03</span>{beats[2]}</div><BeatThree /></section>
-          <section className="workflow-tile"><div className="beat-label"><span>02</span>{beats[1]}</div><BeatTwo /></section>
         </div>
         <div className="workflow-column workflow-column-secondary">
-          <section className="workflow-tile"><div className="beat-label"><span>04</span>{beats[3]}</div><BeatFour /></section>
           <section className="workflow-tile workflow-wide"><div className="beat-label"><span>05</span>{beats[4]}</div><BeatFive /></section>
+          <section className="workflow-tile"><div className="beat-label"><span>04</span>{beats[3]}</div><BeatFour /></section>
         </div>
+        <section className="workflow-tile workflow-centred"><div className="beat-label"><span>02</span>{beats[1]}</div><BeatTwo /></section>
       </div>
     </div>
   );
