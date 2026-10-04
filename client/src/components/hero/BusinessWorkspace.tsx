@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 const beats = [
   "Understand enquiries",
   "Automate processes",
@@ -111,25 +109,17 @@ function BeatFive() {
   );
 }
 
-const views = [BeatOne, BeatTwo, BeatThree, BeatFour, BeatFive];
 
 export function BusinessWorkspace() {
-  const [beat, setBeat] = useState(0);
-
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (media.matches) return;
-    const timer = window.setInterval(() => setBeat((current) => (current + 1) % views.length), 7200);
-    return () => window.clearInterval(timer);
-  }, []);
-
-  const View = views[beat];
-
   return (
-    <div className="workspace animated-workspace" aria-label="AI Midlands business automation examples">
-      <div className="beat-label"><span>{String(beat + 1).padStart(2, "0")}</span>{beats[beat]}</div>
-      <View key={beat} />
-      <div className="beat-progress" aria-hidden="true">{beats.map((label, index) => <span key={label} className={index === beat ? "active" : ""}/>)}</div>
+    <div className="workspace animated-workspace all-workflows" aria-label="AI Midlands business automation examples">
+      <div className="workflow-grid">
+        <section className="workflow-tile"><div className="beat-label"><span>01</span>{beats[0]}</div><BeatOne /></section>
+        <section className="workflow-tile"><div className="beat-label"><span>02</span>{beats[1]}</div><BeatTwo /></section>
+        <section className="workflow-tile"><div className="beat-label"><span>03</span>{beats[2]}</div><BeatThree /></section>
+        <section className="workflow-tile"><div className="beat-label"><span>04</span>{beats[3]}</div><BeatFour /></section>
+        <section className="workflow-tile workflow-wide"><div className="beat-label"><span>05</span>{beats[4]}</div><BeatFive /></section>
+      </div>
     </div>
   );
 }
