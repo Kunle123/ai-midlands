@@ -845,3 +845,22 @@
 .aim-hero .workflow-column .workflow-wide { width:100%; }
 .aim-hero .workflow-column .workflow-tile:nth-child(n) { grid-column:auto; }
 @media(max-width:900px){.aim-hero .workflow-grid{grid-template-columns:1fr}}
+
+
+/* Restore visible AI processing sweep while keeping it clipped to its own app window. */
+.aim-hero .app { overflow:hidden; isolation:isolate; }
+.aim-hero .ai-sweep {
+  z-index:8;
+  width:28%;
+  opacity:0;
+  background:linear-gradient(90deg,transparent 0%,rgba(239,77,19,.10) 18%,rgba(239,77,19,.42) 50%,rgba(239,77,19,.12) 82%,transparent 100%);
+  mix-blend-mode:multiply;
+  animation:aiSweepVisible 1.15s cubic-bezier(.25,.7,.3,1) 1s both;
+}
+.aim-hero .build-invoice .ai-sweep { animation:aiSweepVisible 1.15s cubic-bezier(.25,.7,.3,1) 4.05s both; }
+@keyframes aiSweepVisible {
+  0% { opacity:0; transform:translateX(0) skewX(-9deg); }
+  12% { opacity:1; }
+  78% { opacity:1; }
+  100% { opacity:0; transform:translateX(500%) skewX(-9deg); }
+}
