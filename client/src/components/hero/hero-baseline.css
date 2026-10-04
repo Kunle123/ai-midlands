@@ -867,3 +867,35 @@
 
 .aim-hero .workflow-centred { grid-column:1 / -1; width:50%; min-width:520px; justify-self:center; }
 @media(max-width:900px){.aim-hero .workflow-centred{width:100%;min-width:0}}
+
+
+/* Definitive desktop workflow placement. Overrides earlier generic tile nth-child rules. */
+.aim-hero .workflow-grid {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:16px;
+  align-items:start;
+}
+.aim-hero .workflow-column {
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  min-width:0;
+}
+.aim-hero .workflow-grid > .workflow-column > .workflow-tile,
+.aim-hero .workflow-grid > .workflow-column > .workflow-wide {
+  grid-column:auto;
+  width:100%;
+  min-width:0;
+  justify-self:stretch;
+}
+.aim-hero .workflow-grid > .workflow-centred {
+  grid-column:1 / -1;
+  width:calc(50% - 8px);
+  min-width:0;
+  justify-self:center;
+}
+@media(max-width:900px){
+  .aim-hero .workflow-grid{grid-template-columns:1fr}
+  .aim-hero .workflow-grid > .workflow-centred{grid-column:1;width:100%}
+}
