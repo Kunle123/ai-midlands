@@ -772,3 +772,67 @@
 @media (max-width:1200px){.aim-hero{grid-template-columns:minmax(430px,40%) minmax(0,1fr);column-gap:25px}.aim-hero .workflow-grid{gap:10px}.aim-hero .workflow-tile{padding:8px}}
 @media (max-width:1050px){.aim-hero .workflow-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.aim-hero .workflow-wide{width:70%}}
 @media (max-width:700px){.aim-hero .workflow-grid{grid-template-columns:1fr}.aim-hero .workflow-wide{grid-column:auto;width:100%}.aim-hero .workflow-tile .hero-beat,.aim-hero .workflow-wide .hero-beat{grid-template-columns:1fr}.aim-hero .workflow-tile .data-bridge,.aim-hero .workflow-tile .api-cable{height:40px;width:56px;justify-self:center;transform:rotate(90deg)}}
+
+
+/* Full-width hero composition: message above, automation canvas below. */
+.aim-hero {
+  display:block;
+  min-height:auto;
+  padding:52px 4.6% 72px;
+}
+.aim-hero .copy {
+  max-width:980px;
+  margin:0 auto 34px;
+  text-align:center;
+}
+.aim-hero .eyebrow { margin-bottom:14px; }
+.aim-hero h1 { max-width:920px; margin-left:auto; margin-right:auto; font-size:58px; }
+.aim-hero .copy p { max-width:790px; margin-left:auto; margin-right:auto; font-size:19px; line-height:1.55; }
+.aim-hero .location { margin-top:18px; }
+.aim-hero .all-workflows { max-width:1180px; margin:0 auto; }
+.aim-hero .workflow-grid {
+  grid-template-columns:repeat(12,minmax(0,1fr));
+  grid-auto-flow:dense;
+  gap:16px;
+}
+.aim-hero .workflow-tile {
+  padding:14px;
+  background:#fff;
+  box-shadow:0 10px 30px rgba(23,32,51,.045);
+}
+.aim-hero .workflow-tile:nth-child(1),
+.aim-hero .workflow-tile:nth-child(2) { grid-column:span 6; }
+.aim-hero .workflow-tile:nth-child(3),
+.aim-hero .workflow-tile:nth-child(4) { grid-column:span 6; }
+.aim-hero .workflow-wide {
+  grid-column:3 / span 8;
+  width:100%;
+  justify-self:stretch;
+}
+.aim-hero .workflow-tile .hero-beat {
+  grid-template-columns:minmax(0,1fr) 42px minmax(0,1.12fr);
+  gap:8px;
+}
+.aim-hero .workflow-wide .hero-beat {
+  grid-template-columns:minmax(0,1fr) 90px minmax(0,1fr);
+}
+.aim-hero .workflow-tile .app { padding:10px; }
+.aim-hero .workflow-tile .app-title strong { font-size:11px; }
+.aim-hero .workflow-tile .app h3 { font-size:11px; }
+.aim-hero .workflow-tile .app p,
+.aim-hero .workflow-tile .bubble { font-size:10px; }
+.aim-hero .workflow-tile .mail-from strong { font-size:10px; }
+.aim-hero .workflow-tile .mail-from span { font-size:9px; }
+.aim-hero .workflow-tile .mini-grid,
+.aim-hero .workflow-tile .compact-fields div,
+.aim-hero .workflow-tile .lead-row,
+.aim-hero .workflow-tile .invoice-line { font-size:9px; }
+@media(max-width:900px){
+  .aim-hero .copy{text-align:left;margin-left:0}
+  .aim-hero .workflow-tile:nth-child(n),.aim-hero .workflow-wide{grid-column:1 / -1;width:100%}
+}
+@media(max-width:600px){
+  .aim-hero{padding:42px 22px 50px}
+  .aim-hero h1{font-size:36px}
+  .aim-hero .copy p{font-size:17px}
+}
