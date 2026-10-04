@@ -836,3 +836,12 @@
   .aim-hero h1{font-size:36px}
   .aim-hero .copy p{font-size:17px}
 }
+
+
+/* Narrative columns: core customer/admin automations read vertically. */
+.aim-hero .workflow-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; align-items:start; }
+.aim-hero .workflow-column { display:flex; flex-direction:column; gap:16px; min-width:0; }
+.aim-hero .workflow-column .workflow-tile { width:100%; }
+.aim-hero .workflow-column .workflow-wide { width:100%; }
+.aim-hero .workflow-column .workflow-tile:nth-child(n) { grid-column:auto; }
+@media(max-width:900px){.aim-hero .workflow-grid{grid-template-columns:1fr}}
