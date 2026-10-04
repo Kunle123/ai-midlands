@@ -864,3 +864,6 @@
   78% { opacity:1; }
   100% { opacity:0; transform:translateX(500%) skewX(-9deg); }
 }
+
+.aim-hero .workflow-centred { grid-column:1 / -1; width:50%; min-width:520px; justify-self:center; }
+@media(max-width:900px){.aim-hero .workflow-centred{width:100%;min-width:0}}
