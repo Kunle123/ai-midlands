@@ -744,3 +744,31 @@
 @media (max-width:1050px){.aim-hero .animated-workspace{min-height:390px}.aim-hero .hero-beat{grid-template-columns:minmax(0,1fr) 52px minmax(0,1fr);width:100%;max-width:720px}}
 @media (max-width:600px){.aim-hero .animated-workspace{min-height:0}.aim-hero .hero-beat{grid-template-columns:1fr;gap:8px;min-height:0}.aim-hero .motion-arrow{transform:rotate(90deg)}.aim-hero .data-bridge{height:34px;transform:rotate(90deg);width:56px;justify-self:center}.aim-hero .api-cable{height:54px;width:56px;justify-self:center;transform:rotate(90deg)}.aim-hero .beat-label{margin-top:8px}.aim-hero .beat-progress{margin-bottom:10px}}
 @media (prefers-reduced-motion:reduce){.aim-hero .hero-beat,.aim-hero .ai-sweep,.aim-hero mark,.aim-hero .incoming,.aim-hero .existing,.aim-hero .data-packet,.aim-hero .return-packet,.aim-hero .build-invoice,.aim-hero .reveal-answer,.aim-hero .animated-book,.aim-hero .call-confirm,.aim-hero .new-lead,.aim-hero .compose-line,.aim-hero .outreach p,.aim-hero .approval-row,.aim-hero .sent-confirm,.aim-hero .cable-left,.aim-hero .cable-right,.aim-hero .api-plug,.aim-hero .api-socket,.aim-hero .api-label,.aim-hero .flow-dot,.aim-hero .new-job{animation:none!important}.aim-hero .incoming,.aim-hero .new-lead,.aim-hero .new-job{max-height:38px;padding-top:9px;padding-bottom:9px;opacity:1;transform:none}.aim-hero .build-invoice,.aim-hero .reveal-answer,.aim-hero .animated-book,.aim-hero .call-confirm,.aim-hero .compose-line,.aim-hero .outreach p,.aim-hero .approval-row{opacity:1;transform:none}}
+
+
+/* Keep every automation visible in one hero workspace. */
+.aim-hero .all-workflows { min-height:0; width:100%; }
+.aim-hero .workflow-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; align-items:start; }
+.aim-hero .workflow-tile { min-width:0; padding:11px; border:1px solid #eee9e3; border-radius:15px; background:rgba(255,255,255,.42); overflow:hidden; }
+.aim-hero .workflow-tile .beat-label { margin:0 0 8px 2px; font-size:10px; }
+.aim-hero .workflow-tile .hero-beat { min-height:0; grid-template-columns:minmax(0,1fr) 26px minmax(0,1.08fr); gap:5px; overflow:hidden; }
+.aim-hero .workflow-tile .app { padding:8px; border-radius:9px; }
+.aim-hero .workflow-tile .app-title strong { font-size:10px; }
+.aim-hero .workflow-tile .app h3 { font-size:10px; margin:5px 0 2px; }
+.aim-hero .workflow-tile .app p,.aim-hero .workflow-tile .bubble { font-size:9px; line-height:1.35; }
+.aim-hero .workflow-tile .mail-from { margin-top:6px; gap:5px; }
+.aim-hero .workflow-tile .mail-avatar { width:20px;height:20px;font-size:9px; }
+.aim-hero .workflow-tile .mail-from strong { font-size:9px; }.aim-hero .workflow-tile .mail-from span { font-size:8px; }
+.aim-hero .workflow-tile .mini-grid,.aim-hero .workflow-tile .compact-fields div,.aim-hero .workflow-tile .lead-row,.aim-hero .workflow-tile .invoice-line { font-size:8px; }
+.aim-hero .workflow-tile .mini-grid>* { padding:4px 3px; }
+.aim-hero .workflow-tile .compact-fields div { padding:4px 0; }
+.aim-hero .workflow-tile .pill { font-size:8px;padding:1px 4px; }
+.aim-hero .workflow-tile .data-bridge { height:54px; }.aim-hero .workflow-tile .data-bridge:before{top:27px}.aim-hero .workflow-tile .data-packet{top:16px;transform:scale(.75);transform-origin:left center}
+.aim-hero .workflow-tile .motion-arrow { font-size:16px; }
+.aim-hero .workflow-tile .book,.aim-hero .workflow-tile .approval-row button { font-size:8px;padding:5px 7px; }
+.aim-hero .workflow-tile .api-cable { height:72px; }.aim-hero .workflow-tile .cable-left,.aim-hero .workflow-tile .cable-right{top:35px}.aim-hero .workflow-tile .api-plug{top:27px}.aim-hero .workflow-tile .api-socket{top:25px}.aim-hero .workflow-tile .api-label{top:55px}.aim-hero .workflow-tile .flow-dot{top:33px}
+.aim-hero .workflow-wide { grid-column:1 / -1; width:74%; justify-self:center; }
+.aim-hero .workflow-wide .hero-beat { grid-template-columns:minmax(0,1fr) 64px minmax(0,1fr); }
+@media (max-width:1200px){.aim-hero{grid-template-columns:minmax(430px,40%) minmax(0,1fr);column-gap:25px}.aim-hero .workflow-grid{gap:10px}.aim-hero .workflow-tile{padding:8px}}
+@media (max-width:1050px){.aim-hero .workflow-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.aim-hero .workflow-wide{width:70%}}
+@media (max-width:700px){.aim-hero .workflow-grid{grid-template-columns:1fr}.aim-hero .workflow-wide{grid-column:auto;width:100%}.aim-hero .workflow-tile .hero-beat,.aim-hero .workflow-wide .hero-beat{grid-template-columns:1fr}.aim-hero .workflow-tile .data-bridge,.aim-hero .workflow-tile .api-cable{height:40px;width:56px;justify-self:center;transform:rotate(90deg)}}
