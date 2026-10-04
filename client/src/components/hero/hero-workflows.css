@@ -1,0 +1,378 @@
+/* Clean workflow layer for the redesigned AI Midlands hero.
+   This file intentionally owns the workflow canvas so older experimental
+   rules in hero-baseline.css cannot distort the composition. */
+
+.aim-hero {
+  display: block;
+  min-height: auto;
+  padding: 44px clamp(24px, 3.2vw, 60px) 72px;
+  overflow: hidden;
+}
+
+.aim-hero .copy {
+  width: min(1120px, 100%);
+  max-width: none;
+  margin: 0 auto 34px;
+  text-align: center;
+}
+
+.aim-hero .eyebrow { margin-bottom: 12px; }
+.aim-hero h1 {
+  max-width: 980px;
+  margin: 0 auto 18px;
+  font-size: clamp(48px, 4.25vw, 66px);
+}
+.aim-hero .copy p {
+  max-width: 900px;
+  margin: 0 auto 24px;
+  font-size: clamp(18px, 1.35vw, 21px);
+  line-height: 1.55;
+}
+.aim-hero .location { margin-top: 14px; }
+
+.aim-hero .all-workflows {
+  width: min(1540px, 100%);
+  max-width: none;
+  min-height: 0;
+  margin: 0 auto;
+}
+
+.aim-hero .workflow-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px 32px;
+  align-items: stretch;
+  width: 100%;
+}
+
+.aim-hero .workflow-tile {
+  position: relative;
+  min-width: 0;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+}
+
+.aim-hero .workflow-grid > .workflow-tile:nth-child(1) { grid-column: 1; grid-row: 1; }
+.aim-hero .workflow-grid > .workflow-tile:nth-child(2) { grid-column: 2; grid-row: 1; }
+.aim-hero .workflow-grid > .workflow-tile:nth-child(3) { grid-column: 1; grid-row: 2; }
+.aim-hero .workflow-grid > .workflow-tile:nth-child(4) { grid-column: 2; grid-row: 2; }
+.aim-hero .workflow-grid > .workflow-centred {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  width: min(1040px, 72%);
+  justify-self: center;
+}
+
+.aim-hero .beat-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 10px 4px;
+  color: #506988;
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: .01em;
+}
+.aim-hero .beat-label > span {
+  color: var(--orange);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.aim-hero .hero-beat {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  min-height: 0;
+  width: 100%;
+  overflow: visible;
+}
+
+.aim-hero .workflow-centred .hero-beat {
+  grid-template-columns: minmax(0, 1fr) 78px minmax(0, 1fr);
+}
+
+.aim-hero .workflow-tile .app {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  min-height: 166px;
+  padding: 18px 20px;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid #e8e3dc;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 26px rgba(23, 32, 51, .055);
+  color: #18243a;
+}
+
+.aim-hero .workflow-tile.is-active .app {
+  border-color: rgba(239, 77, 19, .24);
+  box-shadow: 0 12px 30px rgba(23, 32, 51, .07);
+}
+
+.aim-hero .app-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 26px;
+}
+.aim-hero .app-title strong { font-size: 15px; font-weight: 700; }
+.aim-hero .time,.aim-hero .online,.aim-hero .sent,.aim-hero .draft-state,.aim-hero .sync-state { margin-left: auto; }
+.aim-hero .time,.aim-hero .online,.aim-hero .draft-state,.aim-hero .sync-state { color: #8294af; font-size: 12px; }
+.aim-hero .online { display: inline-flex; align-items: center; gap: 5px; }
+.aim-hero .led { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+
+.aim-hero .gmail-dot,.aim-hero .sheet-mark,.aim-hero .chat-mark,.aim-hero .invoice-mark,.aim-hero .system-mark {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+}
+.aim-hero .gmail-dot { background: #fff0e8; color: #d64b22; }
+.aim-hero .sheet-mark { background: #18884a; color: #fff; }
+.aim-hero .chat-mark { background: #101b36; color: #fff; }
+.aim-hero .invoice-mark { background: #5b4db8; color: #fff; }
+.aim-hero .system-mark { background: #eaf0ff; color: #5075c8; }
+.aim-hero .ops-mark { background: #e5f6ec; color: var(--green); }
+.aim-hero .cloud { color: #3aa0e0; }
+
+.aim-hero .workflow-tile .app h3 {
+  margin: 10px 0 4px;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.25;
+  font-weight: 750;
+}
+.aim-hero .workflow-tile .app p,.aim-hero .bubble {
+  margin: 0;
+  color: #5f7592;
+  font-size: 14px;
+  line-height: 1.48;
+}
+.aim-hero .workflow-tile .app small { color: #8296b3; font-size: 12px; }
+
+.aim-hero .mail-from { display: flex; align-items: center; gap: 9px; margin-top: 12px; }
+.aim-hero .mail-avatar {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 50%;
+  background: #e7eef8;
+  color: #3d5f8a;
+  font-size: 13px;
+  font-weight: 700;
+}
+.aim-hero .mail-from strong { display: block; font-size: 13px; }
+.aim-hero .mail-from span { display: block; color: #8ca1be; font-size: 11px; }
+
+.aim-hero mark { background: transparent; color: inherit; border-radius: 3px; }
+.aim-hero .is-active mark { animation: workflowMeaning 5.4s ease 1.5s both; }
+
+.aim-hero .sheet-bar { display: flex; align-items: center; gap: 9px; margin-bottom: 9px; }
+.aim-hero .sheet-bar strong { font-size: 15px; }
+.aim-hero .mini-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr .78fr .88fr;
+  align-items: center;
+  border: 1px solid #e4e7eb;
+  border-top: 0;
+  font-size: 12px;
+}
+.aim-hero .mini-grid > * { min-width: 0; padding: 8px 7px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.aim-hero .grid-head { border-top: 1px solid #e4e7eb; background: #f5f6f7; color: #71839a; font-weight: 650; }
+.aim-hero .incoming em,.aim-hero .lead-row em { color: var(--green); font-style: normal; }
+
+.aim-hero .motion-arrow {
+  justify-self: center;
+  color: rgba(239,77,19,.65);
+  font-size: 28px;
+}
+
+.aim-hero .compact-fields { margin: 12px 0 0; display: grid; }
+.aim-hero .compact-fields div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid #eeeae6;
+  font-size: 13px;
+}
+.aim-hero .compact-fields dt { color: #7388a5; }
+.aim-hero .compact-fields dd { margin: 0; text-align: right; }
+.aim-hero .pill { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 650; line-height: 1.25; white-space: nowrap; }
+.aim-hero .green { background: #e5f6ec; color: #17864c; }
+.aim-hero .amber { background: #fff1dc; color: #c56f12; }
+
+.aim-hero .data-bridge { position: relative; height: 94px; }
+.aim-hero .data-bridge::before { content: ""; position: absolute; left: 0; right: 0; top: 46px; height: 1px; background: rgba(239,77,19,.24); }
+.aim-hero .data-packet {
+  position: absolute;
+  z-index: 2;
+  top: 32px;
+  left: 0;
+  width: 36px;
+  height: 29px;
+  padding: 5px;
+  opacity: 0;
+  border: 1px solid rgba(239,77,19,.45);
+  border-radius: 6px;
+  background: #fff;
+}
+.aim-hero .data-packet i { display: block; height: 2px; margin: 3px 0; border-radius: 2px; background: var(--orange); opacity: .6; }
+.aim-hero .data-packet i:nth-child(2) { width: 70%; }
+.aim-hero .data-packet i:nth-child(3) { width: 48%; }
+.aim-hero .return-packet { position: absolute; right: 0; top: 62px; color: var(--green); font-size: 10px; font-weight: 700; opacity: 0; white-space: nowrap; }
+
+.aim-hero .invoice-row { display: flex; justify-content: space-between; align-items: end; margin-top: 6px; padding-bottom: 10px; border-bottom: 1px solid #eeeae6; }
+.aim-hero .invoice-row h3 { margin: 8px 0 2px; }
+.aim-hero .invoice-amount { font-size: 18px; font-weight: 750; }
+.aim-hero .invoice-line { display: flex; justify-content: space-between; gap: 14px; margin-top: 10px; color: #5d6e86; font-size: 13px; }
+
+.aim-hero .bubble { padding: 10px 12px; border-radius: 12px; background: #f4f2ef; }
+.aim-hero .customer { margin-top: 14px; }
+.aim-hero .answer { margin-top: 10px; border: 1px solid #eee6df; background: #fff; }
+.aim-hero .book { float: right; clear: both; margin-top: 11px; padding: 8px 13px; border-radius: 8px !important; background: #101a33; color: #fff; font-size: 12px; }
+.aim-hero .call-confirm { clear: both; padding-top: 10px; color: var(--green); font-size: 12px; }
+
+.aim-hero .lead-list .app-title { margin-bottom: 10px; }
+.aim-hero .lead-row {
+  display: grid;
+  grid-template-columns: 1.1fr .9fr .9fr;
+  gap: 8px;
+  align-items: center;
+  padding: 11px 5px;
+  border-top: 1px solid #eeeae6;
+  font-size: 12px;
+}
+
+.aim-hero .prospect small { color: #8296b3; }
+.aim-hero .compose-line { display: flex; gap: 9px; padding: 9px 0; border-bottom: 1px solid #eeeae6; font-size: 12px; }
+.aim-hero .compose-line small { width: 48px; flex: none; }
+.aim-hero .outreach p { margin-top: 11px; }
+.aim-hero .approval-row { display: flex; align-items: center; gap: 9px; margin-top: 12px; }
+.aim-hero .approval-row button { padding: 8px 11px; border-radius: 7px !important; background: var(--orange); color: #fff; font-size: 11px; }
+.aim-hero .approval-row small { color: #8296b3; }
+.aim-hero .sent-confirm { position: absolute; right: 14px; top: 14px; color: var(--green); font-size: 11px; font-weight: 700; }
+
+.aim-hero .api-cable { position: relative; height: 104px; align-self: center; }
+.aim-hero .cable-left,.aim-hero .cable-right { position: absolute; top: 50px; height: 5px; width: 25px; border-radius: 3px; background: #6c7c90; }
+.aim-hero .cable-left { left: 0; }
+.aim-hero .cable-right { right: 0; }
+.aim-hero .api-plug { position: absolute; z-index: 3; top: 41px; left: 22px; width: 28px; height: 22px; border-radius: 6px 2px 2px 6px; background: var(--orange); }
+.aim-hero .api-plug::after { content: ""; position: absolute; right: -7px; top: 5px; width: 8px; height: 12px; background: var(--orange); }
+.aim-hero .api-socket { position: absolute; z-index: 3; top: 39px; right: 21px; width: 29px; height: 26px; border: 2px solid var(--orange); border-radius: 2px 6px 6px 2px; background: #fff; }
+.aim-hero .api-label { position: absolute; top: 72px; left: 50%; transform: translateX(-50%); color: var(--orange); font-size: 9px; font-weight: 800; letter-spacing: .1em; }
+.aim-hero .flow-dot { position: absolute; top: 49px; left: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--orange); opacity: 0; }
+
+/* Idle workflows show their completed business state. */
+.aim-hero .is-idle .incoming,.aim-hero .is-idle .new-lead,.aim-hero .is-idle .new-job { opacity: 1; max-height: 60px; transform: none; }
+.aim-hero .is-idle .reveal-answer,.aim-hero .is-idle .animated-book,.aim-hero .is-idle .call-confirm,.aim-hero .is-idle .compose-line,.aim-hero .is-idle .outreach p,.aim-hero .is-idle .approval-row,.aim-hero .is-idle .sent-confirm { opacity: 1; transform: none; }
+.aim-hero .is-idle .build-invoice { opacity: 1; }
+.aim-hero .is-idle .data-packet,.aim-hero .is-idle .return-packet,.aim-hero .is-idle .flow-dot { opacity: 0; }
+
+/* Active workflow animation. Only the active tile receives these animations. */
+.aim-hero .is-active .incoming { animation: wfInsert .55s cubic-bezier(.22,.8,.32,1) 3.05s both; }
+.aim-hero .is-active .data-packet { animation: wfPacket 1s cubic-bezier(.22,.8,.32,1) 2.1s both; }
+.aim-hero .is-active .return-packet { animation: wfReturn .8s ease 4.85s both; }
+.aim-hero .is-active .build-invoice { opacity: .35; animation: wfBuild .55s ease 3.1s forwards; }
+.aim-hero .is-active .reveal-answer { opacity: 0; transform: translateY(6px); animation: wfReveal .35s ease 2.0s forwards; }
+.aim-hero .is-active .animated-book { opacity: 0; transform: translateY(6px); animation: wfReveal .3s ease 2.7s forwards; }
+.aim-hero .is-active .call-confirm { opacity: 0; transform: translateY(6px); animation: wfReveal .3s ease 4.8s forwards; }
+.aim-hero .is-active .new-lead,.aim-hero .is-active .new-job { opacity: 0; max-height: 0; transform: translateY(-5px); animation: wfInsert .55s cubic-bezier(.22,.8,.32,1) 4.0s forwards; }
+.aim-hero .is-active .compose-line,.aim-hero .is-active .outreach p,.aim-hero .is-active .approval-row,.aim-hero .is-active .sent-confirm { opacity: 0; transform: translateY(6px); animation: wfReveal .3s ease forwards; }
+.aim-hero .is-active .compose-line:nth-of-type(1) { animation-delay: 2.2s; }
+.aim-hero .is-active .compose-line:nth-of-type(2) { animation-delay: 2.5s; }
+.aim-hero .is-active .outreach p { animation-delay: 2.8s; }
+.aim-hero .is-active .approval-row { animation-delay: 3.55s; }
+.aim-hero .is-active .sent-confirm { animation-delay: 4.65s; }
+.aim-hero .is-active .motion-arrow { animation: wfArrow 1.2s ease 1.8s both; }
+
+.aim-hero .is-active .cable-left,.aim-hero .is-active .cable-right { width: 0; animation: wfCable .55s cubic-bezier(.22,.8,.32,1) 1.25s forwards; }
+.aim-hero .is-active .api-plug { opacity: 0; transform: translateX(-18px); animation: wfConnector .65s cubic-bezier(.22,.8,.32,1) 1.7s forwards; }
+.aim-hero .is-active .api-socket { opacity: 0; transform: translateX(18px); animation: wfConnector .65s cubic-bezier(.22,.8,.32,1) 1.7s forwards; }
+.aim-hero .is-active .flow-dot { animation: wfFlow 1.2s linear 2.6s infinite; }
+.aim-hero .is-active .flow-dot.d2 { animation-delay: 2.95s; }
+.aim-hero .is-active .flow-dot.d3 { animation-delay: 3.3s; }
+
+/* The orange intelligence pass is deliberately obvious and is recreated
+   whenever a new workflow becomes active. */
+.aim-hero .workflow-scan {
+  position: absolute;
+  z-index: 80;
+  top: 31px;
+  bottom: 0;
+  left: -36%;
+  width: 34%;
+  opacity: 0;
+  pointer-events: none;
+  transform: skewX(-10deg);
+  background: linear-gradient(90deg,
+    rgba(239,77,19,0) 0%,
+    rgba(239,77,19,.18) 16%,
+    rgba(239,77,19,.64) 48%,
+    rgba(239,77,19,.20) 82%,
+    rgba(239,77,19,0) 100%);
+  filter: drop-shadow(0 0 12px rgba(239,77,19,.34));
+  animation: wfOrangeSweep 1.7s cubic-bezier(.18,.72,.28,1) .55s both;
+}
+
+.aim-hero .ai-sweep { display: none !important; }
+
+@keyframes wfOrangeSweep {
+  0% { left: -36%; opacity: 0; }
+  8% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { left: 106%; opacity: 0; }
+}
+@keyframes workflowMeaning { 0%,20% { background: transparent; } 36%,72% { background: rgba(239,77,19,.16); color: #b63b10; } 100% { background: transparent; } }
+@keyframes wfInsert { from { opacity: 0; max-height: 0; transform: translateY(-6px); } to { opacity: 1; max-height: 60px; transform: none; background: #fff9f5; } }
+@keyframes wfPacket { 0% { opacity:0; transform:translateX(0); } 14%,84% { opacity:1; } 100% { opacity:0; transform:translateX(54px); } }
+@keyframes wfReturn { 0% { opacity:0; transform:translateX(0); } 20%,80% { opacity:1; } 100% { opacity:0; transform:translateX(-52px); } }
+@keyframes wfBuild { to { opacity:1; transform:scale(1.01); } }
+@keyframes wfReveal { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+@keyframes wfArrow { 0% { opacity:.35; transform:translateX(-4px); } 55% { opacity:1; transform:translateX(4px); } 100% { opacity:.6; transform:none; } }
+@keyframes wfCable { to { width: 25px; } }
+@keyframes wfConnector { to { opacity:1; transform:translateX(0); } }
+@keyframes wfFlow { 0% { opacity:0; transform:translateX(0); } 12%,88% { opacity:.9; } 100% { opacity:0; transform:translateX(64px); } }
+
+@media (max-width: 1100px) {
+  .aim-hero .workflow-grid { gap: 22px; }
+  .aim-hero .hero-beat { grid-template-columns: minmax(0,1fr) 46px minmax(0,1fr); gap: 9px; }
+  .aim-hero .workflow-tile .app { padding: 15px; min-height: 158px; }
+  .aim-hero .workflow-grid > .workflow-centred { width: 82%; }
+}
+
+@media (max-width: 820px) {
+  .aim-hero { padding-inline: 22px; }
+  .aim-hero .copy { text-align: left; }
+  .aim-hero .workflow-grid { grid-template-columns: 1fr; }
+  .aim-hero .workflow-grid > .workflow-tile:nth-child(n),
+  .aim-hero .workflow-grid > .workflow-centred { grid-column: 1; grid-row: auto; width: 100%; }
+}
+
+@media (max-width: 620px) {
+  .aim-hero .hero-beat,.aim-hero .workflow-centred .hero-beat { grid-template-columns: 1fr; }
+  .aim-hero .motion-arrow { transform: rotate(90deg); }
+  .aim-hero .data-bridge,.aim-hero .api-cable { width: 64px; height: 52px; justify-self: center; transform: rotate(90deg); }
+  .aim-hero .workflow-tile .app { min-height: 0; }
+  .aim-hero .workflow-scan { top: 30px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aim-hero .workflow-scan { display: none; }
+  .aim-hero .is-active * { animation: none !important; }
+  .aim-hero .is-active .incoming,.aim-hero .is-active .new-lead,.aim-hero .is-active .new-job,.aim-hero .is-active .reveal-answer,.aim-hero .is-active .animated-book,.aim-hero .is-active .call-confirm,.aim-hero .is-active .compose-line,.aim-hero .is-active .outreach p,.aim-hero .is-active .approval-row,.aim-hero .is-active .sent-confirm { opacity:1; max-height:60px; transform:none; }
+  .aim-hero .is-active .build-invoice { opacity:1; }
+}
