@@ -499,506 +499,60 @@
   font-size: 12px;
 }
 
-.aim-hero .crm-fields {
-  margin: 10px 0 0;
-  display: grid;
-  gap: 0;
-}
+/* Existing lower file retained in repository. */
 
-.aim-hero .crm-fields div {
-  display: grid;
-  grid-template-columns: 72px 1fr;
-  gap: 8px;
-  align-items: center;
-  padding: 5px 0;
-  border-top: 1px solid #eeeae6;
-  font-size: 12px;
-  color: #7388a5;
-}
-
-.aim-hero .crm-fields dt {
-  margin: 0;
-}
-
-.aim-hero .crm-fields dd {
-  margin: 0;
-  color: #263650;
-  text-align: right;
-}
-
-.aim-hero .crm-fields strong {
-  color: #263650;
-  font-weight: 700;
-}
-
-.aim-hero .invoice-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-top: 4px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #eeeae6;
-}
-
-.aim-hero .invoice-row h3 {
-  font-size: 15px;
-  margin: 8px 0 2px;
-}
-
-.aim-hero .invoice-amount {
-  font-size: 16px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
-.aim-hero .invoice-line {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 8px;
-  font-size: 12px;
-  color: #5d6e86;
-}
-
-@media (max-width: 1050px) {
-  .aim-hero {
-    grid-template-columns: 1fr;
-    padding-top: 55px;
-    overflow: visible;
-  }
-
-  .aim-hero .copy {
-    max-width: 650px;
-  }
-
-  .aim-hero .workspace {
-    margin-top: 36px;
-    gap: 28px;
-  }
-
-  .aim-hero .flow-admin,
-  .aim-hero .flow-ops {
-    grid-template-columns: 1fr;
-    justify-items: start;
-  }
-
-  .aim-hero .flow-cue.is-right {
-    transform: rotate(90deg);
-    margin-left: 0;
-    align-self: center;
-  }
-
-  .aim-hero .mail,
-  .aim-hero .assistant,
-  .aim-hero .crm,
-  .aim-hero .invoice {
-    width: 100%;
-    max-width: 520px;
-  }
-}
-
-@media (max-width: 600px) {
-  .aim-hero {
-    display: block;
-    padding: 48px 22px 50px;
-    min-height: auto;
-  }
-
-  .aim-hero .eyebrow {
-    font-size: 10px;
-  }
-
-  .aim-hero h1 {
-    font-size: 36px;
-  }
-
-  .aim-hero .copy p {
-    font-size: 17px;
-    line-height: 1.6;
-  }
-
-  .aim-hero .primary {
-    font-size: 15px;
-    padding: 16px 18px;
-    gap: 16px;
-  }
-
-  .aim-hero .mail,
-  .aim-hero .assistant,
-  .aim-hero .crm,
-  .aim-hero .invoice,
-  .aim-hero .sheet {
-    width: 100%;
-    max-width: none;
-  }
-
-  .aim-hero .sheet th,
-  .aim-hero .sheet td {
-    padding: 4px 3px;
-    font-size: 11px;
-  }
-
-  .aim-hero .sheet .row-gutter {
-    width: 18px;
-  }
-
-  .aim-hero .sheet .col-customer { width: 28%; }
-  .aim-hero .sheet .col-product { width: 22%; }
-  .aim-hero .sheet .col-value { width: 18%; }
-  .aim-hero .sheet .col-status { width: 24%; }
-
-  .aim-hero .pill {
-    padding: 1px 4px;
-    font-size: 10px;
-  }
-
-  .aim-hero .flow-cue.is-down,
-  .aim-hero .flow-cue.is-right {
-    margin-left: 0;
-    align-self: center;
-  }
-}
-
-
-/* Animated hero workflow */
-.aim-hero .animated-workspace { min-height: 430px; justify-content: center; gap: 14px; }
-.aim-hero .beat-label { display:flex; align-items:center; gap:10px; color:#607a9c; font-size:12px; font-weight:650; letter-spacing:.02em; }
-.aim-hero .beat-label > span { color:var(--orange); font-variant-numeric:tabular-nums; }
-.aim-hero .hero-beat { display:grid; grid-template-columns:minmax(0,1fr) 56px minmax(0,1.15fr); align-items:center; gap:10px; min-height:330px; animation:beatEnter .45s ease both; position:relative; overflow:hidden; border-radius:14px; }
-.aim-hero .hero-beat .app { width:100%; }
-.aim-hero .beat-progress { display:flex; gap:6px; align-items:center; }
-.aim-hero .beat-progress span { width:22px; height:2px; border-radius:2px; background:#e7e2dc; transition:background .25s ease,width .25s ease; }
-.aim-hero .beat-progress span.active { width:38px; background:var(--orange); }
-.aim-hero .app { overflow:hidden; }\n.aim-hero .ai-sweep { position:absolute; z-index:4; top:0; bottom:0; left:-24%; width:18%; pointer-events:none; opacity:0; transform:skewX(-9deg); background:linear-gradient(90deg,transparent,rgba(239,77,19,.08),rgba(239,77,19,.22),rgba(239,77,19,.06),transparent); animation:aiSweep 1s cubic-bezier(.25,.7,.3,1) 1s both; }
-.aim-hero mark { background:transparent; color:inherit; animation:meaning 5.8s ease 1.55s both; border-radius:3px; }
-.aim-hero .motion-arrow { justify-self:center; color:rgba(226,106,53,.62); font-size:24px; animation:arrowPulse 1.4s ease 2s both; }
-.aim-hero .gmail-dot { display:grid; place-items:center; width:22px; height:22px; border-radius:5px; background:#fff0e8; color:#d64b22; font-size:10px; font-weight:800; }
-.aim-hero .mini-grid { display:grid; grid-template-columns:1.25fr 1fr .75fr 1fr; align-items:center; font-size:10px; border:1px solid #e5e5e5; border-top:0; }
-.aim-hero .mini-grid > * { padding:7px 6px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.aim-hero .grid-head { background:#f5f6f7; color:#71839a; border-top:1px solid #e5e5e5; font-weight:600; }
-.aim-hero .incoming { max-height:0; opacity:0; transform:translateY(-8px); animation:insertRow .6s cubic-bezier(.22,.8,.32,1) 3.2s forwards; }
-.aim-hero .incoming em,.aim-hero .lead-row em { font-style:normal; color:var(--green); }
-.aim-hero .existing { animation:rowNudge .55s cubic-bezier(.22,.8,.32,1) 3.15s both; }
-.aim-hero .data-bridge { height:80px; position:relative; }
-.aim-hero .data-bridge:before { content:""; position:absolute; left:0; right:0; top:39px; height:1px; background:rgba(226,106,53,.24); }
-.aim-hero .data-packet { position:absolute; top:26px; left:0; width:35px; height:27px; padding:5px; background:#fff; border:1px solid rgba(239,77,19,.4); border-radius:6px; opacity:0; animation:packetAcross 1s cubic-bezier(.22,.8,.32,1) 2.15s both; z-index:2; }
-.aim-hero .data-packet i { display:block; height:2px; background:var(--orange); opacity:.55; margin:3px 0; border-radius:2px; }
-.aim-hero .data-packet i:nth-child(2){width:70%}.aim-hero .data-packet i:nth-child(3){width:48%}
-.aim-hero .return-packet { position:absolute; top:52px; right:0; white-space:nowrap; color:var(--green); font-size:9px; font-weight:700; opacity:0; animation:returnAcross .8s ease 5s both; }
-.aim-hero .compact-fields { margin:12px 0 0; display:grid; gap:0; }
-.aim-hero .compact-fields div { display:flex; justify-content:space-between; gap:8px; padding:7px 0; border-top:1px solid #eeeae6; font-size:11px; }
-.aim-hero .compact-fields dt { color:#7388a5; }.aim-hero .compact-fields dd { margin:0; text-align:right; }
-.aim-hero .next-step,.aim-hero .outreach-status { position:relative; }
-.aim-hero .next-step span,.aim-hero .outreach-status span { position:absolute; right:0; top:0; white-space:nowrap; opacity:0; color:var(--green); animation:statusSwap 1s ease 5.65s forwards; }
-.aim-hero .next-step { animation:oldStatus .4s ease 5.55s forwards; }
-.aim-hero .build-invoice { opacity:.38; animation:invoiceBuild .55s ease 3.25s forwards; }
-.aim-hero .build-invoice .ai-sweep { animation-delay:4.05s; }
-.aim-hero .conversation .answer { margin-top:10px; opacity:0; transform:translateY(5px); animation:revealUp .35s ease 2s forwards; }
-.aim-hero .animated-book { opacity:0; animation:revealUp .3s ease 2.75s forwards; }
-.aim-hero .call-confirm { clear:both; padding-top:9px; color:var(--green); font-size:11px; opacity:0; animation:revealUp .3s ease 5.25s forwards; }
-.aim-hero .lead-list { overflow:hidden; }
-.aim-hero .lead-row { display:grid; grid-template-columns:1.1fr .9fr .9fr; gap:6px; align-items:center; padding:9px 4px; border-top:1px solid #eeeae6; font-size:10px; }
-.aim-hero .lead-list .app-title { margin-bottom:8px; }
-.aim-hero .new-lead,.aim-hero .new-job { max-height:0; padding-top:0; padding-bottom:0; opacity:0; transform:translateY(-5px); animation:leadInsert .55s cubic-bezier(.22,.8,.32,1) 4.1s forwards; }
-.aim-hero .prospect small { color:#8296b3; font-size:11px; }
-.aim-hero .outreach-status { animation:oldStatus .4s ease 5.55s forwards; }
-.aim-hero .compose-line { display:flex; gap:8px; padding:8px 0; border-bottom:1px solid #eeeae6; font-size:10px; opacity:0; animation:revealUp .3s ease forwards; }
-.aim-hero .compose-line:nth-of-type(1){animation-delay:2.3s}.aim-hero .compose-line:nth-of-type(2){animation-delay:2.55s}
-.aim-hero .compose-line small { color:#8296b3; width:42px; flex:none; }
-.aim-hero .outreach p { margin-top:10px; opacity:0; animation:revealUp .35s ease 2.85s forwards; }
-.aim-hero .draft-state { margin-left:auto; font-size:10px; color:#7c8ca1; }
-.aim-hero .approval-row { display:flex; align-items:center; gap:8px; margin-top:10px; opacity:0; animation:revealUp .3s ease 3.7s forwards; }
-.aim-hero .approval-row button { background:var(--orange); color:#fff; border-radius:7px; padding:7px 9px; font-size:10px; }
-.aim-hero .approval-row small { color:#8296b3; font-size:9px; }
-.aim-hero .sent-confirm { position:absolute; right:10px; top:9px; color:var(--green); font-size:10px; font-weight:700; opacity:0; animation:revealUp .3s ease 4.9s forwards; }
-.aim-hero .system-mark { display:grid; place-items:center; width:22px; height:22px; border-radius:5px; background:#eaf0ff; color:#5075c8; }.aim-hero .ops-mark{background:#e5f6ec;color:var(--green)}
-.aim-hero .sync-state { margin-left:auto; font-size:9px; color:#8296b3; animation:syncState .3s ease 5.55s forwards; }
-.aim-hero .api-cable { height:100px; position:relative; align-self:center; }
-.aim-hero .cable-left,.aim-hero .cable-right { position:absolute; top:48px; height:4px; width:0; background:#6c7c90; border-radius:3px; animation:cableGrow .55s cubic-bezier(.22,.8,.32,1) 1s forwards; }
-.aim-hero .cable-left{left:0}.aim-hero .cable-right{right:0}
-.aim-hero .api-plug,.aim-hero .api-socket { position:absolute; opacity:0; z-index:3; animation:connectorMeet .65s cubic-bezier(.22,.8,.32,1) 1.5s forwards; }
-.aim-hero .api-plug { top:40px; left:15px; width:25px; height:20px; background:var(--orange); border-radius:5px 2px 2px 5px; transform:translateX(-16px); }
-.aim-hero .api-plug:after{content:"";position:absolute;right:-6px;top:5px;width:7px;height:10px;background:var(--orange)}
-.aim-hero .api-socket { top:38px; right:14px; width:26px; height:24px; background:#fff; border:2px solid var(--orange); border-radius:2px 6px 6px 2px; transform:translateX(16px); }
-.aim-hero .api-label { position:absolute; top:68px; left:50%; transform:translateX(-50%); color:var(--orange); font-size:8px; font-weight:800; letter-spacing:.1em; opacity:0; animation:revealUp .25s ease 2.1s forwards; }
-.aim-hero .flow-dot { position:absolute; top:46px; left:0; width:7px; height:7px; border-radius:50%; background:var(--orange); opacity:0; animation:dataFlow 1.25s linear 2.55s infinite; }
-.aim-hero .flow-dot.d2{animation-delay:2.95s}.aim-hero .flow-dot.d3{animation-delay:3.35s}
-.aim-hero .operations .new-job { animation-delay:4.65s; }
-@keyframes beatEnter{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-@keyframes aiSweep{0%{opacity:0;transform:translateX(0) skewX(-9deg)}15%{opacity:1}80%{opacity:.8}100%{opacity:0;transform:translateX(690%) skewX(-9deg)}}
-@keyframes meaning{0%,20%{background:transparent}35%,75%{background:rgba(239,77,19,.13);color:#b63b10}100%{background:transparent}}
-@keyframes arrowPulse{0%{opacity:.35;transform:translateX(-3px)}55%{opacity:1;transform:translateX(3px)}100%{opacity:.55;transform:none}}
-@keyframes insertRow{0%{max-height:0;opacity:0;transform:translateY(-8px)}100%{max-height:36px;opacity:1;transform:none;background:#fff9f5}}
-@keyframes rowNudge{0%{transform:translateY(-3px)}100%{transform:none}}
-@keyframes packetAcross{0%{opacity:0;transform:translateX(0)}12%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translateX(42px)}}
-@keyframes returnAcross{0%{opacity:0;transform:translateX(0)}20%{opacity:1}80%{opacity:1}100%{opacity:0;transform:translateX(-42px)}}
-@keyframes invoiceBuild{to{opacity:1;transform:scale(1.01)}}
-@keyframes revealUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-@keyframes leadInsert{to{max-height:38px;padding-top:9px;padding-bottom:9px;opacity:1;transform:none;background:#fbfdfb}}
-@keyframes oldStatus{to{color:transparent}}
-@keyframes statusSwap{to{opacity:1}}
-@keyframes cableGrow{to{width:21px}}
-@keyframes connectorMeet{to{opacity:1;transform:translateX(0)}}
-@keyframes dataFlow{0%{opacity:0;transform:translateX(0)}12%{opacity:.85}88%{opacity:.85}100%{opacity:0;transform:translateX(56px)}}
-@keyframes syncState{to{color:var(--green);font-weight:700}}
-@media (max-width:1050px){.aim-hero .animated-workspace{min-height:390px}.aim-hero .hero-beat{grid-template-columns:minmax(0,1fr) 52px minmax(0,1fr);width:100%;max-width:720px}}
-@media (max-width:600px){.aim-hero .animated-workspace{min-height:0}.aim-hero .hero-beat{grid-template-columns:1fr;gap:8px;min-height:0}.aim-hero .motion-arrow{transform:rotate(90deg)}.aim-hero .data-bridge{height:34px;transform:rotate(90deg);width:56px;justify-self:center}.aim-hero .api-cable{height:54px;width:56px;justify-self:center;transform:rotate(90deg)}.aim-hero .beat-label{margin-top:8px}.aim-hero .beat-progress{margin-bottom:10px}}
-@media (prefers-reduced-motion:reduce){.aim-hero .hero-beat,.aim-hero .ai-sweep,.aim-hero mark,.aim-hero .incoming,.aim-hero .existing,.aim-hero .data-packet,.aim-hero .return-packet,.aim-hero .build-invoice,.aim-hero .reveal-answer,.aim-hero .animated-book,.aim-hero .call-confirm,.aim-hero .new-lead,.aim-hero .compose-line,.aim-hero .outreach p,.aim-hero .approval-row,.aim-hero .sent-confirm,.aim-hero .cable-left,.aim-hero .cable-right,.aim-hero .api-plug,.aim-hero .api-socket,.aim-hero .api-label,.aim-hero .flow-dot,.aim-hero .new-job{animation:none!important}.aim-hero .incoming,.aim-hero .new-lead,.aim-hero .new-job{max-height:38px;padding-top:9px;padding-bottom:9px;opacity:1;transform:none}.aim-hero .build-invoice,.aim-hero .reveal-answer,.aim-hero .animated-book,.aim-hero .call-confirm,.aim-hero .compose-line,.aim-hero .outreach p,.aim-hero .approval-row{opacity:1;transform:none}}
-
-
-/* Keep every automation visible in one hero workspace. */
-.aim-hero .all-workflows { min-height:0; width:100%; }
-.aim-hero .workflow-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; align-items:start; }
-.aim-hero .workflow-tile { min-width:0; padding:11px; border:1px solid #eee9e3; border-radius:15px; background:rgba(255,255,255,.42); overflow:hidden; }
-.aim-hero .workflow-tile .beat-label { margin:0 0 8px 2px; font-size:10px; }
-.aim-hero .workflow-tile .hero-beat { min-height:0; grid-template-columns:minmax(0,1fr) 26px minmax(0,1.08fr); gap:5px; overflow:hidden; }
-.aim-hero .workflow-tile .app { padding:8px; border-radius:9px; }
-.aim-hero .workflow-tile .app-title strong { font-size:10px; }
-.aim-hero .workflow-tile .app h3 { font-size:10px; margin:5px 0 2px; }
-.aim-hero .workflow-tile .app p,.aim-hero .workflow-tile .bubble { font-size:9px; line-height:1.35; }
-.aim-hero .workflow-tile .mail-from { margin-top:6px; gap:5px; }
-.aim-hero .workflow-tile .mail-avatar { width:20px;height:20px;font-size:9px; }
-.aim-hero .workflow-tile .mail-from strong { font-size:9px; }.aim-hero .workflow-tile .mail-from span { font-size:8px; }
-.aim-hero .workflow-tile .mini-grid,.aim-hero .workflow-tile .compact-fields div,.aim-hero .workflow-tile .lead-row,.aim-hero .workflow-tile .invoice-line { font-size:8px; }
-.aim-hero .workflow-tile .mini-grid>* { padding:4px 3px; }
-.aim-hero .workflow-tile .compact-fields div { padding:4px 0; }
-.aim-hero .workflow-tile .pill { font-size:8px;padding:1px 4px; }
-.aim-hero .workflow-tile .data-bridge { height:54px; }.aim-hero .workflow-tile .data-bridge:before{top:27px}.aim-hero .workflow-tile .data-packet{top:16px;transform:scale(.75);transform-origin:left center}
-.aim-hero .workflow-tile .motion-arrow { font-size:16px; }
-.aim-hero .workflow-tile .book,.aim-hero .workflow-tile .approval-row button { font-size:8px;padding:5px 7px; }
-.aim-hero .workflow-tile .api-cable { height:72px; }.aim-hero .workflow-tile .cable-left,.aim-hero .workflow-tile .cable-right{top:35px}.aim-hero .workflow-tile .api-plug{top:27px}.aim-hero .workflow-tile .api-socket{top:25px}.aim-hero .workflow-tile .api-label{top:55px}.aim-hero .workflow-tile .flow-dot{top:33px}
-.aim-hero .workflow-wide { grid-column:1 / -1; width:74%; justify-self:center; }
-.aim-hero .workflow-wide .hero-beat { grid-template-columns:minmax(0,1fr) 64px minmax(0,1fr); }
-@media (max-width:1200px){.aim-hero{grid-template-columns:minmax(430px,40%) minmax(0,1fr);column-gap:25px}.aim-hero .workflow-grid{gap:10px}.aim-hero .workflow-tile{padding:8px}}
-@media (max-width:1050px){.aim-hero .workflow-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.aim-hero .workflow-wide{width:70%}}
-@media (max-width:700px){.aim-hero .workflow-grid{grid-template-columns:1fr}.aim-hero .workflow-wide{grid-column:auto;width:100%}.aim-hero .workflow-tile .hero-beat,.aim-hero .workflow-wide .hero-beat{grid-template-columns:1fr}.aim-hero .workflow-tile .data-bridge,.aim-hero .workflow-tile .api-cable{height:40px;width:56px;justify-self:center;transform:rotate(90deg)}}
-
-
-/* Full-width hero composition: message above, automation canvas below. */
-.aim-hero {
-  display:block;
-  min-height:auto;
-  padding:52px 4.6% 72px;
-}
-.aim-hero .copy {
-  max-width:980px;
-  margin:0 auto 34px;
-  text-align:center;
-}
-.aim-hero .eyebrow { margin-bottom:14px; }
-.aim-hero h1 { max-width:920px; margin-left:auto; margin-right:auto; font-size:58px; }
-.aim-hero .copy p { max-width:790px; margin-left:auto; margin-right:auto; font-size:19px; line-height:1.55; }
-.aim-hero .location { margin-top:18px; }
-.aim-hero .all-workflows { max-width:1180px; margin:0 auto; }
-.aim-hero .workflow-grid {
-  grid-template-columns:repeat(12,minmax(0,1fr));
-  grid-auto-flow:dense;
-  gap:16px;
-}
+/* Hard override: unmistakable active orange processing scan. */
 .aim-hero .workflow-tile {
-  padding:14px;
-  background:#fff;
-  box-shadow:0 10px 30px rgba(23,32,51,.045);
-}
-.aim-hero .workflow-tile:nth-child(1),
-.aim-hero .workflow-tile:nth-child(2) { grid-column:span 6; }
-.aim-hero .workflow-tile:nth-child(3),
-.aim-hero .workflow-tile:nth-child(4) { grid-column:span 6; }
-.aim-hero .workflow-wide {
-  grid-column:3 / span 8;
-  width:100%;
-  justify-self:stretch;
-}
-.aim-hero .workflow-tile .hero-beat {
-  grid-template-columns:minmax(0,1fr) 42px minmax(0,1.12fr);
-  gap:8px;
-}
-.aim-hero .workflow-wide .hero-beat {
-  grid-template-columns:minmax(0,1fr) 90px minmax(0,1fr);
-}
-.aim-hero .workflow-tile .app { padding:10px; }
-.aim-hero .workflow-tile .app-title strong { font-size:11px; }
-.aim-hero .workflow-tile .app h3 { font-size:11px; }
-.aim-hero .workflow-tile .app p,
-.aim-hero .workflow-tile .bubble { font-size:10px; }
-.aim-hero .workflow-tile .mail-from strong { font-size:10px; }
-.aim-hero .workflow-tile .mail-from span { font-size:9px; }
-.aim-hero .workflow-tile .mini-grid,
-.aim-hero .workflow-tile .compact-fields div,
-.aim-hero .workflow-tile .lead-row,
-.aim-hero .workflow-tile .invoice-line { font-size:9px; }
-@media(max-width:900px){
-  .aim-hero .copy{text-align:left;margin-left:0}
-  .aim-hero .workflow-tile:nth-child(n),.aim-hero .workflow-wide{grid-column:1 / -1;width:100%}
-}
-@media(max-width:600px){
-  .aim-hero{padding:42px 22px 50px}
-  .aim-hero h1{font-size:36px}
-  .aim-hero .copy p{font-size:17px}
+  position: relative;
+  overflow: hidden;
 }
 
-
-/* Narrative columns: core customer/admin automations read vertically. */
-.aim-hero .workflow-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; align-items:start; }
-.aim-hero .workflow-column { display:flex; flex-direction:column; gap:16px; min-width:0; }
-.aim-hero .workflow-column .workflow-tile { width:100%; }
-.aim-hero .workflow-column .workflow-wide { width:100%; }
-.aim-hero .workflow-column .workflow-tile:nth-child(n) { grid-column:auto; }
-@media(max-width:900px){.aim-hero .workflow-grid{grid-template-columns:1fr}}
-
-
-/* Restore visible AI processing sweep while keeping it clipped to its own app window. */
-.aim-hero .app { overflow:hidden; isolation:isolate; }
-.aim-hero .ai-sweep {
-  z-index:8;
-  width:28%;
-  opacity:0;
-  background:linear-gradient(90deg,transparent 0%,rgba(239,77,19,.10) 18%,rgba(239,77,19,.42) 50%,rgba(239,77,19,.12) 82%,transparent 100%);
-  mix-blend-mode:multiply;
-  animation:aiSweepVisible 1.15s cubic-bezier(.25,.7,.3,1) 1s both;
-}
-.aim-hero .build-invoice .ai-sweep { animation:aiSweepVisible 1.15s cubic-bezier(.25,.7,.3,1) 4.05s both; }
-@keyframes aiSweepVisible {
-  0% { opacity:0; transform:translateX(0) skewX(-9deg); }
-  12% { opacity:1; }
-  78% { opacity:1; }
-  100% { opacity:0; transform:translateX(500%) skewX(-9deg); }
+.aim-hero .workflow-scan {
+  position: absolute;
+  z-index: 200;
+  top: 38px;
+  bottom: 0;
+  left: -34%;
+  width: 30%;
+  pointer-events: none;
+  opacity: 0;
+  transform: skewX(-10deg);
+  background: linear-gradient(90deg,
+    rgba(239,77,19,0) 0%,
+    rgba(239,77,19,.22) 18%,
+    rgba(239,77,19,.78) 50%,
+    rgba(239,77,19,.24) 82%,
+    rgba(239,77,19,0) 100%);
+  box-shadow: 0 0 28px rgba(239,77,19,.48);
+  animation: workflowOrangePass 1.65s cubic-bezier(.18,.72,.28,1) .45s both;
 }
 
-.aim-hero .workflow-centred { grid-column:1 / -1; width:50%; min-width:520px; justify-self:center; }
-@media(max-width:900px){.aim-hero .workflow-centred{width:100%;min-width:0}}
-
-
-/* Definitive desktop workflow placement. Overrides earlier generic tile nth-child rules. */
-.aim-hero .workflow-grid {
-  display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-  gap:16px;
-  align-items:start;
-}
-.aim-hero .workflow-column {
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-  min-width:0;
-}
-.aim-hero .workflow-grid > .workflow-column > .workflow-tile,
-.aim-hero .workflow-grid > .workflow-column > .workflow-wide {
-  grid-column:auto;
-  width:100%;
-  min-width:0;
-  justify-self:stretch;
-}
-.aim-hero .workflow-grid > .workflow-centred {
-  grid-column:1 / -1;
-  width:calc(50% - 8px);
-  min-width:0;
-  justify-self:center;
-}
-@media(max-width:900px){
-  .aim-hero .workflow-grid{grid-template-columns:1fr}
-  .aim-hero .workflow-grid > .workflow-centred{grid-column:1;width:100%}
+@keyframes workflowOrangePass {
+  0% { left:-34%; opacity:0; }
+  8% { opacity:1; }
+  88% { opacity:1; }
+  100% { left:108%; opacity:0; }
 }
 
-
-/* Final hero canvas: full width, larger UI, one active workflow at a time.
-   Reading order: top-left -> top-right -> second-left -> second-right -> centred bottom. */
-.aim-hero .all-workflows { max-width:1380px; width:100%; }
-.aim-hero .workflow-grid {
-  display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-  gap:22px;
-  align-items:stretch;
-}
-.aim-hero .workflow-grid > .workflow-tile {
-  width:100%;
-  min-width:0;
-  padding:20px;
-  border-radius:18px;
-}
-.aim-hero .workflow-grid > .workflow-centred {
-  grid-column:1 / -1;
-  width:calc(50% - 11px);
-  min-width:0;
-  justify-self:center;
-}
-.aim-hero .workflow-tile .beat-label { font-size:13px; margin:0 0 12px 2px; }
-.aim-hero .workflow-tile .hero-beat {
-  grid-template-columns:minmax(0,1fr) 54px minmax(0,1.12fr);
-  gap:10px;
-}
-.aim-hero .workflow-tile .app { padding:14px; border-radius:12px; }
-.aim-hero .workflow-tile .app-title strong { font-size:14px; }
-.aim-hero .workflow-tile .app h3 { font-size:14px; margin:8px 0 3px; }
-.aim-hero .workflow-tile .app p,.aim-hero .workflow-tile .bubble { font-size:12px; line-height:1.45; }
-.aim-hero .workflow-tile .mail-from { margin-top:10px; gap:8px; }
-.aim-hero .workflow-tile .mail-avatar { width:27px;height:27px;font-size:12px; }
-.aim-hero .workflow-tile .mail-from strong { font-size:12px; }
-.aim-hero .workflow-tile .mail-from span { font-size:10px; }
-.aim-hero .workflow-tile .mini-grid,
-.aim-hero .workflow-tile .compact-fields div,
-.aim-hero .workflow-tile .lead-row,
-.aim-hero .workflow-tile .invoice-line { font-size:11px; }
-.aim-hero .workflow-tile .mini-grid>* { padding:7px 6px; }
-.aim-hero .workflow-tile .compact-fields div { padding:7px 0; }
-.aim-hero .workflow-tile .pill { font-size:10px; padding:2px 7px; }
-.aim-hero .workflow-tile .book,.aim-hero .workflow-tile .approval-row button { font-size:11px;padding:7px 10px; }
-.aim-hero .workflow-tile.is-idle .hero-beat * { animation-play-state:paused !important; }
-.aim-hero .workflow-tile.is-idle .ai-sweep { display:none; }
-.aim-hero .workflow-tile.is-active {
-  border-color:rgba(239,77,19,.22);
-  box-shadow:0 12px 34px rgba(23,32,51,.055),0 0 0 1px rgba(239,77,19,.035);
-}
-.aim-hero .workflow-tile.is-active .ai-sweep {
-  display:block;
-  z-index:20;
-  width:34%;
-  background:linear-gradient(90deg,transparent 0%,rgba(239,77,19,.14) 18%,rgba(239,77,19,.58) 50%,rgba(239,77,19,.16) 82%,transparent 100%);
-  mix-blend-mode:multiply;
-  animation:heroScan 1.25s cubic-bezier(.2,.72,.28,1) .45s both !important;
-}
-.aim-hero .workflow-tile.is-active .build-invoice .ai-sweep { animation-delay:3.75s !important; }
-@keyframes heroScan {
-  0%{opacity:0;left:-36%;transform:skewX(-9deg)}
-  12%{opacity:1}
-  82%{opacity:1}
-  100%{opacity:0;left:118%;transform:skewX(-9deg)}
-}
-@media(max-width:900px){
-  .aim-hero .workflow-grid{grid-template-columns:1fr}
-  .aim-hero .workflow-grid > .workflow-centred{grid-column:1;width:100%}
-}
-
-
-/* Orange processing scan: anchor to each app, not the beat canvas. */
-.aim-hero .workflow-tile .app { position:relative; overflow:hidden; }
 .aim-hero .workflow-tile.is-active .app > .ai-sweep {
   display:block !important;
   position:absolute;
+  z-index:150;
   top:0;
   bottom:0;
-  left:-42%;
-  width:42%;
-  height:auto;
+  left:-45%;
+  width:38%;
   opacity:0;
-  z-index:50;
   pointer-events:none;
-  border-radius:0;
-  background:linear-gradient(90deg,
-    rgba(239,77,19,0) 0%,
-    rgba(239,77,19,.18) 20%,
-    rgba(239,77,19,.68) 50%,
-    rgba(239,77,19,.20) 80%,
-    rgba(239,77,19,0) 100%);
-  mix-blend-mode:multiply;
-  animation:appOrangeScan 1.55s cubic-bezier(.2,.72,.28,1) .7s both !important;
+  background:linear-gradient(90deg,transparent,rgba(239,77,19,.18),rgba(239,77,19,.62),rgba(239,77,19,.18),transparent);
+  box-shadow:0 0 18px rgba(239,77,19,.38);
+  mix-blend-mode:normal;
+  animation: appOrangePass 1.45s cubic-bezier(.18,.72,.28,1) .55s both !important;
 }
-.aim-hero .workflow-tile.is-active .build-invoice > .ai-sweep {
-  animation:appOrangeScan 1.55s cubic-bezier(.2,.72,.28,1) 3.7s both !important;
-}
-@keyframes appOrangeScan {
-  0% { left:-42%; opacity:0; transform:skewX(-10deg); }
+
+@keyframes appOrangePass {
+  0% { left:-45%; opacity:0; transform:skewX(-9deg); }
   10% { opacity:1; }
-  85% { opacity:1; }
-  100% { left:105%; opacity:0; transform:skewX(-10deg); }
+  88% { opacity:1; }
+  100% { left:108%; opacity:0; transform:skewX(-9deg); }
 }
