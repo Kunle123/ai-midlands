@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 const beats = [
   "Understand enquiries",
   "Automate processes",
@@ -111,18 +113,30 @@ function BeatFive() {
 
 
 export function BusinessWorkspace() {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (media.matches) return;
+    const timer = window.setInterval(() => setActive((current) => (current + 1) % 5), 6200);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  const tile = (index: number, label: string, content: React.ReactNode, extra = "") => (
+    <section className={`workflow-tile ${extra} ${active === index ? "is-active" : "is-idle"}`}>
+      <div className="beat-label"><span>{String(index + 1).padStart(2, "0")}</span>{label}</div>
+      {content}
+    </section>
+  );
+
   return (
     <div className="workspace animated-workspace all-workflows" aria-label="AI Midlands business automation examples">
       <div className="workflow-grid">
-        <div className="workflow-column workflow-column-primary">
-          <section className="workflow-tile"><div className="beat-label"><span>01</span>{beats[0]}</div><BeatOne /></section>
-          <section className="workflow-tile"><div className="beat-label"><span>03</span>{beats[2]}</div><BeatThree /></section>
-        </div>
-        <div className="workflow-column workflow-column-secondary">
-          <section className="workflow-tile workflow-wide"><div className="beat-label"><span>05</span>{beats[4]}</div><BeatFive /></section>
-          <section className="workflow-tile"><div className="beat-label"><span>04</span>{beats[3]}</div><BeatFour /></section>
-        </div>
-        <section className="workflow-tile workflow-centred"><div className="beat-label"><span>02</span>{beats[1]}</div><BeatTwo /></section>
+        {tile(0, beats[0], <BeatOne />)}
+        {tile(1, beats[4], <BeatFive />)}
+        {tile(2, beats[2], <BeatThree />)}
+        {tile(3, beats[3], <BeatFour />)}
+        {tile(4, beats[1], <BeatTwo />, "workflow-centred")}
       </div>
     </div>
   );
