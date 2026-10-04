@@ -97,6 +97,7 @@ function BeatFive() {
       <article className="app api-system">
         <div className="app-title"><span className="system-mark">▦</span><strong>Order system</strong><span className="pill amber">New order</span></div>
         <h3>Order #1847</h3><dl className="compact-fields"><div><dt>Customer</dt><dd>Acme Ltd</dd></div><div><dt>Product</dt><dd>Installation kit</dd></div><div><dt>Qty</dt><dd>4</dd></div></dl>
+        <Sweep />
       </article>
       <div className="api-cable" aria-label="API connection">
         <span className="cable-left"/><span className="api-plug"/><span className="api-socket"/><span className="cable-right"/>
@@ -106,11 +107,11 @@ function BeatFive() {
         <div className="app-title"><span className="system-mark ops-mark">✓</span><strong>Operations</strong><span className="sync-state">Not connected</span></div>
         <div className="lead-row"><b>J-391</b><span>Riverside</span><em>Scheduled</em></div>
         <div className="lead-row new-job"><b>J-392</b><span>Acme Ltd · Qty 4</span><em>Ready</em></div>
+        <Sweep />
       </article>
     </div>
   );
 }
-
 
 export function BusinessWorkspace() {
   const [active, setActive] = useState(0);
@@ -123,8 +124,9 @@ export function BusinessWorkspace() {
   }, []);
 
   const tile = (index: number, label: string, content: React.ReactNode, extra = "") => (
-    <section className={`workflow-tile ${extra} ${active === index ? "is-active" : "is-idle"}`}>
+    <section key={`${index}-${active === index ? "active" : "idle"}`} className={`workflow-tile ${extra} ${active === index ? "is-active" : "is-idle"}`}>
       <div className="beat-label"><span>{String(index + 1).padStart(2, "0")}</span>{label}</div>
+      {active === index && <span className="workflow-scan" aria-hidden="true" />}
       {content}
     </section>
   );
