@@ -5,7 +5,6 @@ const beats = [
   "Automate processes",
   "Assist customers",
   "Personalise outreach",
-  "Connect systems",
 ] as const;
 
 function Sweep() {
@@ -91,55 +90,25 @@ function BeatFour() {
   );
 }
 
-function BeatFive() {
-  return (
-    <div className="hero-beat beat-five">
-      <article className="app api-system">
-        <div className="app-title"><span className="system-mark">▦</span><strong>Order system</strong><span className="pill amber">New order</span></div>
-        <h3>Order #1847</h3><dl className="compact-fields"><div><dt>Customer</dt><dd>Acme Ltd</dd></div><div><dt>Product</dt><dd>Installation kit</dd></div><div><dt>Qty</dt><dd>4</dd></div></dl>
-        <Sweep />
-      </article>
-      <div className="api-cable" aria-label="API connection">
-        <span className="cable-left"/><span className="api-plug"/><span className="api-socket"/><span className="cable-right"/>
-        <span className="api-label">API</span><span className="flow-dot d1"/><span className="flow-dot d2"/><span className="flow-dot d3"/>
-      </div>
-      <article className="app api-system operations">
-        <div className="app-title"><span className="system-mark ops-mark">✓</span><strong>Operations</strong><span className="sync-state">Not connected</span></div>
-        <div className="lead-row"><b>J-391</b><span>Riverside</span><em>Scheduled</em></div>
-        <div className="lead-row new-job"><b>J-392</b><span>Acme Ltd · Qty 4</span><em>Ready</em></div>
-        <Sweep />
-      </article>
-    </div>
-  );
-}
+const views = [BeatOne, BeatTwo, BeatThree, BeatFour];
 
 export function BusinessWorkspace() {
-  const [active, setActive] = useState(0);
+  const [beat, setBeat] = useState(0);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (media.matches) return;
-    const timer = window.setInterval(() => setActive((current) => (current + 1) % 5), 6200);
+    const timer = window.setInterval(() => setBeat((current) => (current + 1) % views.length), 7200);
     return () => window.clearInterval(timer);
   }, []);
 
-  const tile = (index: number, label: string, content: React.ReactNode, extra = "") => (
-    <section key={`${index}-${active === index ? "active" : "idle"}`} className={`workflow-tile ${extra} ${active === index ? "is-active" : "is-idle"}`}>
-      <div className="beat-label"><span>{String(index + 1).padStart(2, "0")}</span>{label}</div>
-      {active === index && <span className="workflow-scan" aria-hidden="true" />}
-      {content}
-    </section>
-  );
+  const View = views[beat];
 
   return (
-    <div className="workspace animated-workspace all-workflows" aria-label="AI Midlands business automation examples">
-      <div className="workflow-grid">
-        {tile(0, beats[0], <BeatOne />)}
-        {tile(1, beats[4], <BeatFive />)}
-        {tile(2, beats[2], <BeatThree />)}
-        {tile(3, beats[3], <BeatFour />)}
-        {tile(4, beats[1], <BeatTwo />, "workflow-centred")}
-      </div>
+    <div className="workspace animated-workspace" aria-label="AI Midlands business automation examples">
+      <div className="beat-label"><span>{String(beat + 1).padStart(2, "0")}</span>{beats[beat]}</div>
+      <View key={beat} />
+      <div className="beat-progress" aria-hidden="true">{beats.map((label, index) => <span key={label} className={index === beat ? "active" : ""}/>)}</div>
     </div>
   );
 }
