@@ -1,196 +1,114 @@
 import { useEffect, useState } from "react";
 
-const zones = ["Sales", "Project Office", "Customer Service", "Finance", "Engineering"] as const;
+const beats = [
+  "Understand enquiries",
+  "Automate processes",
+  "Assist customers",
+  "Personalise outreach",
+] as const;
 
-function Person({ standing = false }: { standing?: boolean }) {
+function Sweep() {
+  return <span className="ai-sweep" aria-hidden="true" />;
+}
+
+function BeatOne() {
   return (
-    <div className={`office-person ${standing ? "is-standing" : ""}`} aria-hidden="true">
-      <span className="person-head" />
-      <span className="person-body" />
-      <span className="person-arm arm-left" />
-      <span className="person-arm arm-right" />
+    <div className="hero-beat beat-one">
+      <article className="app beat-mail">
+        <div className="app-title"><span className="gmail-dot">M</span><strong>Inbox</strong><span className="time">10:24</span></div>
+        <div className="mail-from"><span className="mail-avatar">S</span><div><strong>Sarah Mitchell</strong><span>Acme Ltd · to me</span></div></div>
+        <h3>Installation enquiry</h3>
+        <p>Hi, we're looking for someone to <mark>install</mark> equipment at our Birmingham site. Our budget is around <mark>£12,000</mark>.</p>
+        <Sweep />
+      </article>
+      <span className="motion-arrow" aria-hidden="true">→</span>
+      <article className="app sheet animated-sheet">
+        <div className="sheet-bar"><span className="sheet-mark">▦</span><strong>Project pipeline</strong></div>
+        <div className="mini-grid grid-head"><span>Customer</span><span>Product</span><span>Value</span><span>Status</span></div>
+        <div className="mini-grid incoming"><b>Acme Ltd</b><span>Installation</span><span>£12,000</span><em>New</em></div>
+        <div className="mini-grid existing r1"><b>Riverside Group</b><span>Support</span><span>£8,000</span><em>In progress</em></div>
+        <div className="mini-grid existing r2"><b>Westbridge Co</b><span>Consultancy</span><span>£5,000</span><em>Won</em></div>
+      </article>
     </div>
   );
 }
 
-function Monitor({ children, wide = false }: { children: React.ReactNode; wide?: boolean }) {
+function BeatTwo() {
   return (
-    <div className={`office-monitor ${wide ? "is-wide" : ""}`}>
-      <div className="monitor-screen">{children}</div>
-      <span className="monitor-neck" />
-      <span className="monitor-foot" />
+    <div className="hero-beat beat-two">
+      <article className="app system-card">
+        <div className="app-title"><span className="cloud">●</span><strong>Customer record</strong></div>
+        <h3>Acme Ltd</h3><small>Commercial Client</small>
+        <dl className="compact-fields"><div><dt>Status</dt><dd><b className="pill green">Won</b></dd></div><div><dt>Value</dt><dd>£12,000</dd></div><div><dt>Next step</dt><dd className="next-step">Send invoice<span>Invoice INV-1042 created</span></dd></div></dl>
+        <Sweep />
+      </article>
+      <div className="data-bridge"><span className="data-packet"><i/><i/><i/></span><span className="return-packet">INV-1042 ✓</span></div>
+      <article className="app invoice build-invoice">
+        <div className="app-title"><span className="invoice-mark">▤</span><strong>Invoice</strong><span className="pill green sent">Created</span></div>
+        <div className="invoice-row"><div><h3>INV-1042</h3><small>Acme Ltd</small></div><strong className="invoice-amount">£12,000</strong></div>
+        <div className="invoice-line"><span>Installation</span><span>£12,000</span></div><Sweep />
+      </article>
     </div>
   );
 }
 
-function SalesScreen() {
+function BeatThree() {
   return (
-    <div className="office-ui sales-ui">
-      <div className="ui-bar"><b>Inbox</b><span>10:24</span></div>
-      <div className="ui-split">
-        <div className="mail-pane">
-          <small>Sarah Mitchell · Acme Ltd</small>
-          <strong>Installation enquiry</strong>
-          <p>Install equipment at our Birmingham site. Budget around <mark>£12,000</mark>.</p>
-        </div>
-        <div className="pipeline-pane">
-          <small>Project pipeline</small>
-          <div className="ui-row ui-head"><span>Customer</span><span>Value</span><span>Status</span></div>
-          <div className="ui-row result-row"><b>Acme Ltd</b><span>£12,000</span><em>New</em></div>
-        </div>
-      </div>
-      <span className="office-scan" aria-hidden="true" />
+    <div className="hero-beat beat-three">
+      <article className="app assistant conversation">
+        <div className="app-title"><span className="chat-mark">□</span><strong>Website assistant</strong><span className="online"><span className="led"/>Online</span></div>
+        <div className="bubble customer">Do you install in Birmingham?</div><Sweep />
+        <div className="bubble answer reveal-answer">Yes. We're Midlands based and cover Birmingham. Would you like to arrange a call?</div>
+        <button className="book animated-book" type="button">Book a call</button><div className="call-confirm">✓ Call request received</div>
+      </article>
+      <div className="data-bridge"><span className="data-packet"><i/><i/><i/></span></div>
+      <article className="app crm lead-list">
+        <div className="app-title"><span className="cloud">●</span><strong>CRM</strong></div>
+        <div className="lead-row"><b>Acme Ltd</b><span>Commercial</span><em>Won</em></div>
+        <div className="lead-row new-lead"><b>Birmingham enquiry</b><span>New lead</span><em>Call requested</em></div>
+      </article>
     </div>
   );
 }
 
-function ProjectScreen() {
+function BeatFour() {
   return (
-    <div className="office-ui project-ui">
-      <div className="ui-bar"><b>Delivery tracker</b><span>Today</span></div>
-      <div className="project-title">Acme Ltd · Installation</div>
-      <div className="project-line"><span>Owner</span><b>Sarah</b></div>
-      <div className="project-line"><span>Start date</span><b>Monday</b></div>
-      <div className="project-line project-action"><span>Follow-up</span><b>Created ✓</b></div>
-      <span className="office-scan" aria-hidden="true" />
+    <div className="hero-beat beat-four">
+      <article className="app prospect">
+        <div className="app-title"><span className="cloud">●</span><strong>CRM prospect</strong></div>
+        <h3>Brightwell Engineering</h3><small>Manufacturing · Birmingham</small>
+        <dl className="compact-fields"><div><dt>Contact</dt><dd>James Taylor</dd></div><div><dt>Interest</dt><dd>Workflow automation</dd></div><div><dt>Status</dt><dd className="outreach-status">Follow up<span>Email sent</span></dd></div></dl><Sweep />
+      </article>
+      <span className="motion-arrow" aria-hidden="true">→</span>
+      <article className="app outreach">
+        <div className="app-title"><span className="gmail-dot">M</span><strong>Draft email</strong><span className="draft-state">Draft</span></div>
+        <div className="compose-line"><small>To</small><span>James Taylor</span></div><div className="compose-line"><small>Subject</small><b>Reducing repetitive admin at Brightwell</b></div>
+        <p>Hi James, we help Midlands businesses connect existing systems and reduce repetitive admin...</p>
+        <div className="approval-row"><button type="button">Approve &amp; send</button><small>Human approval</small></div><div className="sent-confirm">✓ Sent</div>
+      </article>
     </div>
   );
 }
 
-function SupportScreen() {
-  return (
-    <div className="office-ui support-ui">
-      <div className="ui-bar"><b>Website assistant</b><span className="online-dot">● Online</span></div>
-      <div className="chat-bubble customer-bubble">Do you install in Birmingham?</div>
-      <div className="chat-bubble answer-bubble">Yes. We’re Midlands based and cover Birmingham. Would you like to arrange a call?</div>
-      <button type="button" className="screen-button">Book a call</button>
-      <div className="screen-confirm">Call request received ✓</div>
-      <span className="office-scan" aria-hidden="true" />
-    </div>
-  );
-}
-
-function FinanceScreen() {
-  return (
-    <div className="office-ui finance-ui">
-      <div className="ui-bar"><b>Acme Ltd</b><span className="won-pill">Won</span></div>
-      <div className="finance-grid">
-        <div><small>Value</small><strong>£12,000</strong></div>
-        <div><small>Next step</small><strong className="finance-next">Send invoice</strong></div>
-      </div>
-      <div className="invoice-preview">
-        <small>Invoice</small>
-        <b>INV-1042</b>
-        <strong>£12,000</strong>
-        <span>Created ✓</span>
-      </div>
-      <span className="office-scan" aria-hidden="true" />
-    </div>
-  );
-}
-
-function EngineeringScreen() {
-  return (
-    <div className="office-ui engineering-ui">
-      <div className="engineering-panel">
-        <small>Order system</small>
-        <b>Order #1847</b>
-        <span>Acme Ltd</span>
-        <span>Installation kit · Qty 4</span>
-      </div>
-      <div className="system-flow" aria-hidden="true"><i /><i /><i /></div>
-      <div className="engineering-panel operations-panel">
-        <small>Operations</small>
-        <b>J-392</b>
-        <span>Acme Ltd · Qty 4</span>
-        <em>Ready ✓</em>
-      </div>
-      <span className="office-scan" aria-hidden="true" />
-    </div>
-  );
-}
-
-function DeskZone({
-  index,
-  label,
-  className,
-  active,
-  standing = false,
-  wideMonitor = false,
-  children,
-}: {
-  index: number;
-  label: string;
-  className: string;
-  active: boolean;
-  standing?: boolean;
-  wideMonitor?: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className={`desk-zone ${className} ${active ? "is-active" : "is-idle"}`} aria-label={label}>
-      <div className="zone-label"><span>{String(index + 1).padStart(2, "0")}</span>{label}</div>
-      <div className={`desk-rig ${standing ? "standing-rig" : ""}`}>
-        <div className="desk-surface" />
-        <div className="desk-leg leg-a" />
-        <div className="desk-leg leg-b" />
-        <Monitor wide={wideMonitor}>{children}</Monitor>
-        <Person standing={standing} />
-        {!standing && <div className="office-chair" aria-hidden="true" />}
-      </div>
-    </section>
-  );
-}
+const views = [BeatOne, BeatTwo, BeatThree, BeatFour];
 
 export function BusinessWorkspace() {
-  const [active, setActive] = useState(0);
+  const [beat, setBeat] = useState(0);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (media.matches) return;
-    const timer = window.setInterval(() => setActive((current) => (current + 1) % zones.length), 5200);
+    const timer = window.setInterval(() => setBeat((current) => (current + 1) % views.length), 7200);
     return () => window.clearInterval(timer);
   }, []);
 
+  const View = views[beat];
+
   return (
-    <div className={`office-stage camera-${active}`} aria-label="AI Midlands open-plan office automation demonstration">
-      <div className="office-world">
-        <div className="office-back-wall" />
-        <div className="office-floor" />
-        <div className="glass-partition" aria-hidden="true" />
-        <div className="office-light light-a" aria-hidden="true" />
-        <div className="office-light light-b" aria-hidden="true" />
-        <div className="office-plant plant-a" aria-hidden="true"><i /><i /><i /><i /></div>
-        <div className="office-plant plant-b" aria-hidden="true"><i /><i /><i /></div>
-
-        <DeskZone index={0} label="Sales" className="zone-sales" active={active === 0} wideMonitor>
-          <SalesScreen />
-        </DeskZone>
-
-        <DeskZone index={1} label="Project Office" className="zone-project" active={active === 1} standing>
-          <ProjectScreen />
-        </DeskZone>
-        <div className="office-whiteboard" aria-hidden="true">
-          <span>Plan</span><i>→</i><span>Deliver</span><i>→</i><span>Complete</span>
-          <small>Site survey · Installation · Handover</small>
-        </div>
-
-        <DeskZone index={2} label="Customer Service" className="zone-support" active={active === 2}>
-          <SupportScreen />
-        </DeskZone>
-
-        <DeskZone index={3} label="Finance" className="zone-finance" active={active === 3}>
-          <FinanceScreen />
-        </DeskZone>
-
-        <DeskZone index={4} label="Engineering" className="zone-engineering" active={active === 4} wideMonitor>
-          <EngineeringScreen />
-        </DeskZone>
-      </div>
-
-      <div className="office-progress" aria-hidden="true">
-        {zones.map((zone, index) => <span key={zone} className={index === active ? "active" : ""} />)}
-      </div>
+    <div className="workspace animated-workspace" aria-label="AI Midlands business automation examples">
+      <div className="beat-label"><span>{String(beat + 1).padStart(2, "0")}</span>{beats[beat]}</div>
+      <View key={beat} />
+      <div className="beat-progress" aria-hidden="true">{beats.map((label, index) => <span key={label} className={index === beat ? "active" : ""}/>)}</div>
     </div>
   );
 }
