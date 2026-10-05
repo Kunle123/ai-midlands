@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./hero-booking-fix.css";
 
 const beats = [
   "Understand enquiries",
