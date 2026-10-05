@@ -5,9 +5,11 @@ type Attribution = Partial<Record<
   string
 >>;
 
+type OpenAIQueue = ((...args: unknown[]) => void) & { q: unknown[][] };
+
 declare global {
   interface Window {
-    oaiq?: ((...args: unknown[]) => void) & { q?: unknown[][] };
+    oaiq?: OpenAIQueue;
     dataLayer?: unknown[][];
     gtag?: (...args: unknown[]) => void;
   }
@@ -95,9 +97,10 @@ export function getTrackingConsent(): TrackingConsent {
 
 function ensureOpenAIQueue() {
   if (typeof window === "undefined" || window.oaiq) return;
+
   const queue = ((...args: unknown[]) => {
-    queue.q?.push(args);
-  }) as Window["oaiq"];
+    queue.q.push(args);
+  }) as OpenAIQueue;
   queue.q = [];
   window.oaiq = queue;
 }
@@ -210,6 +213,12 @@ export function resetTrackingConsent() {
   }
   currentConsent = "unknown";
   window.oaiq?.("consent", false);
+  window.gtag?.("consent", "update", {
+    analytics_storage: "denied",
+    ad_storage: "denied",
+    ad_user_data: "denied",
+    ad_personalization: "denied",
+  });
 }
 
 function gaParams(extra: Record<string, string | number | boolean | undefined> = {}) {
