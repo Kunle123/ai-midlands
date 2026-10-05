@@ -206,6 +206,7 @@ function ServiceLanding({ service }: { service: ServiceKey }) {
             </div>
           </Link>
           <div className="flex items-center gap-3">
+            <Link href="/about"><span className="hidden sm:inline text-sm font-semibold text-slate-700 hover:text-[#e85d2a] cursor-pointer transition-colors">About</span></Link>
             <span className="hidden md:inline text-sm text-slate-500">Midlands based · UK wide</span>
             <a href="https://calendly.com/kunle2000/30min" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[#e85d2a] px-4 py-2 text-sm font-semibold text-white hover:bg-[#d14e1e] transition-colors">
               Book a call <ArrowRight className="w-4 h-4" />
@@ -230,6 +231,7 @@ function ServiceLanding({ service }: { service: ServiceKey }) {
                 </a>
               </div>
               <p className="text-sm text-slate-500 mt-5">Start with one process. We map the hand-offs, systems and outcome before recommending any technology.</p>
+              <Link href="/about"><span className="inline-flex items-center gap-2 mt-4 text-sm font-semibold text-orange-700 hover:text-orange-900 cursor-pointer">Who will deliver it? Meet Kunle <ArrowRight className="w-4 h-4" /></span></Link>
             </div>
 
             <div className="rounded-3xl border border-orange-100 bg-white p-5 md:p-7 shadow-[0_24px_60px_rgba(15,23,42,0.08)] overflow-hidden">
@@ -299,11 +301,12 @@ function ServiceLanding({ service }: { service: ServiceKey }) {
               <p className="text-orange-700 text-sm font-semibold uppercase tracking-widest mb-3">Why AI Midlands</p>
               <h2 className="text-3xl font-bold text-slate-900 mb-4">Automation with delivery discipline behind it.</h2>
               <p className="text-slate-600 leading-relaxed mb-5">AI Midlands combines AI implementation with more than 20 years of experience delivering integration, digital and data change across complex organisations.</p>
-              <div className="space-y-3">
+              <div className="space-y-3 mb-5">
                 {["Start with the business outcome, not an AI product", "Design the human hand-offs as carefully as the automation", "Integrate with existing systems rather than creating another silo", "Keep sensitive information private when the use case requires it"].map(item => (
                   <div key={item} className="flex items-start gap-3 text-slate-700"><CheckCircle2 className="w-4 h-4 text-orange-600 mt-1 shrink-0" /><span>{item}</span></div>
                 ))}
               </div>
+              <Link href="/about"><span className="inline-flex items-center gap-2 text-sm font-semibold text-orange-700 hover:text-orange-900 cursor-pointer">Read about Kunle and the delivery approach <ArrowRight className="w-4 h-4" /></span></Link>
             </div>
             <div className="rounded-3xl bg-slate-900 p-8 text-white">
               <p className="text-orange-400 text-xs font-bold uppercase tracking-widest mb-3">A sensible first step</p>
@@ -312,6 +315,7 @@ function ServiceLanding({ service }: { service: ServiceKey }) {
               <div className="flex flex-col gap-3">
                 <a href="https://calendly.com/kunle2000/30min" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-orange-600 px-5 py-3 font-semibold text-white hover:bg-orange-700 transition-colors"><Calendar className="w-4 h-4" /> Book a 30-minute review</a>
                 <a href={mailHref} className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-600 px-5 py-3 font-semibold text-slate-200 hover:bg-slate-800 transition-colors"><Mail className="w-4 h-4" /> Email the process instead</a>
+                <Link href="/about"><span className="inline-flex items-center justify-center gap-2 px-5 py-2 text-sm font-semibold text-slate-300 hover:text-white cursor-pointer">About AI Midlands <ArrowRight className="w-4 h-4" /></span></Link>
               </div>
             </div>
           </div>
@@ -321,7 +325,10 @@ function ServiceLanding({ service }: { service: ServiceKey }) {
       <footer className="border-t border-slate-200 bg-white">
         <div className="container py-7 flex flex-col sm:flex-row gap-3 items-center justify-between text-sm text-slate-500">
           <span>© AI Midlands · Midlands based · UK wide</span>
-          <Link href="/"><span className="cursor-pointer hover:text-orange-700">Back to AI Midlands</span></Link>
+          <div className="flex items-center gap-5">
+            <Link href="/about"><span className="cursor-pointer hover:text-orange-700">About</span></Link>
+            <Link href="/"><span className="cursor-pointer hover:text-orange-700">Back to AI Midlands</span></Link>
+          </div>
         </div>
       </footer>
     </div>
