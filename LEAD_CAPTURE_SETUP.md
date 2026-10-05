@@ -1,6 +1,6 @@
 # AI Midlands lead capture setup
 
-The application now contains a Cloudflare Worker API for the assessment funnel. The site remains usable if the database is not configured; the server-side lead form appears automatically once `/api/health` reports an active D1 binding.
+The application contains a Cloudflare Worker API for the assessment funnel. The site remains usable if the database is not configured; the server-side lead form appears automatically once `/api/health` reports an active D1 binding.
 
 ## 1. Create the D1 lead database
 
@@ -31,10 +31,10 @@ Confirm:
 curl https://ai-midlands.co.uk/api/health
 ```
 
-Expected after D1 is active:
+Expected after D1 is active but before notifications/Calendly are configured:
 
 ```json
-{"ok":true,"leadCapture":true,"notifications":false,"calendlyWebhook":false}
+{"ok":true,"leadCapture":true,"notifications":false,"notificationProvider":null,"calendlyWebhook":false}
 ```
 
 ## 2. Protect lead administration
@@ -64,24 +64,51 @@ curl -X PATCH \
 
 Allowed statuses are `lead`, `booking_started`, `appointment_scheduled`, `appointment_canceled`, `proposal`, `customer`, and `lost`.
 
-## 3. Optional: new-lead email notification
+## 3. New-lead email notification with Resend
 
-Cloudflare Email Service can notify `hello@ai-midlands.co.uk` when a lead is saved. Onboard `ai-midlands.co.uk` in Cloudflare Email Service first, then add a send-email binding named `LEAD_NOTIFY` restricted to the destination address.
+The production notification path uses Resend so it works without upgrading the Cloudflare Workers plan.
 
-Example `wrangler.jsonc` entry:
+Create and verify the sending subdomain:
 
-```jsonc
-"send_email": [
-  {
-    "name": "LEAD_NOTIFY",
-    "destination_address": "hello@ai-midlands.co.uk"
-  }
-]
+```text
+notify.ai-midlands.co.uk
 ```
 
-The Worker sends from `website@ai-midlands.co.uk`, so that sender/domain must be valid for the Email Service configuration.
+Resend supplies the DNS records for the subdomain. Add those records in Cloudflare as DNS-only records and wait for Resend to show the domain as verified.
 
-## 4. Optional: Calendly appointment status
+Create a send-only Resend API key for AI Midlands, then store it as a Cloudflare Worker secret:
+
+```bash
+npx wrangler secret put RESEND_API_KEY
+```
+
+The Worker sends notifications:
+
+```text
+From: AI Midlands <website@notify.ai-midlands.co.uk>
+To: enquiries@ai-midlands.co.uk
+Reply-To: the lead's email address
+```
+
+The Resend request uses an idempotency key based on the lead ID so a retry does not create a duplicate notification.
+
+After deploying the Resend-enabled Worker, confirm:
+
+```bash
+curl https://ai-midlands.co.uk/api/health
+```
+
+Expected notification state:
+
+```json
+{"notifications":true,"notificationProvider":"resend"}
+```
+
+## 4. Optional fallback: Cloudflare Email Service
+
+The Worker still supports a Cloudflare send-email binding named `LEAD_NOTIFY` as a fallback. Resend takes precedence when `RESEND_API_KEY` is configured.
+
+## 5. Calendly appointment status
 
 The Worker exposes:
 
