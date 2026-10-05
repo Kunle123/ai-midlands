@@ -3,6 +3,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
+import { TrackingConsent } from "./components/TrackingConsent";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import BBCArticle from "./pages/BBCArticle";
@@ -36,6 +37,7 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <Router />
+          <TrackingConsent />
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>
