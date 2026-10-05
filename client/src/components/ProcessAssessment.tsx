@@ -1,6 +1,6 @@
-import { FormEvent, useMemo, useRef, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, Calendar, CheckCircle2, Mail, RotateCcw, ShieldCheck } from "lucide-react";
-import { trackCustomEvent, withUtmParams } from "@/lib/tracking";
+import { getAttribution, trackCustomEvent, trackLeadCreated, withUtmParams } from "@/lib/tracking";
 
 type Assessment = {
   title: string;
@@ -11,6 +11,14 @@ type Assessment = {
   complexity: "Starter" | "Connected" | "Bespoke";
   price: string;
   timeframe: string;
+};
+
+type LeadForm = {
+  name: string;
+  company: string;
+  email: string;
+  phone: string;
+  website: string;
 };
 
 const systemMatchers: Array<[string, RegExp]> = [
@@ -97,11 +105,41 @@ function buildAssessment(process: string): Assessment {
   return { title, summary, approach, systems: detectedSystems, humanControl, complexity, price, timeframe };
 }
 
+function addCalendlyPrefill(url: string, lead: LeadForm): string {
+  try {
+    const parsed = new URL(url);
+    if (lead.name) parsed.searchParams.set("name", lead.name);
+    if (lead.email) parsed.searchParams.set("email", lead.email);
+    return parsed.toString();
+  } catch {
+    return url;
+  }
+}
+
 export function ProcessAssessment() {
   const [process, setProcess] = useState("");
   const [assessment, setAssessment] = useState<Assessment | null>(null);
   const [error, setError] = useState("");
+  const [captureAvailable, setCaptureAvailable] = useState(false);
+  const [lead, setLead] = useState<LeadForm>({ name: "", company: "", email: "", phone: "", website: "" });
+  const [leadId, setLeadId] = useState<string | null>(null);
+  const [leadState, setLeadState] = useState<"idle" | "submitting" | "sent" | "error">("idle");
+  const [leadError, setLeadError] = useState("");
   const started = useRef(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/health", { headers: { accept: "application/json" } })
+      .then(response => response.ok ? response.json() : null)
+      .then(data => {
+        if (!cancelled) setCaptureAvailable(Boolean(data?.leadCapture));
+      })
+      .catch(() => {
+        if (!cancelled) setCaptureAvailable(false);
+      });
+    return () => { cancelled = true; };
+  }, []);
+
   const assessmentMail = useMemo(() => {
     if (!assessment) return "";
     const body = [
@@ -135,6 +173,8 @@ export function ProcessAssessment() {
     }
     const result = buildAssessment(clean);
     setAssessment(result);
+    setLeadId(null);
+    setLeadState("idle");
     trackCustomEvent("assessment_completed", {
       intent: "process_assessment",
       complexity: result.complexity,
@@ -142,14 +182,68 @@ export function ProcessAssessment() {
     });
   };
 
+  const submitLead = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!assessment || leadState === "submitting") return;
+    if (lead.name.trim().length < 2 || !/^\S+@\S+\.\S+$/.test(lead.email.trim())) {
+      setLeadError("Please add your name and a valid email address.");
+      return;
+    }
+
+    setLeadState("submitting");
+    setLeadError("");
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "content-type": "application/json", accept: "application/json" },
+        body: JSON.stringify({
+          ...lead,
+          process,
+          assessment,
+          attribution: getAttribution(),
+          pagePath: `${window.location.pathname}${window.location.search}`,
+        }),
+      });
+      const data = await response.json().catch(() => null) as { ok?: boolean; id?: string; code?: string } | null;
+      if (!response.ok || !data?.ok || !data.id) throw new Error(data?.code || "lead_capture_failed");
+
+      setLeadId(data.id);
+      setLeadState("sent");
+      trackCustomEvent("lead_submitted", {
+        intent: "process_assessment",
+        complexity: assessment.complexity,
+        systems_count: assessment.systems.length,
+      });
+      trackLeadCreated("process_assessment");
+    } catch {
+      setLeadState("error");
+      setLeadError("We couldn't save the assessment just now. You can still email it to us or book a call below.");
+    }
+  };
+
   const reset = () => {
     setAssessment(null);
     setProcess("");
     setError("");
+    setLead({ name: "", company: "", email: "", phone: "", website: "" });
+    setLeadId(null);
+    setLeadState("idle");
+    setLeadError("");
     started.current = false;
   };
 
-  const bookingUrl = withUtmParams("https://calendly.com/kunle2000/30min");
+  const baseBookingUrl = withUtmParams("https://calendly.com/kunle2000/30min");
+  const bookingUrl = addCalendlyPrefill(baseBookingUrl, lead);
+
+  const markBookingStarted = () => {
+    trackCustomEvent("booking_started", { intent: "process_assessment" });
+    if (!leadId) return;
+    void fetch(`/api/leads/${encodeURIComponent(leadId)}/booking-started`, {
+      method: "POST",
+      headers: { accept: "application/json" },
+      keepalive: true,
+    }).catch(() => undefined);
+  };
 
   return (
     <section id="assessment" className="border-y border-orange-100 bg-[#fdf6ee] py-16 md:py-24">
@@ -227,12 +321,40 @@ export function ProcessAssessment() {
                   <div className="flex flex-wrap gap-2 mb-6">{assessment.systems.map(system => <span key={system} className="rounded-full border border-slate-700 bg-slate-800 px-3 py-1 text-xs text-slate-300">{system}</span>)}</div>
                   <p className="text-sm text-slate-400 mb-6">Typical delivery: {assessment.timeframe}.</p>
 
+                  {captureAvailable && leadState !== "sent" && (
+                    <form onSubmit={submitLead} className="rounded-2xl border border-slate-700 bg-slate-800/80 p-5 mb-5">
+                      <p className="font-semibold mb-1">Send this assessment to AI Midlands</p>
+                      <p className="text-sm text-slate-400 mb-4">Leave your details and we’ll have the process and first-pass assessment ready when we respond.</p>
+                      <div className="grid sm:grid-cols-2 gap-3">
+                        <input value={lead.name} onChange={e => setLead(current => ({ ...current, name: e.target.value }))} placeholder="Your name *" autoComplete="name" className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-orange-400" />
+                        <input value={lead.company} onChange={e => setLead(current => ({ ...current, company: e.target.value }))} placeholder="Company" autoComplete="organization" className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-orange-400" />
+                        <input value={lead.email} onChange={e => setLead(current => ({ ...current, email: e.target.value }))} placeholder="Work email *" type="email" autoComplete="email" className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-orange-400" />
+                        <input value={lead.phone} onChange={e => setLead(current => ({ ...current, phone: e.target.value }))} placeholder="Phone (optional)" type="tel" autoComplete="tel" className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-orange-400" />
+                      </div>
+                      <input aria-hidden="true" tabIndex={-1} autoComplete="off" value={lead.website} onChange={e => setLead(current => ({ ...current, website: e.target.value }))} className="hidden" name="website" />
+                      {leadError && <p className="mt-3 text-sm text-orange-200">{leadError}</p>}
+                      <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <p className="text-[11px] leading-relaxed text-slate-500">By sending this, you’re asking AI Midlands to contact you about this assessment. See our <a className="underline hover:text-slate-300" href="/privacy">privacy notice</a>.</p>
+                        <button disabled={leadState === "submitting"} type="submit" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 hover:bg-orange-50 disabled:opacity-60">{leadState === "submitting" ? "Sending…" : "Send assessment"} <ArrowRight className="w-4 h-4" /></button>
+                      </div>
+                    </form>
+                  )}
+
+                  {leadState === "sent" && (
+                    <div className="rounded-2xl border border-green-800 bg-green-950/30 p-5 mb-5">
+                      <p className="font-semibold text-green-200 mb-1">Assessment received.</p>
+                      <p className="text-sm text-green-100/70">We now have the process and your first-pass assessment. If you want, book a short review and your email will be pre-filled.</p>
+                    </div>
+                  )}
+
+                  {leadState === "error" && leadError && <p className="mb-4 text-sm text-orange-200">{leadError}</p>}
+
                   <div className="grid sm:grid-cols-2 gap-3">
                     <a
                       href={bookingUrl}
                       target="_blank"
                       rel="noreferrer"
-                      onClick={() => trackCustomEvent("booking_started", { intent: "process_assessment" })}
+                      onClick={markBookingStarted}
                       className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#e85d2a] px-4 py-3 text-sm font-semibold text-white hover:bg-[#d14e1e]"
                     ><Calendar className="w-4 h-4" /> Discuss this assessment</a>
                     <a
