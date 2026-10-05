@@ -142,6 +142,7 @@ export default function Home() {
             <a href="#approach" className="text-sm text-slate-600 hover:text-[#e85d2a] transition-colors">How we work</a>
             <a href="#private-ai" className="text-sm text-slate-600 hover:text-[#e85d2a] transition-colors">Private AI</a>
             <a href="#why" className="text-sm text-slate-600 hover:text-[#e85d2a] transition-colors">Why AI Midlands</a>
+            <Link href="/about"><span className="text-sm font-semibold text-slate-800 hover:text-[#e85d2a] transition-colors cursor-pointer">About</span></Link>
           </nav>
 
           <div className="flex items-center gap-4">
@@ -318,9 +319,14 @@ export default function Home() {
               <p className="text-slate-600 text-lg leading-relaxed mb-6">
                 The difficult part is usually not generating text. It is understanding the process, connecting the systems, handling exceptions and making the change reliable enough for people to use every day.
               </p>
-              <p className="text-slate-600 leading-relaxed">
+              <p className="text-slate-600 leading-relaxed mb-5">
                 AI Midlands brings more than 20 years of digital delivery, integration, API, cloud and data experience to that problem.
               </p>
+              <Link href="/about">
+                <span className="inline-flex items-center gap-2 text-sm font-semibold text-orange-700 hover:text-orange-900 cursor-pointer">
+                  Meet Kunle and see how AI Midlands works <ArrowRight className="w-4 h-4" />
+                </span>
+              </Link>
             </div>
 
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -369,6 +375,13 @@ export default function Home() {
                   Send an Enquiry
                 </Button>
               </div>
+              <div className="mt-6">
+                <Link href="/about">
+                  <span className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-orange-700 cursor-pointer">
+                    Want to know who you would be working with? About AI Midlands <ArrowRight className="w-4 h-4" />
+                  </span>
+                </Link>
+              </div>
             </div>
           </div>
         </section>
@@ -387,6 +400,7 @@ export default function Home() {
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-500">
+              <Link href="/about"><span className="hover:text-orange-700 cursor-pointer">About</span></Link>
               <a href="mailto:hello@ai-midlands.co.uk" className="hover:text-orange-700">hello@ai-midlands.co.uk</a>
               <a href="tel:07966461005" className="hover:text-orange-700">07966 461005</a>
               <Link href="/bbc-article"><span className="hover:text-orange-700 cursor-pointer">BBC commentary</span></Link>
