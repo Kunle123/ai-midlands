@@ -59,13 +59,19 @@ function BeatThree() {
         <div className="app-title"><span className="chat-mark">□</span><strong>Website assistant</strong><span className="online"><span className="led"/>Online</span></div>
         <div className="bubble customer">Do you install in Birmingham?</div><Sweep />
         <div className="bubble answer reveal-answer">Yes. We're Midlands based and cover Birmingham. Would you like to arrange a call?</div>
-        <button className="book animated-book" type="button">Book a call</button><div className="call-confirm">✓ Call request received</div>
+        <div className="booking-action">
+          <button className="book animated-book" type="button">Book a call</button>
+          <span className="booking-pointer" aria-hidden="true" />
+          <span className="booking-progress">Requesting call…</span>
+        </div>
+        <div className="call-confirm">✓ Call request received</div>
       </article>
-      <div className="data-bridge"><span className="data-packet"><i/><i/><i/></span></div>
-      <article className="app crm lead-list">
+      <div className="data-bridge booking-bridge"><span className="data-packet"><i/><i/><i/></span><span className="return-packet">Lead created ✓</span></div>
+      <article className="app crm lead-list booking-crm">
         <div className="app-title"><span className="cloud">●</span><strong>CRM</strong></div>
         <div className="lead-row"><b>Acme Ltd</b><span>Commercial</span><em>Won</em></div>
         <div className="lead-row new-lead"><b>Birmingham enquiry</b><span>New lead</span><em>Call requested</em></div>
+        <Sweep />
       </article>
     </div>
   );
