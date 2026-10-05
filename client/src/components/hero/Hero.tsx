@@ -5,7 +5,7 @@ import "./hero-workflows.css";
 
 export function Hero() {
   return (
-    <section id="private-ai" className="aim-hero">
+    <section id="hero" className="aim-hero">
       <HeroCopy />
       <BusinessWorkspace />
     </section>
