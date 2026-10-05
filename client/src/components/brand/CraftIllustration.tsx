@@ -6,12 +6,32 @@ type CraftIllustrationProps = {
   tone?: "light" | "dark";
 };
 
-function Worker({ x, y, flip = false }: { x: number; y: number; flip?: boolean }) {
+type WorkerPose = "neutral" | "reach" | "carry" | "paint" | "inspect";
+
+function Worker({
+  x,
+  y,
+  flip = false,
+  pose = "neutral",
+}: {
+  x: number;
+  y: number;
+  flip?: boolean;
+  pose?: WorkerPose;
+}) {
+  const arms: Record<WorkerPose, string> = {
+    neutral: "M-8-17l-16 17M8-17l17 12",
+    reach: "M-8-17l-14 15M8-17l20-2",
+    carry: "M-8-17l-14 10M8-17l16-9",
+    paint: "M-8-17l-13 15M8-17l18-13",
+    inspect: "M-8-17l-13 14M8-17l18-10",
+  };
+
   return (
     <g className="craft-worker" transform={`translate(${x} ${y}) scale(${flip ? -1 : 1} 1)`}>
       <circle className="craft-skin" cx="0" cy="-34" r="8" />
       <path className="craft-body" d="M-7-24h14l5 28H-12z" />
-      <path className="craft-line" d="M-5 4l-8 26M6 4l8 26M-8-17l-16 17M8-17l17 12" />
+      <path className="craft-line" d={`M-5 4l-8 26M6 4l8 26${arms[pose]}`} />
       <path className="craft-accent-stroke" d="M-8-42h17M-7-43c2-8 12-8 14 0" />
     </g>
   );
@@ -40,9 +60,8 @@ function ConnectScene() {
       <path className="craft-route" d="M116 91h88" />
       <circle className="craft-accent" cx="160" cy="91" r="7" />
       <Ladder x={132} y={49} h={112} />
-      <Worker x={159} y={102} />
-      <Worker x={89} y={168} flip />
-      <path className="craft-line" d="M76 132c22 2 35 15 42 33" />
+      <Worker x={159} y={102} pose="reach" />
+      <Worker x={89} y={168} flip pose="carry" />
       <rect className="craft-accent-soft" x="42" y="145" width="48" height="28" rx="6" />
       <path className="craft-faint" d="M50 154h31M50 162h23" />
     </>
@@ -56,9 +75,8 @@ function MoveScene() {
       <rect className="craft-panel craft-panel-large" x="84" y="80" width="150" height="74" rx="12" />
       <rect className="craft-accent-soft" x="102" y="98" width="56" height="9" rx="4.5" />
       <path className="craft-faint" d="M102 119h108M102 134h82" />
-      <Worker x={64} y={144} />
-      <Worker x={253} y={144} flip />
-      <path className="craft-line" d="M72 124l18-10M245 124l-16-10" />
+      <Worker x={64} y={144} pose="carry" />
+      <Worker x={253} y={144} flip pose="carry" />
       <path className="craft-route" d="M118 64c21-20 62-20 84 0" />
       <path className="craft-accent-stroke" d="M194 57l9 8-10 4" />
     </>
@@ -72,9 +90,9 @@ function PaintScene() {
       <rect className="craft-accent-soft" x="70" y="38" width="176" height="31" rx="12" />
       <path className="craft-faint" d="M92 91h128M92 110h90M92 129h112" />
       <Ladder x={40} y={42} h={128} />
-      <Worker x={78} y={94} />
-      <path className="craft-accent-stroke craft-brush" d="M88 73l26-14M110 54l12 21" />
-      <rect className="craft-accent" x="118" y="49" width="44" height="7" rx="3.5" />
+      <Worker x={78} y={94} pose="paint" />
+      <path className="craft-accent-stroke craft-brush" d="M104 64l18-10M118 49l8 14" />
+      <rect className="craft-accent" x="126" y="45" width="40" height="7" rx="3.5" />
       <Worker x={264} y={159} flip />
       <rect className="craft-panel-small" x="245" y="126" width="38" height="28" rx="5" />
     </>
@@ -91,8 +109,7 @@ function InspectScene() {
       <Worker x={120} y={164} />
       <rect className="craft-panel-small" x="130" y="119" width="42" height="54" rx="6" />
       <path className="craft-faint" d="M138 131h26M138 141h20M138 151h24" />
-      <Worker x={236} y={165} flip />
-      <path className="craft-line" d="M225 143l-20-18" />
+      <Worker x={236} y={165} flip pose="inspect" />
       <circle className="craft-magnifier" cx="196" cy="119" r="12" />
       <path className="craft-line" d="M205 128l11 11" />
     </>
