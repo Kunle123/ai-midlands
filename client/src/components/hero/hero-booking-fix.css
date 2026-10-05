@@ -1,0 +1,143 @@
+/* Beat 3 only: preserve the agreed customer-assistant story while making the
+   response, booking action and CRM round-trip unmistakably visible. */
+
+.aim-hero .beat-three .reveal-answer {
+  display: block;
+  margin-top: 10px;
+  opacity: 0;
+  transform: translateY(5px);
+  animation: bookingAnswerIn .35s ease 2s forwards !important;
+}
+
+.aim-hero .beat-three .booking-action {
+  position: relative;
+  min-height: 46px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.aim-hero .beat-three .animated-book {
+  float: none;
+  clear: none;
+  margin: 0;
+  opacity: 0;
+  transform-origin: center;
+  animation:
+    bookingButtonIn .3s ease 2.7s forwards,
+    bookingButtonPress .36s ease 3.45s 1 forwards !important;
+}
+
+.aim-hero .beat-three .booking-pointer {
+  position: absolute;
+  right: 8px;
+  bottom: -4px;
+  width: 13px;
+  height: 18px;
+  opacity: 0;
+  transform: translate(15px, 15px) rotate(-18deg);
+  z-index: 5;
+  animation: bookingPointerClick .75s cubic-bezier(.22,.8,.32,1) 3.05s both;
+}
+
+.aim-hero .beat-three .booking-pointer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0 0, 0 100%, 34% 72%, 52% 100%, 68% 91%, 50% 65%, 100% 65%);
+  background: #14213d;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,.16));
+}
+
+.aim-hero .beat-three .booking-progress {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  color: #7388a5;
+  font-size: 10px;
+  opacity: 0;
+  animation: bookingProgress 1.5s ease 3.72s both;
+}
+
+/* The intent must not leave the conversation before the customer has selected
+   Book a call. This overrides the shared Beat 2 packet timing for Beat 3. */
+.aim-hero .beat-three .booking-bridge .data-packet {
+  animation: bookingPacketAcross .95s cubic-bezier(.22,.8,.32,1) 3.8s both !important;
+}
+
+.aim-hero .beat-three .booking-crm > .ai-sweep {
+  animation: aiSweep 1s cubic-bezier(.25,.7,.3,1) 4.55s both !important;
+}
+
+.aim-hero .beat-three .new-lead {
+  animation: leadInsert .55s cubic-bezier(.22,.8,.32,1) 4.5s forwards !important;
+}
+
+.aim-hero .beat-three .booking-bridge .return-packet {
+  animation: bookingReturnAcross .8s ease 5.25s both !important;
+}
+
+.aim-hero .beat-three .call-confirm {
+  animation: bookingConfirmation .3s ease 5.85s forwards !important;
+}
+
+@keyframes bookingAnswerIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes bookingButtonIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes bookingButtonPress {
+  0%, 100% { transform: scale(1); box-shadow: none; }
+  45% { transform: scale(.94); box-shadow: 0 0 0 4px rgba(239,77,19,.12); }
+}
+
+@keyframes bookingPointerClick {
+  0% { opacity: 0; transform: translate(15px, 15px) rotate(-18deg); }
+  30% { opacity: 1; }
+  62% { opacity: 1; transform: translate(0, 0) rotate(-18deg); }
+  100% { opacity: 0; transform: translate(0, 0) rotate(-18deg); }
+}
+
+@keyframes bookingProgress {
+  0%, 10% { opacity: 0; transform: translateY(3px); }
+  22%, 75% { opacity: 1; transform: none; }
+  100% { opacity: 0; }
+}
+
+@keyframes bookingPacketAcross {
+  0% { opacity: 0; transform: translateX(0); }
+  12% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(42px); }
+}
+
+@keyframes bookingReturnAcross {
+  0% { opacity: 0; transform: translateX(0); }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(-42px); }
+}
+
+@keyframes bookingConfirmation {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aim-hero .beat-three .reveal-answer,
+  .aim-hero .beat-three .animated-book,
+  .aim-hero .beat-three .booking-progress,
+  .aim-hero .beat-three .call-confirm {
+    opacity: 1;
+    transform: none;
+    animation: none !important;
+  }
+
+  .aim-hero .beat-three .booking-pointer { display: none; }
+}
