@@ -5,6 +5,7 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { TrackingConsent } from "./components/TrackingConsent";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import About from "./pages/About";
 import Home from "./pages/Home";
 import BBCArticle from "./pages/BBCArticle";
 import {
@@ -18,6 +19,7 @@ function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/about"} component={About} />
       <Route path={"/business-automation"} component={BusinessAutomationLanding} />
       <Route path={"/workflow-automation"} component={WorkflowAutomationLanding} />
       <Route path={"/customer-assistants"} component={CustomerAssistantsLanding} />
