@@ -1,20 +1,9 @@
 import { Link } from "wouter";
 import { Hero } from "@/components/hero/Hero";
 import { ProcessAssessment } from "@/components/ProcessAssessment";
+import { CraftIllustration } from "@/components/brand/CraftIllustration";
 import { Button } from "@/components/ui/button";
-import {
-  ArrowRight,
-  Briefcase,
-  Building2,
-  Calendar,
-  CheckCircle2,
-  Database,
-  Lock,
-  Mail,
-  Radio,
-  Server,
-  Users,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const SERVICE_CARDS = [
   {
@@ -23,7 +12,7 @@ const SERVICE_CARDS = [
     description:
       "Turn incoming emails, forms and documents into structured records, tasks and updates without re-keying information by hand.",
     examples: ["Email → spreadsheet or CRM", "Document data extraction", "Automatic triage and routing"],
-    icon: Mail,
+    variant: "move" as const,
     href: "/business-automation",
   },
   {
@@ -32,7 +21,7 @@ const SERVICE_CARDS = [
     description:
       "Connect the steps your team already performs so one business event can trigger the next action automatically.",
     examples: ["CRM win → invoice", "Approval → follow-up task", "Status change → customer update"],
-    icon: Database,
+    variant: "connect" as const,
     href: "/workflow-automation",
   },
   {
@@ -41,7 +30,7 @@ const SERVICE_CARDS = [
     description:
       "Give customers fast, useful answers and let the assistant carry the conversation through to a real business outcome.",
     examples: ["Answer common questions", "Book calls or appointments", "Create and update CRM leads"],
-    icon: Users,
+    variant: "inspect" as const,
     href: "/customer-assistants",
   },
   {
@@ -50,7 +39,7 @@ const SERVICE_CARDS = [
     description:
       "Use the information already in your CRM and systems to prepare relevant outreach, while keeping people in control of what gets sent.",
     examples: ["Personalised email drafts", "Human approval before send", "CRM status updated automatically"],
-    icon: Briefcase,
+    variant: "paint" as const,
     href: "/sales-automation",
   },
 ];
@@ -83,31 +72,11 @@ const PROOF_EXAMPLES = [
 ];
 
 const DELIVERY_STEPS = [
-  {
-    number: "1",
-    title: "Show us the problem",
-    text: "Describe one repetitive, slow or awkward process. You do not need an AI strategy or a technical specification.",
-  },
-  {
-    number: "2",
-    title: "We find the simplest useful solution",
-    text: "We map the trigger, systems, hand-offs, exceptions and business outcome before recommending technology.",
-  },
-  {
-    number: "3",
-    title: "We build it",
-    text: "We start with one bounded workflow and connect only the systems needed to make that process work better.",
-  },
-  {
-    number: "4",
-    title: "You test and approve it",
-    text: "The workflow is demonstrated and tested with you. Human approval remains wherever judgement, risk or customer impact requires it.",
-  },
-  {
-    number: "5",
-    title: "We support and improve it",
-    text: "Once the first workflow is working reliably, we can support it and extend the same approach to the next bottleneck.",
-  },
+  ["1", "Show us the problem", "Describe one repetitive, slow or awkward process. You do not need an AI strategy or a technical specification."],
+  ["2", "We find the simplest useful solution", "We map the trigger, systems, hand-offs, exceptions and business outcome before recommending technology."],
+  ["3", "We build it", "We start with one bounded workflow and connect only the systems needed to make that process work better."],
+  ["4", "You test and approve it", "The workflow is demonstrated and tested with you. Human approval remains wherever judgement, risk or customer impact requires it."],
+  ["5", "We support and improve it", "Once the first workflow is working reliably, we can support it and extend the same approach to the next bottleneck."],
 ];
 
 const FAQS = [
@@ -119,88 +88,100 @@ const FAQS = [
   ["What if our systems do not have APIs?", "That does not automatically stop the project. We assess supported exports, files, email-driven workflows or other integration options before deciding whether the process is practical to automate."],
 ];
 
+const CONTROL_POINTS = [
+  ["01", "Agreed access", "We agree which systems and information the workflow needs before implementation."],
+  ["02", "Human approval", "Approval gates stay in the flow for decisions or actions where judgement matters."],
+  ["03", "Clear data flows", "The systems, hand-offs and destinations are made explicit rather than hidden behind a black box."],
+  ["04", "Private when needed", "Sensitive use cases can use private or customer-controlled deployment approaches where appropriate."],
+];
+
 export default function Home() {
-  const handleEmailCTA = (subject: string, body: string) => {
-    window.location.href = `mailto:hello@ai-midlands.co.uk?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const handleEmailCTA = () => {
+    window.location.href = `mailto:hello@ai-midlands.co.uk?subject=${encodeURIComponent("AI Midlands enquiry")}&body=${encodeURIComponent("Hi Kunle,\n\nI would like to discuss where automation could help our business.\n\nThe process is:\n\nBest regards,")}`;
   };
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] text-slate-800 flex flex-col selection:bg-orange-200 selection:text-orange-900">
-      <div className="fixed top-0 right-0 w-[600px] h-[500px] bg-gradient-to-bl from-orange-100/25 via-amber-50/10 to-transparent blur-3xl pointer-events-none" />
-      <div className="fixed bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-slate-100/40 to-transparent blur-3xl pointer-events-none" />
-
-      <div className="bg-slate-900 text-slate-300 text-xs py-2 px-4 text-center">
+    <div className="min-h-screen bg-[#faf8f5] text-slate-800 selection:bg-orange-200 selection:text-orange-900">
+      <div className="bg-[#0f172b] text-slate-300 text-[12px] py-2 px-4 text-center">
         <Link href="/bbc-article">
-          <span className="inline-flex items-center gap-2 hover:text-white transition-colors cursor-pointer">
-            <Radio className="w-3 h-3 text-orange-400 shrink-0" />
+          <span className="inline-flex items-center gap-2.5 hover:text-white transition-colors cursor-pointer">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#c83927]" />
             <span>
               Trusted commentary featured on <span className="font-semibold text-white">BBC Radio West Midlands</span> — Kunle Ibidun on AI and the future of customer service
             </span>
-            <ArrowRight className="w-3 h-3 text-orange-400 shrink-0" />
+            <span className="text-[#d95535]">→</span>
           </span>
         </Link>
       </div>
 
-      <header className="relative z-20 border-b border-orange-100/80 bg-[#faf8f5]/90 backdrop-blur-md sticky top-0">
-        <div className="container py-4 flex items-center justify-between">
-          <Link href="/"><div className="flex items-center gap-3 cursor-pointer">
-            <div className="w-8 h-8 rounded-lg bg-[#e85d2a] flex items-center justify-center"><span className="font-sans font-bold text-white text-[11px] tracking-tight">AM</span></div>
-            <span className="font-semibold tracking-tight text-slate-900 text-[15px]">AI Midlands</span>
-          </div></Link>
+      <header className="sticky top-0 z-30 border-b border-[#eadfd6] bg-[#faf8f5]/95 backdrop-blur-xl">
+        <div className="container min-h-[76px] flex items-center justify-between gap-6">
+          <Link href="/">
+            <div className="flex items-center gap-3 cursor-pointer shrink-0" aria-label="AI Midlands home">
+              <img src="/brand/ai-midlands-mark.svg" alt="" className="w-[58px] h-[38px] object-contain" />
+              <span className="font-semibold tracking-[-0.025em] text-[#0f172b] text-[16px] hidden sm:block">AI Midlands</span>
+            </div>
+          </Link>
 
-          <nav className="hidden lg:flex items-center gap-7">
-            <a href="#assessment" className="text-sm font-semibold text-slate-800 hover:text-[#e85d2a] transition-colors">Assess a process</a>
-            <a href="#services" className="text-sm text-slate-600 hover:text-[#e85d2a] transition-colors">Services</a>
-            <a href="#pricing" className="text-sm text-slate-600 hover:text-[#e85d2a] transition-colors">Pricing</a>
-            <a href="#proof" className="text-sm text-slate-600 hover:text-[#e85d2a] transition-colors">Examples</a>
-            <a href="#approach" className="text-sm text-slate-600 hover:text-[#e85d2a] transition-colors">How we work</a>
-            <Link href="/about"><span className="text-sm text-slate-600 hover:text-[#e85d2a] transition-colors cursor-pointer">About</span></Link>
+          <nav className="hidden lg:flex items-center gap-7 text-sm">
+            <a href="#services" className="text-slate-600 hover:text-[#c83927] transition-colors">Services</a>
+            <a href="#proof" className="text-slate-600 hover:text-[#c83927] transition-colors">Examples</a>
+            <a href="#pricing" className="text-slate-600 hover:text-[#c83927] transition-colors">Pricing</a>
+            <a href="#approach" className="text-slate-600 hover:text-[#c83927] transition-colors">How we work</a>
+            <Link href="/about"><span className="cursor-pointer text-slate-600 hover:text-[#c83927] transition-colors">About</span></Link>
           </nav>
 
-          <div className="flex items-center gap-4">
-            <a href="tel:07966461005" className="hidden md:flex items-center gap-2 text-sm text-slate-600 hover:text-[#e85d2a] transition-colors"><span className="w-1.5 h-1.5 rounded-full bg-[#e85d2a]" />07966 461005</a>
-            <Button className="rounded-full bg-[#e85d2a] hover:bg-[#d14e1e] text-white text-sm h-9 px-4 shadow-none" asChild><a href="#assessment">Assess a process</a></Button>
+          <div className="flex items-center gap-4 shrink-0">
+            <a href="tel:07966461005" className="hidden xl:block text-sm text-slate-500 hover:text-[#c83927] transition-colors">07966 461005</a>
+            <Button className="rounded-full bg-[#c83927] hover:bg-[#a92f21] text-white h-10 px-5 text-sm shadow-none" asChild>
+              <a href="#assessment">Assess a process</a>
+            </Button>
           </div>
         </div>
       </header>
 
-      <main className="relative z-10 flex-1">
+      <main>
         <Hero />
 
-        <section className="border-y border-slate-200 bg-white">
+        <section className="border-y border-[#e8e0d8] bg-white/75">
           <div className="container py-7">
-            <div className="max-w-5xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-5">
+            <div className="max-w-6xl mx-auto grid md:grid-cols-[1.4fr_1fr] gap-8 items-center">
               <div>
-                <p className="text-slate-500 text-xs font-semibold uppercase tracking-widest mb-1">The starting point</p>
-                <p className="text-slate-900 text-lg font-semibold">A business process you want to improve — not an AI platform you have to find a use for.</p>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 mb-2">Start with the work</p>
+                <p className="text-[#0f172b] text-lg md:text-xl font-semibold tracking-[-0.02em]">A business process you want to improve — not an AI platform you have to find a use for.</p>
               </div>
-              <div className="flex flex-wrap gap-2 md:justify-end">{["Email", "CRM", "Spreadsheets", "Finance", "Websites", "APIs"].map(item => <span key={item} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">{item}</span>)}</div>
+              <p className="text-sm text-slate-500 md:text-right leading-7">Email&nbsp;&nbsp;·&nbsp;&nbsp;CRM&nbsp;&nbsp;·&nbsp;&nbsp;Spreadsheets&nbsp;&nbsp;·&nbsp;&nbsp;Finance&nbsp;&nbsp;·&nbsp;&nbsp;Websites&nbsp;&nbsp;·&nbsp;&nbsp;APIs</p>
             </div>
           </div>
         </section>
 
         <ProcessAssessment />
 
-        <section id="services" className="container py-16 md:py-24">
-          <div className="max-w-5xl mx-auto">
-            <div className="max-w-3xl mb-12">
-              <p className="text-orange-700 text-sm font-semibold uppercase tracking-widest mb-3">Things we can fix</p>
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight mb-5">Practical AI services built around the work your business already does.</h2>
-              <p className="text-slate-600 text-lg leading-relaxed">We use AI where it helps, connect it to the systems around it, and automate the repetitive steps before and after. The result should be less admin, faster response and cleaner information — not another isolated chatbot.</p>
+        <section id="services" className="container py-20 md:py-28">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid lg:grid-cols-[1fr_380px] gap-12 items-end mb-14">
+              <div className="max-w-3xl">
+                <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em] mb-4">Things we can fix</p>
+                <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.05] mb-5">Practical AI services built around the work your business already does.</h2>
+                <p className="text-slate-600 text-lg leading-relaxed">We use AI where it helps, connect it to the systems around it, and automate the repetitive steps before and after. The result should be less admin, faster response and cleaner information — not another isolated chatbot.</p>
+              </div>
+              <CraftIllustration variant="move" className="hidden lg:block opacity-90" />
             </div>
 
-            <div className="grid md:grid-cols-2 gap-5">
-              {SERVICE_CARDS.map(({ number, title, description, examples, icon: Icon, href }) => (
+            <div className="grid md:grid-cols-2 gap-6">
+              {SERVICE_CARDS.map(({ number, title, description, examples, variant, href }) => (
                 <Link key={title} href={href}>
-                  <article className="group h-full cursor-pointer rounded-2xl border border-slate-200 bg-white p-6 md:p-7 shadow-sm transition hover:-translate-y-0.5 hover:border-orange-200 hover:shadow-lg">
-                    <div className="flex items-start justify-between gap-4 mb-5">
-                      <div className="w-11 h-11 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center"><Icon className="w-5 h-5 text-orange-700" /></div>
-                      <span className="text-orange-700 text-xs font-bold tracking-widest">{number}</span>
+                  <article className="group h-full min-h-[430px] cursor-pointer rounded-[28px] border border-[#e5ddd5] bg-white px-7 pt-7 pb-8 transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,43,0.08)]">
+                    <div className="flex items-start justify-between gap-6 mb-4">
+                      <span className="text-[#c83927] text-xs font-bold tracking-[0.16em]">{number}</span>
+                      <CraftIllustration variant={variant} className="w-[170px] max-w-[42%] opacity-80 -mt-3 -mr-3" />
                     </div>
-                    <h3 className="text-xl font-bold text-slate-900 mb-3">{title}</h3>
-                    <p className="text-slate-600 leading-relaxed mb-5">{description}</p>
-                    <ul className="space-y-2 mb-5">{examples.map(example => <li key={example} className="flex items-start gap-2 text-sm text-slate-700"><CheckCircle2 className="w-4 h-4 text-orange-600 mt-0.5 shrink-0" />{example}</li>)}</ul>
-                    <span className="inline-flex items-center gap-2 text-sm font-semibold text-orange-700">See this service <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" /></span>
+                    <h3 className="text-2xl md:text-[28px] font-semibold tracking-[-0.035em] leading-tight text-[#0f172b] mb-4 max-w-[420px]">{title}</h3>
+                    <p className="text-slate-600 leading-relaxed mb-6 max-w-xl">{description}</p>
+                    <div className="border-t border-[#eee7e0] pt-5 space-y-2.5 mb-7">
+                      {examples.map(example => <p key={example} className="text-sm text-slate-600"><span className="text-[#c83927] mr-2">—</span>{example}</p>)}
+                    </div>
+                    <span className="inline-flex items-center gap-2 text-sm font-semibold text-[#a83324]">See this service <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" /></span>
                   </article>
                 </Link>
               ))}
@@ -208,43 +189,64 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="pricing" className="bg-white border-y border-slate-200 py-16 md:py-24">
+        <section id="pricing" className="bg-white border-y border-[#e8e0d8] py-20 md:py-28">
           <div className="container">
-            <div className="max-w-5xl mx-auto">
-              <div className="max-w-3xl mb-10">
-                <p className="text-orange-700 text-sm font-semibold uppercase tracking-widest mb-3">Indicative pricing</p>
-                <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Enough information to know whether a conversation is worth having.</h2>
+            <div className="max-w-6xl mx-auto">
+              <div className="max-w-3xl mb-12">
+                <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em] mb-4">Indicative pricing</p>
+                <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.06] mb-5">Enough information to know whether a conversation is worth having.</h2>
                 <p className="text-slate-600 text-lg leading-relaxed">We scope the actual process before quoting, but you should not have to guess whether AI Midlands means hundreds, thousands or tens of thousands of pounds.</p>
               </div>
-              <div className="grid md:grid-cols-3 gap-5">
-                <article className="rounded-2xl border border-slate-200 bg-[#faf8f5] p-6"><p className="text-xs font-bold uppercase tracking-widest text-orange-700 mb-3">Starter automation</p><p className="text-3xl font-bold text-slate-900 mb-2">from £1,250</p><p className="text-slate-600 text-sm leading-relaxed mb-5">One bounded process, normally involving one or two existing tools.</p><p className="text-sm text-slate-700">Good for: email/admin automation, spreadsheet consolidation, simple lead capture or a focused internal workflow.</p></article>
-                <article className="rounded-2xl border-2 border-orange-200 bg-orange-50/50 p-6"><p className="text-xs font-bold uppercase tracking-widest text-orange-700 mb-3">Connected workflow</p><p className="text-3xl font-bold text-slate-900 mb-2">from £2,500</p><p className="text-slate-600 text-sm leading-relaxed mb-5">Multiple business steps or systems, with integration, approvals and testing.</p><p className="text-sm text-slate-700">Good for: CRM → finance, customer assistant → CRM, system-to-system hand-offs and controlled multi-step workflows.</p></article>
-                <article className="rounded-2xl border border-slate-200 bg-[#faf8f5] p-6"><p className="text-xs font-bold uppercase tracking-widest text-orange-700 mb-3">Bespoke integration</p><p className="text-3xl font-bold text-slate-900 mb-2">Scoped</p><p className="text-slate-600 text-sm leading-relaxed mb-5">Complex APIs, legacy systems, sensitive information or wider operational change.</p><p className="text-sm text-slate-700">We confirm feasibility, delivery approach and a fixed or staged estimate before you commit.</p></article>
+              <div className="grid md:grid-cols-3 border-y border-[#ded6ce] divide-y md:divide-y-0 md:divide-x divide-[#ded6ce]">
+                {[
+                  ["Starter automation", "from £1,250", "One bounded process, normally involving one or two existing tools.", "Email/admin automation, spreadsheet consolidation, simple lead capture or a focused internal workflow."],
+                  ["Connected workflow", "from £2,500", "Multiple business steps or systems, with integration, approvals and testing.", "CRM → finance, customer assistant → CRM, system-to-system hand-offs and controlled multi-step workflows."],
+                  ["Bespoke integration", "Scoped", "Complex APIs, legacy systems, sensitive information or wider operational change.", "We confirm feasibility, delivery approach and a fixed or staged estimate before you commit."],
+                ].map(([label, price, copy, detail]) => (
+                  <article key={label} className="p-7 md:p-8 min-h-[310px] flex flex-col">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.17em] text-[#b43a28] mb-6">{label}</p>
+                    <p className="text-3xl md:text-4xl font-semibold tracking-[-0.04em] text-[#0f172b] mb-4">{price}</p>
+                    <p className="text-slate-600 leading-relaxed mb-6">{copy}</p>
+                    <p className="text-sm text-slate-500 leading-relaxed mt-auto">{detail}</p>
+                  </article>
+                ))}
               </div>
               <p className="text-xs text-slate-500 mt-5">Prices are indicative starting points, exclude VAT where applicable, and depend on system access, integration constraints, testing and support requirements.</p>
             </div>
           </div>
         </section>
 
-        <section id="proof" className="bg-[#fdf6ee] border-b border-orange-100 py-16 md:py-24">
+        <section id="proof" className="bg-[#f6efe8] py-20 md:py-28">
           <div className="container">
-            <div className="max-w-5xl mx-auto">
-              <div className="max-w-3xl mb-12">
-                <p className="text-orange-700 text-sm font-semibold uppercase tracking-widest mb-3">Proof of the approach</p>
-                <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight mb-5">See what changes before and after the automation.</h2>
-                <p className="text-slate-600 text-lg leading-relaxed">These are demonstrations of the workflows shown on this site, not customer case studies. They make the delivery pattern concrete while we build a library of real client outcomes.</p>
+            <div className="max-w-6xl mx-auto">
+              <div className="grid lg:grid-cols-[1fr_320px] gap-10 items-end mb-12">
+                <div className="max-w-3xl">
+                  <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em] mb-4">Proof of the approach</p>
+                  <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.06] mb-5">See what changes before and after the automation.</h2>
+                  <p className="text-slate-600 text-lg leading-relaxed">These are demonstrations of the workflows shown on this site, not customer case studies. They make the delivery pattern concrete while we build a library of real client outcomes.</p>
+                </div>
+                <CraftIllustration variant="connect" className="hidden lg:block opacity-80" />
               </div>
 
               <div className="space-y-5">
-                {PROOF_EXAMPLES.map(example => (
-                  <article key={example.title} className="rounded-2xl bg-white border border-orange-100 p-6 md:p-7 shadow-sm">
-                    <p className="text-orange-700 text-xs font-semibold uppercase tracking-wider mb-2">{example.eyebrow}</p>
-                    <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-6">{example.title}</h3>
-                    <div className="grid md:grid-cols-4 gap-3">
-                      <div className="rounded-xl bg-slate-50 border border-slate-200 p-4"><p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">Before</p><p className="text-slate-700 text-sm leading-relaxed">{example.before}</p></div>
-                      <div className="rounded-xl bg-orange-50 border border-orange-100 p-4"><p className="text-orange-700 text-xs font-semibold uppercase tracking-wider mb-2">Automation</p><p className="text-slate-700 text-sm leading-relaxed">{example.automation}</p></div>
-                      <div className="rounded-xl bg-blue-50 border border-blue-100 p-4"><p className="text-blue-700 text-xs font-semibold uppercase tracking-wider mb-2">Human control</p><p className="text-slate-700 text-sm leading-relaxed">{example.control}</p></div>
-                      <div className="rounded-xl bg-green-50 border border-green-100 p-4"><p className="text-green-700 text-xs font-semibold uppercase tracking-wider mb-2">Outcome</p><p className="text-slate-700 text-sm leading-relaxed">{example.outcome}</p></div>
+                {PROOF_EXAMPLES.map((example, index) => (
+                  <article key={example.title} className="rounded-[26px] bg-white border border-[#e3d8ce] px-6 md:px-8 py-7 md:py-8">
+                    <div className="grid lg:grid-cols-[1.15fr_1fr_1fr_1fr_1fr] gap-6 lg:gap-0">
+                      <div className="lg:pr-7">
+                        <p className="text-[#b43a28] text-[10px] font-semibold uppercase tracking-[0.16em] mb-3">{String(index + 1).padStart(2, "0")} · {example.eyebrow.replace("DEMONSTRATION · ", "")}</p>
+                        <h3 className="text-xl md:text-2xl font-semibold tracking-[-0.03em] text-[#0f172b] leading-tight">{example.title}</h3>
+                      </div>
+                      {[
+                        ["Before", example.before],
+                        ["Automation", example.automation],
+                        ["Human control", example.control],
+                        ["Outcome", example.outcome],
+                      ].map(([label, copy]) => (
+                        <div key={label} className="lg:px-5 lg:border-l border-[#ece5de]">
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400 mb-2">{label}</p>
+                          <p className="text-sm text-slate-600 leading-relaxed">{copy}</p>
+                        </div>
+                      ))}
                     </div>
                   </article>
                 ))}
@@ -253,91 +255,123 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="approach" className="container py-16 md:py-24">
-          <div className="max-w-5xl mx-auto">
-            <div className="grid lg:grid-cols-[0.72fr_1.28fr] gap-12 items-start">
-              <div>
-                <p className="text-orange-700 text-sm font-semibold uppercase tracking-widest mb-3">How we work</p>
-                <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight mb-5">Small, controlled interventions rather than a transformation programme.</h2>
-                <p className="text-slate-600 text-lg leading-relaxed mb-7">We start with one useful process, prove it in your environment and only expand when there is a reason to.</p>
-                <Button className="rounded-full bg-[#e85d2a] hover:bg-[#d14e1e] text-white h-11 px-6" asChild><a href="#assessment">Assess a process <ArrowRight className="w-4 h-4 ml-2" /></a></Button>
-              </div>
-              <div className="space-y-3">{DELIVERY_STEPS.map(step => <div key={step.number} className="rounded-2xl border border-slate-200 bg-white p-5 flex gap-4"><div className="w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center text-sm font-bold shrink-0">{step.number}</div><div><h3 className="font-bold text-slate-900 mb-1">{step.title}</h3><p className="text-slate-600 text-sm leading-relaxed">{step.text}</p></div></div>)}</div>
+        <section id="approach" className="container py-20 md:py-28">
+          <div className="max-w-6xl mx-auto grid lg:grid-cols-[0.85fr_1.15fr] gap-14 items-start">
+            <div className="lg:sticky lg:top-28">
+              <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em] mb-4">How we work</p>
+              <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.06] mb-5">Small, controlled interventions rather than a transformation programme.</h2>
+              <p className="text-slate-600 text-lg leading-relaxed mb-8">We start with one useful process, prove it in your environment and only expand when there is a reason to.</p>
+              <CraftIllustration variant="paint" className="max-w-[360px] opacity-90 mb-8" />
+              <Button className="rounded-full bg-[#c83927] hover:bg-[#a92f21] text-white h-11 px-6" asChild><a href="#assessment">Assess a process <ArrowRight className="w-4 h-4 ml-2" /></a></Button>
+            </div>
+            <div className="border-t border-[#ddd5cd]">
+              {DELIVERY_STEPS.map(([number, title, text]) => (
+                <div key={number} className="grid grid-cols-[52px_1fr] gap-5 py-7 border-b border-[#ddd5cd]">
+                  <span className="text-[#c83927] text-sm font-bold pt-1">{number}</span>
+                  <div>
+                    <h3 className="text-xl font-semibold tracking-[-0.025em] text-[#0f172b] mb-2">{title}</h3>
+                    <p className="text-slate-600 leading-relaxed max-w-2xl">{text}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        <section id="why" className="bg-white border-y border-slate-200 py-16 md:py-24">
+        <section id="why" className="bg-white border-y border-[#e8e0d8] py-20 md:py-28">
           <div className="container">
-            <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-start">
+            <div className="max-w-6xl mx-auto grid lg:grid-cols-[1fr_0.95fr] gap-14 items-center">
               <div>
-                <p className="text-orange-700 text-sm font-semibold uppercase tracking-widest mb-3">Who is behind AI Midlands</p>
-                <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight mb-5">AI integration needs delivery experience as much as it needs AI expertise.</h2>
-                <p className="text-slate-600 text-lg leading-relaxed mb-6">AI Midlands is founder-led by Kunle Ibidun, bringing more than 20 years of digital delivery, integration, API, cloud and data experience to practical AI implementation.</p>
-                <Link href="/about"><span className="inline-flex items-center gap-2 text-sm font-semibold text-orange-700 hover:text-orange-900 cursor-pointer">Meet Kunle and see how AI Midlands works <ArrowRight className="w-4 h-4" /></span></Link>
+                <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em] mb-4">Who is behind AI Midlands</p>
+                <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.06] mb-5">AI integration needs delivery experience as much as it needs AI expertise.</h2>
+                <p className="text-slate-600 text-lg leading-relaxed mb-7">AI Midlands is founder-led by Kunle Ibidun, bringing more than 20 years of digital delivery, integration, API, cloud and data experience to practical AI implementation.</p>
+                <Link href="/about"><span className="inline-flex items-center gap-2 text-sm font-semibold text-[#a83324] hover:text-[#7f271d] cursor-pointer">Meet Kunle and see how AI Midlands works <ArrowRight className="w-4 h-4" /></span></Link>
               </div>
-              <div className="rounded-2xl border border-slate-200 bg-[#faf8f5] p-6">
-                <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-4">Experience across</p>
-                <div className="flex flex-wrap gap-2 mb-6">{["Transport", "Banking", "Energy", "UK Government", "Digital products", "Integration programmes"].map(item => <span key={item} className="px-3 py-1.5 rounded-full bg-white border border-slate-200 text-sm font-medium text-slate-700">{item}</span>)}</div>
-                <div className="border-t border-slate-200 pt-5 space-y-3">{["Complex system integration", "Multi-supplier delivery", "APIs and cloud platforms", "Security-conscious implementation"].map(item => <div key={item} className="flex items-center gap-2 text-sm text-slate-700"><CheckCircle2 className="w-4 h-4 text-orange-600 shrink-0" />{item}</div>)}</div>
+              <div className="rounded-[30px] bg-[#f6efe8] border border-[#e4dbd3] p-6 md:p-8">
+                <CraftIllustration variant="connect" className="mb-4 opacity-90" />
+                <div className="border-t border-[#ded3c8] pt-5 grid sm:grid-cols-2 gap-x-8 gap-y-3 text-sm text-slate-600">
+                  {["Transport", "Banking", "Energy", "UK Government", "Digital products", "Integration programmes", "Complex system integration", "Multi-supplier delivery"].map(item => <p key={item}><span className="text-[#c83927] mr-2">—</span>{item}</p>)}
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="security" className="bg-slate-900 py-16 md:py-20">
+        <section id="security" className="bg-[#0f172b] py-20 md:py-28">
           <div className="container">
-            <div className="max-w-5xl mx-auto grid md:grid-cols-[1fr_1fr] gap-10 items-start">
+            <div className="max-w-6xl mx-auto grid lg:grid-cols-[0.95fr_1.05fr] gap-14 items-start">
               <div>
-                <p className="text-orange-400 text-sm font-semibold uppercase tracking-widest mb-3">Security & control</p>
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Your business stays in control.</h2>
+                <p className="text-[#e2785d] text-xs font-semibold uppercase tracking-[0.18em] mb-4">Security & control</p>
+                <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-white leading-[1.06] mb-5">Your business stays in control.</h2>
                 <p className="text-slate-300 text-lg leading-relaxed mb-5">We design automation around the systems you already use, minimise access to the information required, and keep human approval where judgement matters.</p>
                 <p className="text-slate-400 leading-relaxed">Where information is sensitive, we can design private or customer-controlled deployment options. Private AI is available when the use case requires it; it is not the starting point for every project.</p>
+                <CraftIllustration variant="inspect" tone="dark" className="mt-8 max-w-[430px] opacity-90" />
               </div>
-              <div className="grid sm:grid-cols-2 gap-3">
-                <div className="rounded-2xl border border-slate-700 bg-slate-800/60 p-5"><Lock className="w-5 h-5 text-orange-400 mb-3" /><h3 className="font-semibold text-white mb-2">Agreed access</h3><p className="text-sm text-slate-400">We agree which systems and information the workflow needs before implementation.</p></div>
-                <div className="rounded-2xl border border-slate-700 bg-slate-800/60 p-5"><CheckCircle2 className="w-5 h-5 text-orange-400 mb-3" /><h3 className="font-semibold text-white mb-2">Human approval</h3><p className="text-sm text-slate-400">Approval gates stay in the flow for decisions or actions where judgement matters.</p></div>
-                <div className="rounded-2xl border border-slate-700 bg-slate-800/60 p-5"><Server className="w-5 h-5 text-orange-400 mb-3" /><h3 className="font-semibold text-white mb-2">Clear data flows</h3><p className="text-sm text-slate-400">The systems, hand-offs and destinations are made explicit rather than hidden behind a black box.</p></div>
-                <div className="rounded-2xl border border-slate-700 bg-slate-800/60 p-5"><Building2 className="w-5 h-5 text-orange-400 mb-3" /><h3 className="font-semibold text-white mb-2">Private when needed</h3><p className="text-sm text-slate-400">Sensitive use cases can use private or customer-controlled deployment approaches where appropriate.</p></div>
+              <div className="grid sm:grid-cols-2 border-t border-slate-700/80">
+                {CONTROL_POINTS.map(([number, title, text]) => (
+                  <div key={number} className="py-7 sm:pr-7 sm:odd:border-r border-b border-slate-700/80 sm:even:pl-7">
+                    <span className="text-[#e2785d] text-xs font-bold tracking-[0.16em]">{number}</span>
+                    <h3 className="font-semibold text-white text-lg mt-4 mb-2">{title}</h3>
+                    <p className="text-sm text-slate-400 leading-relaxed">{text}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-        <section id="questions" className="container py-16 md:py-24">
-          <div className="max-w-5xl mx-auto grid lg:grid-cols-[0.7fr_1.3fr] gap-12 items-start">
-            <div><p className="text-orange-700 text-sm font-semibold uppercase tracking-widest mb-3">Before you buy</p><h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight mb-4">The practical questions we expect you to ask.</h2><p className="text-slate-600 leading-relaxed">If the answer depends on your particular systems or data, we will say so rather than pretending every automation is straightforward.</p></div>
-            <div className="divide-y divide-slate-200 border-y border-slate-200">{FAQS.map(([question, answer]) => <details key={question} className="group py-5"><summary className="cursor-pointer list-none flex items-center justify-between gap-4 font-semibold text-slate-900"><span>{question}</span><span className="text-orange-600 text-xl font-normal group-open:rotate-45 transition-transform">+</span></summary><p className="pt-3 pr-10 text-slate-600 leading-relaxed">{answer}</p></details>)}</div>
+        <section id="questions" className="container py-20 md:py-28">
+          <div className="max-w-6xl mx-auto grid lg:grid-cols-[0.72fr_1.28fr] gap-14 items-start">
+            <div>
+              <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em] mb-4">Before you buy</p>
+              <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.06] mb-5">The practical questions we expect you to ask.</h2>
+              <p className="text-slate-600 leading-relaxed">If the answer depends on your particular systems or data, we will say so rather than pretending every automation is straightforward.</p>
+            </div>
+            <div className="border-y border-[#ddd5cd]">
+              {FAQS.map(([question, answer]) => (
+                <details key={question} className="group py-6 border-b last:border-b-0 border-[#ddd5cd]">
+                  <summary className="cursor-pointer list-none flex items-center justify-between gap-5 font-semibold text-[#0f172b] text-lg">
+                    <span>{question}</span><span className="text-[#c83927] text-2xl font-light group-open:rotate-45 transition-transform">+</span>
+                  </summary>
+                  <p className="pt-4 pr-10 text-slate-600 leading-relaxed">{answer}</p>
+                </details>
+              ))}
+            </div>
           </div>
         </section>
 
-        <section className="bg-[#fdf6ee] border-y border-orange-100 py-16 md:py-20">
+        <section className="bg-[#f6efe8] border-y border-[#e3d8ce] py-20 md:py-24 overflow-hidden">
           <div className="container">
-            <div className="max-w-4xl mx-auto text-center">
-              <p className="text-orange-700 text-sm font-semibold uppercase tracking-widest mb-3">Tell us what is wasting your time</p>
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-5">Show us one process. We’ll tell you what looks practical and what it is likely to cost.</h2>
-              <p className="text-slate-600 text-lg leading-relaxed mb-8 max-w-2xl mx-auto">You do not need an AI strategy before speaking to us. A recurring task, awkward hand-off or slow customer process is enough.</p>
-              <div className="flex flex-col sm:flex-row justify-center gap-3">
-                <Button className="rounded-full bg-[#e85d2a] hover:bg-[#d14e1e] text-white h-12 px-7 text-base" asChild><a href="#assessment">Assess a process <ArrowRight className="w-4 h-4 ml-2" /></a></Button>
-                <Button variant="outline" className="rounded-full border-slate-300 bg-white hover:bg-slate-50 text-slate-700 h-12 px-7 text-base" onClick={() => handleEmailCTA("AI Midlands enquiry", "Hi Kunle,\n\nI would like to discuss where automation could help our business.\n\nThe process is:\n\nBest regards,")}><Mail className="w-4 h-4 mr-2" />Send an Enquiry</Button>
+            <div className="max-w-6xl mx-auto grid lg:grid-cols-[1fr_360px] gap-10 items-center">
+              <div className="max-w-3xl">
+                <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em] mb-4">Tell us what is wasting your time</p>
+                <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.06] mb-5">Show us one process. We’ll tell you what looks practical and what it is likely to cost.</h2>
+                <p className="text-slate-600 text-lg leading-relaxed mb-8 max-w-2xl">You do not need an AI strategy before speaking to us. A recurring task, awkward hand-off or slow customer process is enough.</p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Button className="rounded-full bg-[#c83927] hover:bg-[#a92f21] text-white h-12 px-7 text-base" asChild><a href="#assessment">Assess a process <ArrowRight className="w-4 h-4 ml-2" /></a></Button>
+                  <Button variant="outline" className="rounded-full border-slate-300 bg-white hover:bg-white/80 text-slate-700 h-12 px-7 text-base" onClick={handleEmailCTA}>Send an enquiry</Button>
+                </div>
               </div>
-              <div className="mt-6"><Link href="/about"><span className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-orange-700 cursor-pointer">Want to know who you would be working with? About AI Midlands <ArrowRight className="w-4 h-4" /></span></Link></div>
+              <CraftIllustration variant="move" className="hidden lg:block opacity-95" />
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="bg-white border-t border-slate-200 py-8">
+      <footer className="bg-white border-t border-[#e8e0d8] py-10">
         <div className="container">
-          <div className="max-w-5xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-center gap-3"><div className="w-8 h-8 rounded-lg bg-[#e85d2a] flex items-center justify-center"><span className="font-sans font-bold text-white text-[11px]">AM</span></div><div><p className="font-semibold text-slate-900 text-sm">AI Midlands</p><p className="text-slate-500 text-xs">Midlands based · UK wide</p></div></div>
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-500">
-              <Link href="/about"><span className="hover:text-orange-700 cursor-pointer">About</span></Link>
-              <Link href="/privacy"><span className="hover:text-orange-700 cursor-pointer">Privacy</span></Link>
-              <Link href="/terms"><span className="hover:text-orange-700 cursor-pointer">Terms</span></Link>
-              <a href="mailto:hello@ai-midlands.co.uk" className="hover:text-orange-700">hello@ai-midlands.co.uk</a>
-              <a href="tel:07966461005" className="hover:text-orange-700">07966 461005</a>
-              <Link href="/bbc-article"><span className="hover:text-orange-700 cursor-pointer">BBC commentary</span></Link>
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-8">
+            <div className="flex items-center gap-4">
+              <img src="/brand/ai-midlands-logo.svg" alt="AI Midlands" className="w-[105px] h-auto" />
+              <p className="text-slate-500 text-xs leading-5">Midlands based<br />UK wide</p>
+            </div>
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-500 md:justify-end">
+              <Link href="/about"><span className="hover:text-[#c83927] cursor-pointer">About</span></Link>
+              <Link href="/privacy"><span className="hover:text-[#c83927] cursor-pointer">Privacy</span></Link>
+              <Link href="/terms"><span className="hover:text-[#c83927] cursor-pointer">Terms</span></Link>
+              <a href="mailto:hello@ai-midlands.co.uk" className="hover:text-[#c83927]">hello@ai-midlands.co.uk</a>
+              <a href="tel:07966461005" className="hover:text-[#c83927]">07966 461005</a>
+              <Link href="/bbc-article"><span className="hover:text-[#c83927] cursor-pointer">BBC commentary</span></Link>
             </div>
           </div>
         </div>
