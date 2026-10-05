@@ -1,9 +1,26 @@
 {
+  "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "ai-midlands",
-  "compatibility_date": "2026-10-03",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-05",
   "assets": {
     "directory": "./dist/public",
-    "not_found_handling": "single-page-application"
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": [
+      "/api/*"
+    ]
   },
   "previews": {}
+
+  // Lead capture is enabled once a D1 binding named LEADS_DB is added.
+  // Recommended command:
+  //   npx wrangler d1 create ai-midlands-leads --binding LEADS_DB --update-config
+  // Then apply migrations:
+  //   npx wrangler d1 migrations apply ai-midlands-leads --remote
+  //
+  // Optional production bindings/secrets:
+  // - LEAD_NOTIFY: Cloudflare Email Service send_email binding to hello@ai-midlands.co.uk
+  // - LEADS_ADMIN_TOKEN: secret for protected lead export/status endpoints
+  // - CALENDLY_WEBHOOK_SIGNING_KEY: secret used to verify Calendly webhooks
 }
