@@ -26,6 +26,7 @@ type Env = {
   ASSETS: { fetch: (request: Request) => Promise<Response> };
   LEADS_DB?: D1DatabaseLike;
   LEAD_NOTIFY?: EmailBindingLike;
+  RESEND_API_KEY?: string;
   LEADS_ADMIN_TOKEN?: string;
   CALENDLY_WEBHOOK_SIGNING_KEY?: string;
 };
@@ -83,6 +84,65 @@ async function readJson<T>(request: Request): Promise<T | null> {
     return await request.json<T>();
   } catch {
     return null;
+  }
+}
+
+function leadNotificationText(input: {
+  id: string;
+  name: string;
+  company: string;
+  email: string;
+  phone: string;
+  processText: string;
+  assessment: Record<string, unknown>;
+  systems: string[];
+}): string {
+  const { id, name, company, email, phone, processText, assessment, systems } = input;
+  return [
+    `Name: ${name}`,
+    `Company: ${company || "—"}`,
+    `Email: ${email}`,
+    `Phone: ${phone || "—"}`,
+    `Complexity: ${cleanText(assessment.complexity, 80) || "—"}`,
+    `Budget: ${cleanText(assessment.price, 120) || "—"}`,
+    `Systems: ${systems.join(", ") || "—"}`,
+    "",
+    "Process:",
+    processText,
+    "",
+    `Lead ID: ${id}`,
+  ].join("\n");
+}
+
+async function sendResendLeadNotification(
+  apiKey: string,
+  input: {
+    id: string;
+    name: string;
+    company: string;
+    email: string;
+    text: string;
+  },
+): Promise<void> {
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+      "Idempotency-Key": `ai-midlands-lead/${input.id}`,
+    },
+    body: JSON.stringify({
+      from: "AI Midlands <website@notify.ai-midlands.co.uk>",
+      to: ["enquiries@ai-midlands.co.uk"],
+      reply_to: input.email,
+      subject: `New AI Midlands assessment lead — ${input.company || input.name}`,
+      text: input.text,
+    }),
+  });
+
+  if (!response.ok) {
+    const detail = (await response.text()).slice(0, 500);
+    throw new Error(`Resend notification failed (${response.status}): ${detail}`);
   }
 }
 
@@ -148,26 +208,34 @@ async function createLead(request: Request, env: Env, ctx: ExecutionContextLike)
     attributionValue(payload.attribution, "oppref"),
   ).run();
 
-  if (env.LEAD_NOTIFY) {
+  const notificationText = leadNotificationText({
+    id,
+    name,
+    company,
+    email,
+    phone,
+    processText,
+    assessment,
+    systems,
+  });
+
+  if (env.RESEND_API_KEY) {
+    ctx.waitUntil(
+      sendResendLeadNotification(env.RESEND_API_KEY, {
+        id,
+        name,
+        company,
+        email,
+        text: notificationText,
+      }).catch(() => undefined),
+    );
+  } else if (env.LEAD_NOTIFY) {
     const notification = env.LEAD_NOTIFY.send({
       from: "website@ai-midlands.co.uk",
-      to: "hello@ai-midlands.co.uk",
+      to: "enquiries@ai-midlands.co.uk",
       replyTo: email,
       subject: `New AI Midlands assessment lead — ${company || name}`,
-      text: [
-        `Name: ${name}`,
-        `Company: ${company || "—"}`,
-        `Email: ${email}`,
-        `Phone: ${phone || "—"}`,
-        `Complexity: ${cleanText(assessment.complexity, 80) || "—"}`,
-        `Budget: ${cleanText(assessment.price, 120) || "—"}`,
-        `Systems: ${systems.join(", ") || "—"}`,
-        "",
-        "Process:",
-        processText,
-        "",
-        `Lead ID: ${id}`,
-      ].join("\n"),
+      text: notificationText,
     }).catch(() => undefined);
     ctx.waitUntil(notification);
   }
@@ -326,7 +394,8 @@ export default {
       return json({
         ok: true,
         leadCapture: Boolean(env.LEADS_DB),
-        notifications: Boolean(env.LEAD_NOTIFY),
+        notifications: Boolean(env.RESEND_API_KEY || env.LEAD_NOTIFY),
+        notificationProvider: env.RESEND_API_KEY ? "resend" : env.LEAD_NOTIFY ? "cloudflare" : null,
         calendlyWebhook: Boolean(env.CALENDLY_WEBHOOK_SIGNING_KEY),
       });
     }
