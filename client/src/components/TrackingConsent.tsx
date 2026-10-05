@@ -4,7 +4,6 @@ import {
   getTrackingConsent,
   initialiseTracking,
   preserveOpprefOnInternalLink,
-  resetTrackingConsent,
   setTrackingConsent,
   trackCustomEvent,
   trackPageView,
@@ -77,16 +76,6 @@ export function TrackingConsent() {
     setSettingsOpen(false);
   };
 
-  const reopen = () => {
-    setSettingsOpen(true);
-  };
-
-  const reset = () => {
-    resetTrackingConsent();
-    setConsent("unknown");
-    setSettingsOpen(true);
-  };
-
   return (
     <>
       {settingsOpen && (
@@ -119,8 +108,7 @@ export function TrackingConsent() {
       {!settingsOpen && consent !== "unknown" && (
         <button
           type="button"
-          onClick={reopen}
-          onDoubleClick={reset}
+          onClick={() => setSettingsOpen(true)}
           className="fixed bottom-3 left-3 z-[999] rounded-full border border-slate-200 bg-white/95 px-3 py-1.5 text-[11px] font-medium text-slate-500 shadow-sm backdrop-blur hover:text-slate-800"
           aria-label="Open tracking settings"
         >
