@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 100" role="img" aria-labelledby="bbc-title bbc-desc">
+  <title id="bbc-title">BBC</title>
+  <desc id="bbc-desc">BBC logo, used by AI Midlands with permission.</desc>
+  <g fill="#000000">
+    <rect x="0" y="0" width="100" height="100"/>
+    <rect x="115" y="0" width="100" height="100"/>
+    <rect x="230" y="0" width="100" height="100"/>
+  </g>
+  <g fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="700" text-anchor="middle" dominant-baseline="central">
+    <text x="50" y="51">B</text>
+    <text x="165" y="51">B</text>
+    <text x="280" y="51">C</text>
+  </g>
+</svg>
