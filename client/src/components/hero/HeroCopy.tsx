@@ -14,9 +14,12 @@ export function HeroCopy() {
         Assess a process <span>→</span>
       </a>
       <a className="bbc-proof" href="/bbc-article" aria-label="Read about Kunle Ibidun on BBC Radio West Midlands">
-        <span className="bbc-proof-kicker">As heard on</span>
-        <span className="bbc-proof-name">BBC Radio West Midlands</span>
-        <span className="bbc-proof-link">AI &amp; customer service →</span>
+        <img className="bbc-proof-logo" src="/brand/bbc-logo.svg" alt="BBC" />
+        <span className="bbc-proof-copy">
+          <span className="bbc-proof-kicker">As heard on</span>
+          <span className="bbc-proof-name">BBC Radio West Midlands</span>
+          <span className="bbc-proof-link">AI &amp; customer service →</span>
+        </span>
       </a>
       <div className="location">
         Midlands based <b>·</b> UK wide
