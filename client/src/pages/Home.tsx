@@ -191,15 +191,16 @@ export default function Home() {
 
         <section id="pricing" className="container py-20 md:py-28">
           <div className="max-w-6xl mx-auto">
-            <div className="grid lg:grid-cols-[0.85fr_1.15fr] gap-12 items-end mb-12">
+            <div className="grid lg:grid-cols-[0.85fr_1.15fr] gap-12 items-end mb-8">
               <div><p className="text-[#b43a28] text-sm font-semibold mb-4">Indicative pricing</p><h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.04]">Enough information to know whether a conversation is worth having.</h2></div>
               <p className="text-slate-600 text-lg leading-relaxed max-w-2xl">We scope the actual process before quoting, but you should not have to guess whether AI Midlands means hundreds, thousands or tens of thousands of pounds.</p>
             </div>
+            <p className="text-[#0f172b] text-lg font-semibold leading-relaxed max-w-4xl mb-10">Every engagement includes process mapping and analysis. We understand how the work operates today before deciding what should be simplified, integrated or automated.</p>
             <div className="grid md:grid-cols-3 border-y border-[#d9d1ca] divide-y md:divide-y-0 md:divide-x divide-[#d9d1ca]">
               {[
-                ["Starter automation", "from £1,250", "One bounded process, normally involving one or two existing tools."],
-                ["Connected workflow", "from £2,500", "Multiple business steps or systems, with integration, approvals and testing."],
-                ["Bespoke integration", "Scoped", "Complex APIs, legacy systems, sensitive information or wider operational change."],
+                ["Starter automation", "from £2,000", "Process mapping and analysis of one bounded workflow, followed by design and implementation of a focused automation, normally involving one or two existing systems. Includes testing and handover."],
+                ["Connected workflow", "from £3,500", "Process mapping and analysis across a multi-step workflow, followed by process redesign, integration and automation across multiple systems. Includes approval points, end-to-end testing and handover."],
+                ["Bespoke integration", "Scoped", "Deeper process analysis and solution design for complex APIs, legacy systems, sensitive information or wider operational change. Scope and price are agreed following discovery."],
               ].map(([label, price, copy], index) => (
                 <article key={label} className="p-7 md:p-9 min-h-[235px] flex flex-col">
                   <div className="flex items-center gap-3 text-xs text-slate-500 mb-7"><span className="text-[#c83927] font-bold">0{index + 1}</span><span className="h-px w-10 bg-[#c83927]/50" /></div>
