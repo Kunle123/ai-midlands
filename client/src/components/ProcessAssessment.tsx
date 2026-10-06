@@ -97,10 +97,10 @@ function buildAssessment(process: string): Assessment {
 
   const complexity: Assessment["complexity"] = score >= 4 ? "Bespoke" : score >= 2 ? "Connected" : "Starter";
   const price = complexity === "Starter"
-    ? "from £1,250"
+    ? "from £2,000"
     : complexity === "Connected"
-      ? "typically £2,500–£5,000"
-      : "scoped individually — usually £5,000+";
+      ? "from £3,500"
+      : "scoped individually";
   const timeframe = complexity === "Starter"
     ? "often 1–2 weeks once access and rules are agreed"
     : complexity === "Connected"
