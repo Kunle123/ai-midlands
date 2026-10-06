@@ -1,14 +1,14 @@
 export function HeroCopy() {
   return (
     <section className="copy">
-      <div className="eyebrow">AI that connects to real work.</div>
+      <div className="eyebrow">AI that fits the work.</div>
       <h1>
         Put AI to work in
         <br />
         your business.
       </h1>
       <p>
-        We connect AI to the systems you already use, automate repetitive work and build useful customer and team assistants that lead to real business outcomes.
+        We start with how the work actually happens, simplify the process, then connect AI, automation or integration only where it genuinely helps. The technology should fit the work — not make your team work around the technology.
       </p>
       <a className="primary" href="#assessment">
         Assess a process <span>→</span>
