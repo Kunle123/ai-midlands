@@ -38,9 +38,9 @@ const services: Record<ServiceKey, ServiceConfig> = {
   "business-automation": {
     eyebrow: "EMAIL & ADMIN AUTOMATION",
     title: "Turn incoming enquiries into organised work.",
-    intro: "We connect email, forms, spreadsheets and CRM so useful information is captured, understood and moved into the right place without somebody re-keying it.",
+    intro: "We look at how enquiries move through your team today, remove avoidable handling, then connect email, forms, spreadsheets and CRM so useful information reaches the right place without somebody re-keying it.",
     problem: "Important customer information arrives in inboxes and forms, then somebody has to read it, interpret it and copy it into another system.",
-    outcome: "The enquiry is understood, the right fields are captured and the business record is created automatically.",
+    outcome: "The enquiry is understood, the right fields are captured and the business record is created automatically in the tools your team already uses.",
     bullets: ["Less manual data entry", "Faster response to enquiries", "Cleaner CRM and pipeline data"],
     projects: [
       { title: "Email → CRM", text: "Read incoming enquiries, identify customer, service, value and intent, then create or update the CRM record." },
@@ -49,7 +49,7 @@ const services: Record<ServiceKey, ServiceConfig> = {
     ],
     systems: ["Email", "CRM", "Spreadsheets", "Forms", "Shared inboxes"],
     emailSubject: "Business automation enquiry",
-    metaDescription: "AI Midlands connects email, forms, spreadsheets and CRM to automate repetitive admin and turn enquiries into organised work.",
+    metaDescription: "AI Midlands redesigns repetitive admin processes and connects email, forms, spreadsheets and CRM so enquiries become organised work without extra re-keying.",
     price: "from £1,250",
     priceNote: "A bounded starter automation involving one or two existing tools.",
     icon: EnquiryIcon,
@@ -57,9 +57,9 @@ const services: Record<ServiceKey, ServiceConfig> = {
   "workflow-automation": {
     eyebrow: "WORKFLOW & SYSTEM INTEGRATION",
     title: "Connect systems so work moves without someone copying it.",
-    intro: "We automate the hand-offs between the tools your business already uses — CRM, finance, operations, email and internal systems — so the next action happens when it should.",
+    intro: "We map the hand-offs first, simplify what can be simplified, then automate the useful connections between CRM, finance, operations, email and internal systems.",
     problem: "One system says the work is ready, but somebody still has to open another system, copy the details and trigger the next step manually.",
-    outcome: "A business event in one system creates the next action in another, with confirmation coming back automatically.",
+    outcome: "A business event in one system creates the next action in another, with confirmation coming back automatically and no unnecessary extra place for staff to work.",
     bullets: ["Fewer manual hand-offs", "Less duplication and re-keying", "Processes continue without chasing"],
     projects: [
       { title: "CRM → finance", text: "A won opportunity can create the invoice, populate the customer information and return the invoice reference to CRM." },
@@ -68,7 +68,7 @@ const services: Record<ServiceKey, ServiceConfig> = {
     ],
     systems: ["CRM", "Finance", "Operations", "APIs", "Email"],
     emailSubject: "Workflow automation enquiry",
-    metaDescription: "AI Midlands connects CRM, finance, operations and other systems so business processes move automatically without manual re-keying.",
+    metaDescription: "AI Midlands maps and simplifies business hand-offs, then connects CRM, finance, operations and other systems so work moves without manual re-keying.",
     price: "from £2,500",
     priceNote: "Connected workflows involving multiple steps, systems, approvals or integration work.",
     icon: WorkflowIcon,
@@ -76,7 +76,7 @@ const services: Record<ServiceKey, ServiceConfig> = {
   "customer-assistants": {
     eyebrow: "CUSTOMER ASSISTANTS",
     title: "Give customers an assistant that can actually take action.",
-    intro: "We build website and service assistants that answer useful questions, understand intent and complete the next step — such as booking a call or creating a CRM lead.",
+    intro: "We design the customer journey first, then build assistants that answer useful questions and complete the next step — such as booking a call or creating a CRM lead — without sending people into another disconnected journey.",
     problem: "Many chatbots can answer a question. The customer still has to find the next form, call somebody or wait for a person to complete the action.",
     outcome: "The assistant answers the question, offers the next action, completes it and records the result in your business systems.",
     bullets: ["Useful answers at the point of enquiry", "Bookings and lead capture inside the conversation", "CRM updated automatically"],
@@ -87,7 +87,7 @@ const services: Record<ServiceKey, ServiceConfig> = {
     ],
     systems: ["Website", "CRM", "Calendar", "Knowledge base", "Email"],
     emailSubject: "Customer assistant enquiry",
-    metaDescription: "AI Midlands builds customer assistants that answer questions, book calls and create CRM leads instead of stopping at chatbot responses.",
+    metaDescription: "AI Midlands designs customer journeys and builds assistants that answer questions, book calls and create CRM leads instead of stopping at chatbot responses.",
     price: "from £2,500",
     priceNote: "A useful assistant connected to a real next action such as booking or lead creation.",
     icon: AssistantIcon,
@@ -95,7 +95,7 @@ const services: Record<ServiceKey, ServiceConfig> = {
   "sales-automation": {
     eyebrow: "SALES & OUTREACH AUTOMATION",
     title: "Turn CRM context into personalised follow-up — with human approval.",
-    intro: "We use the information already held in CRM and other business systems to prepare relevant outreach, while keeping people in control of what is actually sent.",
+    intro: "We start with the way your team follows up today, remove avoidable preparation and use the information already held in CRM and other systems to prepare relevant outreach while keeping people in control of what is actually sent.",
     problem: "Sales teams have the context they need, but turning it into timely, relevant follow-up still means opening records, checking history and drafting messages manually.",
     outcome: "The system prepares a personalised draft from real account context, a person reviews it, and the CRM records the outcome when it is sent.",
     bullets: ["Faster, more relevant follow-up", "Human approval before sending", "Activity recorded back in CRM"],
@@ -106,7 +106,7 @@ const services: Record<ServiceKey, ServiceConfig> = {
     ],
     systems: ["CRM", "Email", "Account data", "Sales pipeline", "Approvals"],
     emailSubject: "Sales automation enquiry",
-    metaDescription: "AI Midlands uses CRM context to prepare personalised sales follow-up with human approval and automatic CRM updates.",
+    metaDescription: "AI Midlands redesigns sales follow-up around your existing CRM, then uses AI to prepare personalised outreach with human approval and automatic CRM updates.",
     price: "from £1,250",
     priceNote: "A bounded sales workflow can start small; deeper CRM integration is scoped separately.",
     icon: OutreachIcon,
@@ -160,11 +160,13 @@ function ServiceLanding({ service }: { service: ServiceKey }) {
 
         <section className="border-y border-[#eadfd6] bg-[#fff4ed] py-16"><div className="container"><div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-6"><article className="rounded-[26px] border border-[#eadfd6] bg-white p-7"><p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#b43a28] mb-3">The problem</p><p className="text-lg leading-relaxed text-slate-700">{config.problem}</p></article><article className="rounded-[26px] bg-[#0f172b] p-7 text-white"><p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#f0a08b] mb-3">The outcome</p><p className="text-lg leading-relaxed text-slate-100">{config.outcome}</p></article></div><div className="max-w-6xl mx-auto grid sm:grid-cols-3 gap-4 mt-5">{config.bullets.map(item => <div key={item} className="flex items-start gap-3 rounded-2xl bg-white border border-[#eadfd6] px-5 py-4 text-sm font-medium text-slate-700"><span className="h-2 w-2 rounded-full bg-[#c83927] mt-1.5 shrink-0" />{item}</div>)}</div></div></section>
 
-        <section className="container py-20 md:py-24"><div className="max-w-6xl mx-auto"><div className="max-w-3xl mb-10"><p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em] mb-4">What we build</p><h2 className="text-3xl md:text-4xl font-semibold tracking-[-0.035em] text-[#0f172b] mb-4">Practical automation around the systems you already use.</h2><p className="text-lg text-slate-600">The examples are not fixed products. They show the kind of work we implement: understand information, connect systems, complete actions and keep the result visible to your team.</p></div><div className="grid md:grid-cols-3 gap-5">{config.projects.map((project,index) => <article key={project.title} className="rounded-[24px] border border-[#e5ddd5] bg-white p-6"><span className="text-[#b43a28] text-xs font-bold tracking-[0.16em]">0{index + 1}</span><h3 className="font-semibold text-[#0f172b] text-lg mt-6 mb-2">{project.title}</h3><p className="text-slate-600 leading-relaxed text-sm">{project.text}</p></article>)}</div></div></section>
+        <section className="container py-20 md:py-24"><div className="max-w-6xl mx-auto grid lg:grid-cols-[0.72fr_1.28fr] gap-12 lg:gap-20 items-start"><div><p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em] mb-4">Process redesign is standard</p><h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.06]">We don’t automate a process blindly.</h2></div><div className="space-y-5 text-lg leading-relaxed text-slate-600"><p>Automating one step does not necessarily make the work easier. If your team has to open another application, remember another password, copy information somewhere else or change the way they work simply to accommodate the automation, we have probably just moved the problem.</p><p>We listen to the people doing the work, map how information and decisions move, simplify the process where we can, and only then decide where AI, automation or integration genuinely helps.</p><p className="font-semibold text-[#0f172b]">The technology should fit the work. Not the other way around.</p></div></div></section>
 
-        <section className="bg-white border-y border-[#e8e0d8] py-16"><div className="container"><div className="max-w-6xl mx-auto grid md:grid-cols-[1fr_auto] gap-8 items-center"><div><div className="flex items-center gap-3 mb-3 text-[#0f172b] [--aim-icon-accent:#c83927]"><IntegrationIcon className="w-6 h-6" /><p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em]">Your systems, not another platform</p></div><h2 className="text-2xl md:text-3xl font-semibold tracking-[-0.03em] text-[#0f172b] mb-3">We fit the automation around the tools your business already depends on.</h2><p className="text-slate-600 leading-relaxed max-w-3xl">Where APIs are available we use them. Where they are not, we design the simplest reliable route. Private or customer-controlled AI can be used when the information genuinely requires it.</p></div><div className="flex flex-wrap md:max-w-xs gap-2 md:justify-end">{config.systems.map(system => <span key={system} className="rounded-full border border-[#ddd4cc] bg-[#faf8f5] px-3 py-1.5 text-sm font-medium text-slate-700">{system}</span>)}</div></div></div></section>
+        <section className="container py-20 md:py-24 border-t border-[#e8e0d8]"><div className="max-w-6xl mx-auto"><div className="max-w-3xl mb-10"><p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em] mb-4">What we build</p><h2 className="text-3xl md:text-4xl font-semibold tracking-[-0.035em] text-[#0f172b] mb-4">Practical automation around the systems you already use.</h2><p className="text-lg text-slate-600">The examples are not fixed products. They show the kind of work we implement after the process is understood: simplify the hand-off, connect systems, complete useful actions and keep the result visible to your team.</p></div><div className="grid md:grid-cols-3 gap-5">{config.projects.map((project,index) => <article key={project.title} className="rounded-[24px] border border-[#e5ddd5] bg-white p-6"><span className="text-[#b43a28] text-xs font-bold tracking-[0.16em]">0{index + 1}</span><h3 className="font-semibold text-[#0f172b] text-lg mt-6 mb-2">{project.title}</h3><p className="text-slate-600 leading-relaxed text-sm">{project.text}</p></article>)}</div></div></section>
 
-        <section className="container py-20 md:py-24"><div className="max-w-6xl mx-auto grid lg:grid-cols-[0.9fr_1.1fr] gap-10 items-start"><div className="rounded-[26px] border border-[#eadfd6] bg-[#fff4ed] p-7"><p className="text-[#b43a28] text-xs font-bold uppercase tracking-[0.16em] mb-3">Indicative price</p><p className="text-4xl font-semibold tracking-[-0.04em] text-[#0f172b] mb-3">{config.price}</p><p className="text-slate-600">{config.priceNote}</p></div><div><div className="flex items-center gap-3 mb-4 text-[#0f172b] [--aim-icon-accent:#c83927]"><ApprovalIcon className="w-6 h-6" /><p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em]">Why AI Midlands</p></div><h2 className="text-3xl font-semibold tracking-[-0.03em] text-[#0f172b] mb-4">Automation with delivery discipline behind it.</h2><p className="text-slate-600 leading-relaxed mb-5">AI Midlands combines AI implementation with more than 20 years of experience delivering integration, digital and data change across complex organisations.</p><Link href="/about"><span className="inline-flex items-center gap-2 text-sm font-semibold text-[#a83324] cursor-pointer">Read about Kunle and the delivery approach <AimArrow className="w-4 h-4" /></span></Link></div></div></section>
+        <section className="bg-white border-y border-[#e8e0d8] py-16"><div className="container"><div className="max-w-6xl mx-auto grid md:grid-cols-[1fr_auto] gap-8 items-center"><div><div className="flex items-center gap-3 mb-3 text-[#0f172b] [--aim-icon-accent:#c83927]"><IntegrationIcon className="w-6 h-6" /><p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em]">Your systems, not another platform</p></div><h2 className="text-2xl md:text-3xl font-semibold tracking-[-0.03em] text-[#0f172b] mb-3">Automation should remove work, not introduce another place to work.</h2><p className="text-slate-600 leading-relaxed max-w-3xl">We fit the solution around the tools your business already depends on wherever possible. Where APIs are available we use them; where they are not, we design the simplest reliable route. A new application is only useful if it genuinely makes the overall process better.</p></div><div className="flex flex-wrap md:max-w-xs gap-2 md:justify-end">{config.systems.map(system => <span key={system} className="rounded-full border border-[#ddd4cc] bg-[#faf8f5] px-3 py-1.5 text-sm font-medium text-slate-700">{system}</span>)}</div></div></div></section>
+
+        <section className="container py-20 md:py-24"><div className="max-w-6xl mx-auto grid lg:grid-cols-[0.9fr_1.1fr] gap-10 items-start"><div className="rounded-[26px] border border-[#eadfd6] bg-[#fff4ed] p-7"><p className="text-[#b43a28] text-xs font-bold uppercase tracking-[0.16em] mb-3">Indicative price</p><p className="text-4xl font-semibold tracking-[-0.04em] text-[#0f172b] mb-3">{config.price}</p><p className="text-slate-600">{config.priceNote}</p></div><div><div className="flex items-center gap-3 mb-4 text-[#0f172b] [--aim-icon-accent:#c83927]"><ApprovalIcon className="w-6 h-6" /><p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em]">Why AI Midlands</p></div><h2 className="text-3xl font-semibold tracking-[-0.03em] text-[#0f172b] mb-4">Process redesign with delivery discipline behind it.</h2><p className="text-slate-600 leading-relaxed mb-5">AI Midlands combines process redesign and AI implementation with more than 20 years of experience delivering integration, digital and data change across complex organisations. The measure of success is not whether the automation runs; it is whether the work becomes easier, faster or more reliable.</p><Link href="/about"><span className="inline-flex items-center gap-2 text-sm font-semibold text-[#a83324] cursor-pointer">Read about Kunle and the delivery approach <AimArrow className="w-4 h-4" /></span></Link></div></div></section>
 
         <section className="bg-[#0f172b] py-16 text-white"><div className="container"><div className="max-w-5xl mx-auto grid md:grid-cols-[1fr_auto] gap-8 items-center"><div><div className="flex items-center gap-3 mb-3 [--aim-icon-accent:#f0a08b]"><ControlIcon className="w-6 h-6" /><p className="text-[#f0a08b] text-xs font-semibold uppercase tracking-[0.18em]">A sensible first step</p></div><h2 className="text-3xl md:text-4xl font-semibold tracking-[-0.035em]">Show us one process that wastes time or loses opportunities.</h2></div><div className="flex flex-col sm:flex-row gap-3"><a href="/#assessment" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#c83927] px-6 py-3 font-semibold text-white hover:bg-[#a92f21] [--aim-icon-accent:#fff]">Assess the process <AimArrow className="w-4 h-4" /></a><a href={mailHref} className="inline-flex items-center justify-center rounded-full border border-slate-600 px-6 py-3 text-sm font-semibold text-slate-200 hover:bg-slate-800">Email the process</a></div></div></div></section>
       </main>
