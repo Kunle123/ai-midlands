@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { Hero } from "@/components/hero/Hero";
 import { ProcessAssessment } from "@/components/ProcessAssessment";
 import { EditorialIllustration } from "@/components/brand/EditorialIllustration";
+import { ServiceFlowGraphic } from "@/components/brand/ServiceFlowGraphic";
 import { AimArrow } from "@/components/brand/AiMidlandsIcons";
 
 const FOUNDER_IMAGE = "https://arokin.org/media/kunle-ibidun-founder.jpg";
@@ -85,64 +86,6 @@ const FAQS = [
   ["Can a person approve actions before they happen?", "Yes. Human approval can sit immediately before emails are sent, records are committed, financial actions are taken or any other step where judgement matters."],
 ];
 
-function FlowDiagram({ variant, className = "" }: { variant: FlowVariant; className?: string }) {
-  if (variant === "enquiry") {
-    return (
-      <div className={`w-[142px] ${className}`} aria-hidden="true">
-        <svg viewBox="0 0 142 54" className="w-full h-auto overflow-visible">
-          <rect x="1" y="12" width="35" height="29" rx="7" fill="#fff" stroke="#cfc7bf" />
-          <path d="m8 19 10.5 8L29 19" fill="none" stroke="#536176" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M36 26.5h20" stroke="#c83927" strokeWidth="2" /><circle cx="46" cy="26.5" r="2.8" fill="#c83927" />
-          <rect x="56" y="7" width="34" height="39" rx="7" fill="#0f172b" />
-          <path d="M64 18h18M64 25h13M64 32h16" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
-          <path d="M90 26.5h17" stroke="#c83927" strokeWidth="2" /><circle cx="98.5" cy="26.5" r="2.8" fill="#c83927" />
-          <ellipse cx="123" cy="17" rx="17" ry="6" fill="#fff" stroke="#cfc7bf" /><path d="M106 17v20c0 3.3 7.6 6 17 6s17-2.7 17-6V17" fill="#fff" stroke="#cfc7bf" /><path d="M106 27c0 3.3 7.6 6 17 6s17-2.7 17-6" fill="none" stroke="#cfc7bf" />
-        </svg>
-      </div>
-    );
-  }
-
-  if (variant === "workflow") {
-    return (
-      <div className={`w-[142px] ${className}`} aria-hidden="true">
-        <svg viewBox="0 0 142 54" className="w-full h-auto overflow-visible">
-          <rect x="1" y="10" width="38" height="34" rx="7" fill="#fff" stroke="#cfc7bf" /><text x="20" y="30" textAnchor="middle" fontSize="7" fontWeight="700" fill="#536176">CRM</text>
-          <path d="M39 27h20" stroke="#c83927" strokeWidth="2" /><circle cx="49" cy="27" r="2.7" fill="#c83927" />
-          <path d="M68 10 84 27 68 44 52 27Z" fill="#0f172b" /><circle cx="68" cy="27" r="4" fill="#c83927" />
-          <path d="M84 27h18" stroke="#c83927" strokeWidth="2" /><path d="m97 22 6 5-6 5" fill="none" stroke="#c83927" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M106 8h29l6 6v32h-35Z" fill="#fff" stroke="#cfc7bf" /><path d="M135 8v8h6" fill="none" stroke="#cfc7bf" /><path d="M113 23h20M113 30h16M113 37h12" stroke="#536176" strokeWidth="1.8" strokeLinecap="round" />
-        </svg>
-      </div>
-    );
-  }
-
-  if (variant === "assistant") {
-    return (
-      <div className={`w-[142px] ${className}`} aria-hidden="true">
-        <svg viewBox="0 0 142 54" className="w-full h-auto overflow-visible">
-          <path d="M2 11h36a7 7 0 0 1 7 7v12a7 7 0 0 1-7 7H20l-10 8v-8H9a7 7 0 0 1-7-7Z" fill="#fff" stroke="#cfc7bf" /><path d="M11 21h23M11 28h16" stroke="#536176" strokeWidth="1.8" strokeLinecap="round" />
-          <path d="M45 26h16" stroke="#c83927" strokeWidth="2" /><circle cx="53" cy="26" r="2.7" fill="#c83927" />
-          <circle cx="75" cy="26" r="16" fill="#0f172b" /><path d="M68 27c3-6 11-6 14 0M75 18v4" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" /><circle cx="75" cy="34" r="2" fill="#c83927" />
-          <path d="M91 26h14" stroke="#c83927" strokeWidth="2" /><path d="m100 21 6 5-6 5" fill="none" stroke="#c83927" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <rect x="107" y="8" width="34" height="38" rx="7" fill="#fff" stroke="#cfc7bf" /><path d="M113 18h22M116 12v8M132 12v8" stroke="#536176" strokeWidth="1.8" strokeLinecap="round" /><path d="m116 31 5 5 11-13" fill="none" stroke="#c83927" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </div>
-    );
-  }
-
-  return (
-    <div className={`w-[142px] ${className}`} aria-hidden="true">
-      <svg viewBox="0 0 142 54" className="w-full h-auto overflow-visible">
-        <rect x="1" y="8" width="34" height="38" rx="7" fill="#fff" stroke="#cfc7bf" /><circle cx="18" cy="19" r="6" fill="#536176" opacity=".22" /><path d="M9 34c2-7 16-7 18 0" fill="none" stroke="#536176" strokeWidth="2" strokeLinecap="round" />
-        <path d="M35 27h15" stroke="#c83927" strokeWidth="2" /><circle cx="42" cy="27" r="2.7" fill="#c83927" />
-        <path d="M53 11h39v31H53Z" fill="#0f172b" rx="6" /><path d="m59 18 13 10 13-10" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /><path d="M59 34h15" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" />
-        <path d="M92 27h14" stroke="#c83927" strokeWidth="2" /><circle cx="99" cy="27" r="2.7" fill="#c83927" />
-        <circle cx="123" cy="27" r="18" fill="#fff" stroke="#cfc7bf" /><path d="m114 27 6 6 12-15" fill="none" stroke="#c83927" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    </div>
-  );
-}
-
 function SystemRail() {
   const systems = ["Email", "CRM", "Spreadsheets", "Finance", "Websites", "APIs"];
   return (
@@ -202,10 +145,10 @@ export default function Home() {
             <div>
               {SERVICES.map(({ number, title, description, examples, flow, href }) => (
                 <Link key={title} href={href}>
-                  <article className="group grid md:grid-cols-[160px_1.15fr_0.95fr_36px] gap-5 md:gap-9 items-center py-9 md:py-11 border-t last:border-b border-[#dcd4cc] cursor-pointer transition-colors hover:bg-white/50 -mx-4 px-4 md:-mx-6 md:px-6">
+                  <article className="group grid md:grid-cols-[205px_1.15fr_0.95fr_36px] gap-5 md:gap-9 items-center py-9 md:py-11 border-t last:border-b border-[#dcd4cc] cursor-pointer transition-colors hover:bg-white/50 -mx-4 px-4 md:-mx-6 md:px-6">
                     <div className="flex md:block items-center gap-5">
                       <span className="text-[#c83927] text-xs font-bold tracking-[0.12em]">{number}</span>
-                      <FlowDiagram variant={flow} className="mt-0 md:mt-3" />
+                      <ServiceFlowGraphic variant={flow} className="mt-0 md:mt-3" />
                     </div>
                     <div>
                       <h3 className="text-2xl md:text-3xl font-semibold tracking-[-0.025em] text-[#0f172b] mb-3">{title}</h3>
@@ -232,8 +175,8 @@ export default function Home() {
 
               <div className="space-y-0">
                 {PROOF_EXAMPLES.map(({ eyebrow, title, before, automation, outcome, flow }, index) => (
-                  <article key={title} className="grid lg:grid-cols-[160px_1.08fr_0.92fr_0.92fr_0.92fr] gap-5 lg:gap-8 py-10 md:py-12 border-t last:border-b border-[#e4ddd6] items-start">
-                    <div><p className="text-[#b43a28] text-xs font-semibold mb-3">0{index + 1}</p><FlowDiagram variant={flow} /></div>
+                  <article key={title} className="grid lg:grid-cols-[205px_1.08fr_0.92fr_0.92fr_0.92fr] gap-5 lg:gap-8 py-10 md:py-12 border-t last:border-b border-[#e4ddd6] items-start">
+                    <div><p className="text-[#b43a28] text-xs font-semibold mb-3">0{index + 1}</p><ServiceFlowGraphic variant={flow} /></div>
                     <div><p className="text-[#b43a28] text-xs font-semibold mb-2">{eyebrow}</p><h3 className="text-xl md:text-2xl font-semibold tracking-[-0.02em] text-[#0f172b]">{title}</h3></div>
                     <div><p className="text-xs text-slate-500 mb-2">Before</p><p className="text-sm text-slate-600 leading-relaxed">{before}</p></div>
                     <div><p className="text-xs text-[#b43a28] mb-2">Automation</p><p className="text-sm text-slate-700 leading-relaxed">{automation}</p></div>
