@@ -4,6 +4,7 @@ import "./editorial-illustrations.css";
 type Variant = "process" | "handoff" | "review";
 type Hair = "close" | "crop" | "wave" | "bun" | "bob";
 type Pose = "present" | "point" | "review" | "type" | "stand";
+type Point = [number, number];
 
 type CharacterProps = {
   x: number;
@@ -18,21 +19,23 @@ type CharacterProps = {
   seated?: boolean;
 };
 
+type ArmPose = { ls: Point; le: Point; lh: Point; rs: Point; re: Point; rh: Point };
+
+const ARM_POSES: Record<Pose, ArmPose> = {
+  present: { ls: [29, 66], le: [20, 72], lh: [15, 88], rs: [57, 66], re: [68, 59], rh: [84, 43] },
+  point: { ls: [29, 66], le: [21, 65], lh: [8, 57], rs: [57, 66], re: [69, 65], rh: [83, 70] },
+  review: { ls: [29, 66], le: [23, 76], lh: [31, 88], rs: [57, 66], re: [63, 76], rh: [54, 88] },
+  type: { ls: [29, 66], le: [27, 77], lh: [39, 84], rs: [57, 66], re: [59, 77], rh: [48, 84] },
+  stand: { ls: [29, 66], le: [25, 81], lh: [27, 97], rs: [57, 66], re: [61, 81], rh: [59, 97] },
+};
+
+function limbPath(a: Point, b: Point) {
+  return `M${a[0]} ${a[1]} L${b[0]} ${b[1]}`;
+}
+
 function Character({ x, y, scale = 1, skin, top, bottom, hair, pose, jacket, seated = false }: CharacterProps) {
-  const leftArm: Record<Pose, string> = {
-    present: "M33 61 C21 66 18 76 15 88",
-    point: "M33 61 C20 64 13 62 5 56",
-    review: "M33 61 C23 68 24 79 30 87",
-    type: "M33 61 C26 70 29 78 38 84",
-    stand: "M33 61 C27 73 27 84 29 96",
-  };
-  const rightArm: Record<Pose, string> = {
-    present: "M48 61 C61 58 73 50 84 42",
-    point: "M48 61 C63 63 72 67 82 70",
-    review: "M48 61 C60 69 61 78 55 87",
-    type: "M48 61 C55 69 59 77 50 84",
-    stand: "M48 61 C54 73 54 84 52 96",
-  };
+  const arms = ARM_POSES[pose];
+  const sleeve = jacket ?? top;
   const hairShape: Record<Hair, React.ReactNode> = {
     close: <path d="M26 29c2-9 8-14 17-14 9 0 15 6 16 15-5-3-10-5-17-5-6 0-11 1-16 4Z" fill="#17191f" />,
     crop: <path d="M25 31c0-10 6-17 17-17 10 0 17 7 17 17-6-4-11-6-17-6-7 0-12 2-17 6Z" fill="#2a211f" />,
@@ -43,19 +46,32 @@ function Character({ x, y, scale = 1, skin, top, bottom, hair, pose, jacket, sea
 
   return (
     <g transform={`translate(${x} ${y}) scale(${scale})`} className="aim-editorial-person">
-      {seated && <><path d="M20 115h48v9H20z" fill="#d9d2ca" /><path d="M27 123v30M61 123v30" stroke="#9a9188" strokeWidth="5" strokeLinecap="round" /></>}
+      {seated && <><path d="M19 116h50v9H19z" fill="#d9d2ca" /><path d="M27 124v30M61 124v30" stroke="#9a9188" strokeWidth="5" strokeLinecap="round" /></>}
+
+      {/* sleeves first so the torso covers the shoulder joins */}
+      <path d={limbPath(arms.ls, arms.le)} stroke={sleeve} strokeWidth="12" strokeLinecap="round" />
+      <path d={limbPath(arms.rs, arms.re)} stroke={sleeve} strokeWidth="12" strokeLinecap="round" />
+
       <ellipse cx="43" cy="39" rx="18" ry="20" fill={skin} />
-      <ellipse cx="26" cy="41" rx="3" ry="5" fill={skin} /><ellipse cx="60" cy="41" rx="3" ry="5" fill={skin} />
+      <ellipse cx="26" cy="41" rx="3" ry="5" fill={skin} />
+      <ellipse cx="60" cy="41" rx="3" ry="5" fill={skin} />
       {hairShape[hair]}
       <circle cx="36" cy="40" r="1.35" fill="#1e2430" /><circle cx="50" cy="40" r="1.35" fill="#1e2430" />
       <path d="M40 49c3 2 6 2 9 0" stroke="#81533f" strokeWidth="1.2" strokeLinecap="round" fill="none" />
       <path d="M39 56h8v10h-8z" fill={skin} />
+
       <path d="M28 64 C33 59 52 59 57 64 L62 109 L23 109 Z" fill={top} />
-      {jacket && <><path d="M28 64 38 72l-7 37H20l4-37Z" fill={jacket} /><path d="m57 64-10 8 7 37h11l-4-37Z" fill={jacket} /></>}
-      <path d={leftArm[pose]} stroke={skin} strokeWidth="9" strokeLinecap="round" fill="none" />
-      <path d={rightArm[pose]} stroke={skin} strokeWidth="9" strokeLinecap="round" fill="none" />
-      <circle cx="15" cy="88" r="4.5" fill={skin} /><circle cx="84" cy="42" r="4.5" fill={skin} />
-      {seated ? <path d="M28 109 21 134h13l9-19 8 19h14l-8-25Z" fill={bottom} /> : <path d="M26 109 24 151h13l6-34 5 34h13l-1-42Z" fill={bottom} />}
+      {jacket && <><path d="M28 64 38 72l-7 37H20l4-37Z" fill={jacket} /><path d="m57 64-10 8 7 37h11l-4-37Z" fill={jacket} /><path d="M43 72v35" stroke="#f4eee7" strokeWidth="1.5" opacity=".65" /></>}
+
+      {/* visible forearms and hands are separate from sleeves: no floating/broken arms */}
+      <path d={limbPath(arms.le, arms.lh)} stroke={skin} strokeWidth="8" strokeLinecap="round" />
+      <path d={limbPath(arms.re, arms.rh)} stroke={skin} strokeWidth="8" strokeLinecap="round" />
+      <circle cx={arms.lh[0]} cy={arms.lh[1]} r="4.3" fill={skin} />
+      <circle cx={arms.rh[0]} cy={arms.rh[1]} r="4.3" fill={skin} />
+
+      {seated
+        ? <path d="M28 109 21 134h13l9-19 8 19h14l-8-25Z" fill={bottom} />
+        : <path d="M26 109 24 151h13l6-34 5 34h13l-1-42Z" fill={bottom} />}
       <path d={seated ? "M20 136h16M50 136h17" : "M22 151h18M46 151h18"} stroke="#151923" strokeWidth="5" strokeLinecap="round" />
     </g>
   );
@@ -123,16 +139,19 @@ function ReviewScene() {
       <rect x="33" y="43" width="694" height="384" rx="32" fill="#17233b" stroke="#2d3d5b" />
       <rect x="88" y="86" width="406" height="225" rx="22" fill="#fff" />
       <text x="116" y="118" className="aim-editorial-label">REVIEW BEFORE RELEASE</text>
-      <rect x="116" y="142" width="150" height="11" rx="5.5" fill="#26354f" /><rect x="116" y="169" width="315" height="8" rx="4" fill="#d4cec7" /><rect x="116" y="190" width="267" height="8" rx="4" fill="#d4cec7" />
-      <rect x="116" y="224" width="132" height="55" rx="12" fill="#f8e7df" /><path d="m141 251 11 11 27-31" fill="none" stroke="#c83927" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" /><text x="194" y="255" className="aim-editorial-small">APPROVE</text>
-      <rect x="286" y="224" width="145" height="55" rx="12" fill="#f4f1ed" /><text x="358" y="255" textAnchor="middle" className="aim-editorial-small">SEND BACK</text>
-      <path d="M494 198h84" stroke="#c83927" strokeWidth="5" strokeLinecap="round" /><path d="m566 187 13 11-13 11" stroke="#c83927" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      <rect x="578" y="145" width="102" height="108" rx="20" fill="#223250" stroke="#344663" /><circle cx="629" cy="182" r="20" fill="#c83927" /><path d="m619 182 7 7 15-18" stroke="#fff" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" /><text x="629" y="226" textAnchor="middle" className="aim-editorial-label aim-editorial-label-light">READY</text>
-      <rect x="205" y="342" width="353" height="19" rx="9.5" fill="#38465e" /><path d="M238 360v38M524 360v38" stroke="#46546c" strokeWidth="8" strokeLinecap="round" />
-      <Character x={29} y={222} scale={0.86} skin="#7b4a36" top="#e7e1d8" bottom="#202d3e" hair="wave" pose="point" jacket="#667a68" />
-      <Character x={513} y={241} scale={0.78} skin="#e0ae86" top="#efe5db" bottom="#293849" hair="bun" pose="stand" jacket="#7d5f8d" />
-      <Character x={270} y={291} scale={0.72} skin="#b97857" top="#e7d69c" bottom="#263445" hair="crop" pose="review" seated />
-      <text x="86" y="69" className="aim-editorial-caption aim-editorial-caption-light">AUTOMATION DOES THE REPEATABLE WORK. PEOPLE KEEP THE DECISION.</text>
+      <rect x="116" y="139" width="162" height="9" rx="4.5" fill="#24324a" />
+      <rect x="116" y="166" width="324" height="7" rx="3.5" fill="#d5cec7" />
+      <rect x="116" y="187" width="278" height="7" rx="3.5" fill="#d5cec7" />
+      <rect x="116" y="224" width="132" height="55" rx="12" fill="#f8e7df" /><path d="m142 251 12 12 29-35" fill="none" stroke="#c83927" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+      <rect x="276" y="224" width="146" height="55" rx="12" fill="#f2efeb" /><text x="349" y="257" textAnchor="middle" className="aim-editorial-small">HUMAN APPROVAL</text>
+      <path d="M494 193h75" stroke="#c83927" strokeWidth="5" strokeLinecap="round" /><path d="m556 182 14 11-17 6" fill="none" stroke="#c83927" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+      <rect x="569" y="148" width="104" height="100" rx="18" fill="#223250" stroke="#41516c" /><circle cx="621" cy="183" r="19" fill="#c83927" /><path d="m612 183 7 7 14-17" fill="none" stroke="#fff" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" /><text x="621" y="223" textAnchor="middle" className="aim-editorial-label aim-editorial-label-light">READY</text>
+      <rect x="234" y="334" width="330" height="21" rx="10.5" fill="#6f7785" opacity=".72" /><path d="M267 354v39M530 354v39" stroke="#4e596b" strokeWidth="8" strokeLinecap="round" />
+      <Character x={43} y={224} scale={0.86} skin="#8a563e" top="#e8e1d8" bottom="#243249" hair="crop" pose="present" jacket="#455f82" />
+      <Character x={544} y={242} scale={0.82} skin="#d7a17c" top="#d9b05b" bottom="#273547" hair="bob" pose="review" />
+      <Character x={330} y={290} scale={0.73} skin="#68402f" top="#efe8df" bottom="#243146" hair="close" pose="type" seated jacket="#a84837" />
+      <OfficePlant x={660} y={314} scale={0.72} />
+      <text x="380" y="73" textAnchor="middle" className="aim-editorial-caption aim-editorial-caption-light">AUTOMATION DOES THE REPEATABLE WORK. PEOPLE KEEP THE DECISION.</text>
     </svg>
   );
 }
