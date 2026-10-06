@@ -4,159 +4,177 @@ type IconProps = SVGProps<SVGSVGElement>;
 
 function IconShell({ children, ...props }: IconProps & { children: React.ReactNode }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      focusable="false"
-      {...props}
-    >
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" {...props}>
       {children}
     </svg>
   );
 }
 
-const ink = {
-  stroke: "currentColor",
-  strokeWidth: 1.65,
-  strokeLinecap: "round" as const,
-  strokeLinejoin: "round" as const,
-};
+const ink = "currentColor";
+const accent = "var(--aim-icon-accent, #c83927)";
+const line = { stroke: ink, strokeWidth: 1.45, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
 
-const accent = "var(--aim-icon-accent, #e85d2a)";
+function Node({ x, y, w = 5.5, h = 4.5, dark = false }: { x: number; y: number; w?: number; h?: number; dark?: boolean }) {
+  return <rect x={x} y={y} width={w} height={h} rx="1.2" fill={dark ? ink : "none"} stroke={ink} strokeWidth="1.35" />;
+}
 
-/** Incoming information being understood and turned into structured work. */
+/** Incoming information → extraction → structured record. */
 export function EnquiryIcon(props: IconProps) {
   return (
     <IconShell {...props}>
-      <rect x="3" y="5" width="12" height="10" rx="2.5" {...ink} />
-      <path d="m4.5 7 4.5 3.7L13.5 7" {...ink} />
-      <path d="M16 9.5h4M18 7.5v4" stroke={accent} strokeWidth="1.9" strokeLinecap="round" />
-      <path d="M9 18.5h8" {...ink} />
-      <circle cx="19" cy="18.5" r="2" fill={accent} />
+      <Node x={1.8} y={4.4} w={6.4} h={5.2} />
+      <path d="M3.1 6.1 5 7.5l1.9-1.4" {...line} />
+      <path d="M8.7 7h4.6" stroke={accent} strokeWidth="1.8" strokeLinecap="round" />
+      <circle cx="11.2" cy="7" r="1.6" fill={accent} />
+      <path d="M11.2 8.7v6.1" stroke={accent} strokeWidth="1.4" strokeDasharray="1.8 1.8" />
+      <Node x={8.4} y={15.3} w={5.6} h={4.5} dark />
+      <path d="M15.1 17.55h6.4" {...line} />
+      <circle cx="20.6" cy="17.55" r="1.55" fill={accent} />
     </IconShell>
   );
 }
 
-/** A business event moving reliably between connected systems. */
+/** Trigger → connected system → confirmed next action. */
 export function WorkflowIcon(props: IconProps) {
   return (
     <IconShell {...props}>
-      <rect x="2.5" y="4" width="6" height="5.5" rx="1.8" {...ink} />
-      <rect x="15.5" y="14.5" width="6" height="5.5" rx="1.8" {...ink} />
-      <path d="M8.5 6.75h4.25c2.1 0 3.8 1.7 3.8 3.8v4" {...ink} />
-      <path d="m14.5 12.5 2.05 2.05 2.05-2.05" stroke={accent} strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="12.2" cy="6.75" r="1.8" fill={accent} />
+      <Node x={1.8} y={4} w={5.8} h={5} />
+      <Node x={16.4} y={15} w={5.8} h={5} dark />
+      <path d="M7.6 6.5h4.1c2.9 0 5.2 2.3 5.2 5.2V15" {...line} />
+      <circle cx="11.7" cy="6.5" r="1.75" fill={accent} />
+      <path d="m14.7 12.6 2.2 2.4 2.2-2.4" stroke={accent} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M4.7 12.2v5.2h7" stroke={ink} strokeWidth="1.15" strokeDasharray="2 2" strokeLinecap="round" />
     </IconShell>
   );
 }
 
-/** A useful assistant that understands a conversation and can take action. */
+/** Question → useful answer → booked/recorded action. */
 export function AssistantIcon(props: IconProps) {
   return (
     <IconShell {...props}>
-      <path d="M4 5.5h11a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3H9l-4 3v-3.7a3 3 0 0 1-1-2.3v-4a3 3 0 0 1 3-3Z" {...ink} />
-      <path d="M8 10h5" {...ink} />
-      <path d="M18.5 4v3M17 5.5h3" stroke={accent} strokeWidth="1.9" strokeLinecap="round" />
-      <circle cx="14.8" cy="12.5" r="1.5" fill={accent} />
+      <rect x="1.8" y="3.7" width="7" height="6.1" rx="1.5" stroke={ink} strokeWidth="1.35" />
+      <path d="M3.7 6.7h3.2" {...line} />
+      <path d="M8.8 6.7h4.4" stroke={accent} strokeWidth="1.8" strokeLinecap="round" />
+      <circle cx="11.2" cy="6.7" r="1.6" fill={accent} />
+      <rect x="9.9" y="12" width="5.9" height="4.8" rx="1.2" fill={ink} />
+      <path d="M15.8 14.4h3.8v4.2" {...line} />
+      <path d="m18.1 17.1 1.5 1.5 2.6-3" stroke={accent} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
     </IconShell>
   );
 }
 
-/** Personalised outreach with a deliberate human approval point. */
+/** CRM context → approval gate → personalised send. */
 export function OutreachIcon(props: IconProps) {
   return (
     <IconShell {...props}>
-      <path d="M3.5 6.5h10v8h-10z" {...ink} />
-      <path d="m4.5 8 4 3 4-3" {...ink} />
-      <path d="M15.5 9.5h5v8h-5" {...ink} />
-      <path d="m16.7 14.7 1.35 1.35 2.6-3" stroke={accent} strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="5" cy="18.5" r="1.8" fill={accent} />
-      <path d="M7.8 18.5h5.2" {...ink} />
+      <Node x={1.7} y={5} w={6} h={5} />
+      <path d="M7.7 7.5h4.5" {...line} />
+      <circle cx="11.4" cy="7.5" r="1.65" fill={accent} />
+      <path d="M11.4 9.2v5.2" stroke={accent} strokeWidth="1.3" strokeDasharray="1.8 1.8" />
+      <rect x="8.5" y="14.4" width="5.8" height="4.4" rx="1.2" stroke={ink} strokeWidth="1.35" />
+      <path d="m9.7 15.8 1.7 1.3 1.7-1.3" {...line} />
+      <path d="M14.3 16.6h4.5" {...line} />
+      <path d="m17.1 14.9 1.7 1.7-1.7 1.7" stroke={accent} strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="21" cy="16.6" r="1.45" fill={accent} />
     </IconShell>
   );
 }
 
-/** One-process assessment: inspect the current work before designing automation. */
+/** Current process → assessment → recommended next step. */
 export function AssessmentIcon(props: IconProps) {
   return (
     <IconShell {...props}>
-      <rect x="5" y="3.5" width="12" height="17" rx="2.4" {...ink} />
-      <path d="M8 7h6M8 10.5h4.5M8 14h3" {...ink} />
-      <circle cx="16.7" cy="15.8" r="3.1" stroke={accent} strokeWidth="1.8" />
-      <path d="m19 18.1 2 2" stroke={accent} strokeWidth="1.8" strokeLinecap="round" />
+      <Node x={1.8} y={4.4} w={5.8} h={5} />
+      <path d="M7.6 6.9h4" {...line} />
+      <circle cx="11.2" cy="6.9" r="1.7" fill={accent} />
+      <path d="M11.2 8.7v5" stroke={accent} strokeWidth="1.3" strokeDasharray="1.7 1.7" />
+      <rect x="8.3" y="14.1" width="5.8" height="5" rx="1.2" fill={ink} />
+      <path d="M14.1 16.6h7" {...line} />
+      <path d="m19.2 14.8 1.9 1.8-1.9 1.8" stroke={accent} strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" />
     </IconShell>
   );
 }
 
-/** Human control and approval in the automation flow. */
+/** Automation flow with a deliberate human decision gate. */
 export function ApprovalIcon(props: IconProps) {
   return (
     <IconShell {...props}>
-      <path d="M5 12.2 9.2 16 19 6.2" {...ink} />
-      <path d="M4 4h10a6 6 0 0 1 6 6v4a6 6 0 0 1-6 6H9a5 5 0 0 1-5-5Z" {...ink} />
-      <circle cx="18.8" cy="5.2" r="2.2" fill={accent} />
+      <Node x={1.7} y={7.2} w={5.4} h={4.5} />
+      <path d="M7.1 9.45h4.2" {...line} />
+      <rect x="10.8" y="6.2" width="5.5" height="6.5" rx="1.4" stroke={accent} strokeWidth="1.55" />
+      <path d="m12.1 9.5 1.3 1.3 1.9-2.3" stroke={accent} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M16.3 9.45h4.1" {...line} />
+      <circle cx="21.6" cy="9.45" r="1.55" fill={accent} />
+      <path d="M13.55 12.7v5.4" stroke={ink} strokeWidth="1.1" strokeDasharray="1.8 1.8" />
     </IconShell>
   );
 }
 
-/** Security without black-boxing the flow. */
+/** Visible data path with an explicit control point. */
 export function ControlIcon(props: IconProps) {
   return (
     <IconShell {...props}>
-      <path d="M12 2.8 19 5.6v5.6c0 4.4-2.8 7.7-7 10-4.2-2.3-7-5.6-7-10V5.6Z" {...ink} />
-      <path d="M9.5 11.5h5v4h-5z" {...ink} />
-      <path d="M10.5 11.5V10a1.5 1.5 0 0 1 3 0v1.5" {...ink} />
-      <circle cx="17.6" cy="7" r="1.7" fill={accent} />
+      <Node x={1.8} y={4} w={5.4} h={4.5} />
+      <path d="M7.2 6.25h9.5" {...line} />
+      <circle cx="12" cy="6.25" r="1.65" fill={accent} />
+      <Node x={16.8} y={4} w={5.4} h={4.5} />
+      <path d="M12 7.9v5.1" stroke={accent} strokeWidth="1.25" strokeDasharray="1.8 1.8" />
+      <rect x="8.6" y="13.2" width="6.8" height="6.3" rx="1.4" stroke={ink} strokeWidth="1.35" />
+      <path d="M10.7 16.3h2.6" {...line} />
+      <circle cx="13.8" cy="16.3" r="1.1" fill={accent} />
     </IconShell>
   );
 }
 
-/** Calendar / booked next action, tied back into the business process. */
+/** Requested action → booked slot → confirmation. */
 export function BookingIcon(props: IconProps) {
   return (
     <IconShell {...props}>
-      <rect x="3.5" y="5.5" width="14" height="14" rx="2.4" {...ink} />
-      <path d="M7 3.5v4M14 3.5v4M3.5 9h14" {...ink} />
-      <path d="m8 14 2 2 4-4" stroke={accent} strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M18.5 12h2v5h-2" {...ink} />
+      <Node x={1.7} y={6.2} w={5.3} h={4.5} />
+      <path d="M7 8.45h4.4" {...line} />
+      <circle cx="10.8" cy="8.45" r="1.55" fill={accent} />
+      <rect x="10" y="12.2" width="7.2" height="6.6" rx="1.3" stroke={ink} strokeWidth="1.35" />
+      <path d="M11.4 14h4.4M12 11v2M15.2 11v2" {...line} />
+      <path d="m13 16.1 1.1 1.1 1.8-2" stroke={accent} strokeWidth="1.55" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M17.2 15.5h4" {...line} />
     </IconShell>
   );
 }
 
-/** Connected systems / API integration. */
+/** Two existing systems connected by a visible data path. */
 export function IntegrationIcon(props: IconProps) {
   return (
     <IconShell {...props}>
-      <rect x="2.5" y="4.5" width="6" height="6" rx="1.8" {...ink} />
-      <rect x="15.5" y="13.5" width="6" height="6" rx="1.8" {...ink} />
-      <path d="M8.5 7.5h4a4 4 0 0 1 4 4v2" {...ink} />
-      <path d="M10 16.5H7.5a4 4 0 0 1-4-4v-2" {...ink} />
-      <circle cx="12.5" cy="7.5" r="1.8" fill={accent} />
-      <circle cx="10" cy="16.5" r="1.8" fill={accent} />
+      <Node x={1.6} y={5} w={6} h={5} />
+      <Node x={16.4} y={14} w={6} h={5} dark />
+      <path d="M7.6 7.5h4c3 0 5.4 2.4 5.4 5.4V14" {...line} />
+      <circle cx="11.6" cy="7.5" r="1.7" fill={accent} />
+      <circle cx="17" cy="12.9" r="1.55" fill={accent} />
+      <path d="M7.8 17.3h5.4" stroke={ink} strokeWidth="1.15" strokeDasharray="2 2" strokeLinecap="round" />
     </IconShell>
   );
 }
 
-/** Pricing / commercial scope, specific to bounded automation work. */
+/** A bounded piece of work with a clear commercial edge. */
 export function ScopeIcon(props: IconProps) {
   return (
     <IconShell {...props}>
-      <rect x="4" y="4" width="13" height="16" rx="2.4" {...ink} />
-      <path d="M8 8h5M8 11h5M8 15h2.5" {...ink} />
-      <circle cx="18.5" cy="15.5" r="3" fill="none" stroke={accent} strokeWidth="1.8" />
-      <path d="M18.5 13.8v3.4M17.4 14.5h1.6c.8 0 1.2.3 1.2.8s-.4.8-1.2.8h-1.1" stroke={accent} strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M3.2 6.1h5.5M3.2 9.4h4" {...line} />
+      <path d="M9.6 4.6h5.8v6.2H9.6z" stroke={ink} strokeWidth="1.35" />
+      <circle cx="12.5" cy="7.7" r="1.55" fill={accent} />
+      <path d="M12.5 10.8v4.1" stroke={accent} strokeWidth="1.25" strokeDasharray="1.7 1.7" />
+      <path d="M7.4 15.2h10.2v4.6H7.4z" stroke={ink} strokeWidth="1.35" />
+      <path d="M9.2 17.5h5.5" {...line} />
+      <circle cx="17.8" cy="17.5" r="1.45" fill={accent} />
     </IconShell>
   );
 }
 
-/** Small functional arrow styled to match the family. */
 export function AimArrow(props: IconProps) {
   return (
     <IconShell {...props}>
-      <path d="M4 12h13" {...ink} />
-      <path d="m13.5 7.5 4.5 4.5-4.5 4.5" stroke={accent} strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M4 12h13" stroke={ink} strokeWidth="1.5" strokeLinecap="round" />
+      <path d="m13.5 7.5 4.5 4.5-4.5 4.5" stroke={accent} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </IconShell>
   );
 }
