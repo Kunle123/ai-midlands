@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, Calendar, CheckCircle2, Mail, RotateCcw, ShieldCheck } from "lucide-react";
+import { AimArrow, ApprovalIcon, AssessmentIcon, BookingIcon, ControlIcon, EnquiryIcon } from "@/components/brand/AiMidlandsIcons";
 import { getAttribution, trackCustomEvent, trackLeadCreated, withUtmParams } from "@/lib/tracking";
 
 type Assessment = {
@@ -114,6 +114,10 @@ function addCalendlyPrefill(url: string, lead: LeadForm): string {
   } catch {
     return url;
   }
+}
+
+function StepMark() {
+  return <span className="mt-1 h-2 w-2 rounded-full bg-[#c83927] shrink-0" />;
 }
 
 export function ProcessAssessment() {
@@ -246,20 +250,18 @@ export function ProcessAssessment() {
   };
 
   return (
-    <section id="assessment" className="border-y border-orange-100 bg-[#fdf6ee] py-16 md:py-24">
+    <section id="assessment" className="border-y border-[#eadfd6] bg-[#fff4ed] py-18 md:py-24">
       <div className="container">
-        <div className="max-w-5xl mx-auto">
-          <div className="max-w-3xl mb-9">
-            <p className="text-orange-700 text-sm font-semibold uppercase tracking-widest mb-3">Start with your problem</p>
-            <h2 className="text-3xl md:text-5xl font-bold tracking-[-0.03em] text-slate-900 leading-tight mb-5">What would you like to work better?</h2>
-            <p className="text-lg text-slate-600 leading-relaxed">
-              Describe one process that is repetitive, slow or awkward. We’ll give you an immediate first-pass view of what looks practical, the likely shape of a solution and the budget band it may sit in.
-            </p>
+        <div className="max-w-6xl mx-auto">
+          <div className="max-w-3xl mb-10">
+            <div className="flex items-center gap-3 mb-4 text-[#0f172b] [--aim-icon-accent:#c83927]"><AssessmentIcon className="w-7 h-7" /><p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em]">Start with your problem</p></div>
+            <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-tight mb-5">What would you like to work better?</h2>
+            <p className="text-lg text-slate-600 leading-relaxed">Describe one process that is repetitive, slow or awkward. We’ll give you an immediate first-pass view of what looks practical, the likely shape of a solution and the budget band it may sit in.</p>
           </div>
 
           <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-6 items-start">
-            <form onSubmit={assess} className="rounded-3xl border border-orange-100 bg-white p-6 md:p-8 shadow-sm">
-              <label htmlFor="process-assessment" className="block font-semibold text-slate-900 mb-2">Describe the process</label>
+            <form onSubmit={assess} className="rounded-[28px] border border-[#eadfd6] bg-white p-6 md:p-8">
+              <label htmlFor="process-assessment" className="block font-semibold text-[#0f172b] mb-2">Describe the process</label>
               <p className="text-sm text-slate-500 mb-4">For example: “Every Friday Sarah downloads three spreadsheets and combines them for our sales meeting.”</p>
               <textarea
                 id="process-assessment"
@@ -267,56 +269,41 @@ export function ProcessAssessment() {
                 onChange={(event) => setProcess(event.target.value)}
                 rows={7}
                 placeholder="What happens today, who does it, and which systems or files are involved?"
-                className="w-full resize-none rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-800 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
+                className="w-full resize-none rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-800 outline-none transition focus:border-[#c83927] focus:ring-4 focus:ring-[#f8ddd3]"
               />
               {error && <p className="mt-2 text-sm text-red-700">{error}</p>}
               <div className="mt-4 flex items-center justify-between gap-4">
                 <p className="text-xs leading-relaxed text-slate-400">Don’t include passwords, confidential records or personal customer data.</p>
-                <button type="submit" className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#e85d2a] px-5 py-3 font-semibold text-white transition-colors hover:bg-[#d14e1e]">
-                  Assess this process <ArrowRight className="w-4 h-4" />
-                </button>
+                <button type="submit" className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#c83927] px-5 py-3 font-semibold text-white transition-colors hover:bg-[#a92f21]">Assess this process <AimArrow className="w-4 h-4 [--aim-icon-accent:#fff]" /></button>
               </div>
             </form>
 
-            <div className="rounded-3xl bg-slate-900 p-6 md:p-8 text-white min-h-[360px]">
+            <div className="rounded-[28px] bg-[#0f172b] p-6 md:p-8 text-white min-h-[360px]">
               {!assessment ? (
                 <div className="h-full flex flex-col justify-between gap-10">
                   <div>
-                    <p className="text-orange-400 text-xs font-bold uppercase tracking-widest mb-3">What you’ll get</p>
-                    <h3 className="text-2xl font-bold mb-5">A practical first view, not an AI sales pitch.</h3>
-                    <div className="space-y-3 text-slate-300">
-                      {["What looks automatable", "Likely systems and hand-offs", "Where human control should remain", "Indicative complexity and budget band", "A sensible next step"].map(item => (
-                        <div key={item} className="flex items-start gap-3"><CheckCircle2 className="w-4 h-4 mt-1 text-orange-400 shrink-0" /><span>{item}</span></div>
-                      ))}
-                    </div>
+                    <div className="flex items-center gap-3 mb-4 [--aim-icon-accent:#f0a08b]"><EnquiryIcon className="w-7 h-7 text-white" /><p className="text-[#f0a08b] text-xs font-bold uppercase tracking-[0.16em]">What you’ll get</p></div>
+                    <h3 className="text-2xl font-semibold mb-5">A practical first view, not an AI sales pitch.</h3>
+                    <div className="space-y-3 text-slate-300">{["What looks automatable", "Likely systems and hand-offs", "Where human control should remain", "Indicative complexity and budget band", "A sensible next step"].map(item => <div key={item} className="flex items-start gap-3"><StepMark /><span>{item}</span></div>)}</div>
                   </div>
                   <p className="text-xs text-slate-500">This is an indicative assessment, not a fixed quote. We confirm feasibility after checking the actual systems, access and rules involved.</p>
                 </div>
               ) : (
                 <div>
                   <div className="flex items-start justify-between gap-5 mb-6">
-                    <div>
-                      <p className="text-orange-400 text-xs font-bold uppercase tracking-widest mb-2">Your first-pass assessment</p>
-                      <h3 className="text-2xl font-bold leading-tight">{assessment.title}</h3>
-                    </div>
-                    <button type="button" onClick={reset} className="text-slate-400 hover:text-white" aria-label="Start again"><RotateCcw className="w-4 h-4" /></button>
+                    <div><p className="text-[#f0a08b] text-xs font-bold uppercase tracking-[0.16em] mb-2">Your first-pass assessment</p><h3 className="text-2xl font-semibold leading-tight">{assessment.title}</h3></div>
+                    <button type="button" onClick={reset} className="text-xs text-slate-400 hover:text-white underline underline-offset-4">Start again</button>
                   </div>
 
                   <p className="text-slate-300 leading-relaxed mb-6">{assessment.summary}</p>
-
                   <div className="grid sm:grid-cols-2 gap-3 mb-6">
                     <div className="rounded-xl border border-slate-700 bg-slate-800/70 p-4"><p className="text-slate-500 text-xs uppercase tracking-wider mb-1">Likely level</p><p className="font-semibold">{assessment.complexity}</p></div>
                     <div className="rounded-xl border border-slate-700 bg-slate-800/70 p-4"><p className="text-slate-500 text-xs uppercase tracking-wider mb-1">Indicative budget</p><p className="font-semibold">{assessment.price}</p></div>
                   </div>
 
-                  <div className="mb-6">
-                    <p className="text-slate-500 text-xs uppercase tracking-wider mb-2">Likely approach</p>
-                    <div className="space-y-2">{assessment.approach.map(item => <div key={item} className="flex gap-3 text-sm text-slate-300"><CheckCircle2 className="w-4 h-4 mt-0.5 text-orange-400 shrink-0" /><span>{item}</span></div>)}</div>
-                  </div>
+                  <div className="mb-6"><p className="text-slate-500 text-xs uppercase tracking-wider mb-2">Likely approach</p><div className="space-y-2">{assessment.approach.map(item => <div key={item} className="flex gap-3 text-sm text-slate-300"><StepMark /><span>{item}</span></div>)}</div></div>
 
-                  <div className="rounded-xl border border-slate-700 p-4 mb-6">
-                    <div className="flex items-start gap-3"><ShieldCheck className="w-4 h-4 mt-1 text-orange-400 shrink-0" /><div><p className="font-semibold text-sm mb-1">Human control</p><p className="text-sm text-slate-400">{assessment.humanControl}</p></div></div>
-                  </div>
+                  <div className="rounded-xl border border-slate-700 p-4 mb-6 [--aim-icon-accent:#f0a08b]"><div className="flex items-start gap-3"><ApprovalIcon className="w-5 h-5 mt-0.5 text-white shrink-0" /><div><p className="font-semibold text-sm mb-1">Human control</p><p className="text-sm text-slate-400">{assessment.humanControl}</p></div></div></div>
 
                   <div className="flex flex-wrap gap-2 mb-6">{assessment.systems.map(system => <span key={system} className="rounded-full border border-slate-700 bg-slate-800 px-3 py-1 text-xs text-slate-300">{system}</span>)}</div>
                   <p className="text-sm text-slate-400 mb-6">Typical delivery: {assessment.timeframe}.</p>
@@ -326,47 +313,30 @@ export function ProcessAssessment() {
                       <p className="font-semibold mb-1">Send this assessment to AI Midlands</p>
                       <p className="text-sm text-slate-400 mb-4">Leave your details and we’ll have the process and first-pass assessment ready when we respond.</p>
                       <div className="grid sm:grid-cols-2 gap-3">
-                        <input value={lead.name} onChange={e => setLead(current => ({ ...current, name: e.target.value }))} placeholder="Your name *" autoComplete="name" className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-orange-400" />
-                        <input value={lead.company} onChange={e => setLead(current => ({ ...current, company: e.target.value }))} placeholder="Company" autoComplete="organization" className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-orange-400" />
-                        <input value={lead.email} onChange={e => setLead(current => ({ ...current, email: e.target.value }))} placeholder="Work email *" type="email" autoComplete="email" className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-orange-400" />
-                        <input value={lead.phone} onChange={e => setLead(current => ({ ...current, phone: e.target.value }))} placeholder="Phone (optional)" type="tel" autoComplete="tel" className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-orange-400" />
+                        <input value={lead.name} onChange={e => setLead(current => ({ ...current, name: e.target.value }))} placeholder="Your name *" autoComplete="name" className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-[#f0a08b]" />
+                        <input value={lead.company} onChange={e => setLead(current => ({ ...current, company: e.target.value }))} placeholder="Company" autoComplete="organization" className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-[#f0a08b]" />
+                        <input value={lead.email} onChange={e => setLead(current => ({ ...current, email: e.target.value }))} placeholder="Work email *" type="email" autoComplete="email" className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-[#f0a08b]" />
+                        <input value={lead.phone} onChange={e => setLead(current => ({ ...current, phone: e.target.value }))} placeholder="Phone (optional)" type="tel" autoComplete="tel" className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-[#f0a08b]" />
                       </div>
                       <input aria-hidden="true" tabIndex={-1} autoComplete="off" value={lead.website} onChange={e => setLead(current => ({ ...current, website: e.target.value }))} className="hidden" name="website" />
                       {leadError && <p className="mt-3 text-sm text-orange-200">{leadError}</p>}
-                      <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <p className="text-[11px] leading-relaxed text-slate-500">By sending this, you’re asking AI Midlands to contact you about this assessment. See our <a className="underline hover:text-slate-300" href="/privacy">privacy notice</a>.</p>
-                        <button disabled={leadState === "submitting"} type="submit" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 hover:bg-orange-50 disabled:opacity-60">{leadState === "submitting" ? "Sending…" : "Send assessment"} <ArrowRight className="w-4 h-4" /></button>
-                      </div>
+                      <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"><p className="text-[11px] leading-relaxed text-slate-500">By sending this, you’re asking AI Midlands to contact you about this assessment. See our <a className="underline hover:text-slate-300" href="/privacy">privacy notice</a>.</p><button disabled={leadState === "submitting"} type="submit" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 hover:bg-[#fff4ed] disabled:opacity-60">{leadState === "submitting" ? "Sending…" : "Send assessment"} <AimArrow className="w-4 h-4" /></button></div>
                     </form>
                   )}
 
-                  {leadState === "sent" && (
-                    <div className="rounded-2xl border border-green-800 bg-green-950/30 p-5 mb-5">
-                      <p className="font-semibold text-green-200 mb-1">Assessment received.</p>
-                      <p className="text-sm text-green-100/70">We now have the process and your first-pass assessment. If you want, book a short review and your email will be pre-filled.</p>
-                    </div>
-                  )}
-
+                  {leadState === "sent" && <div className="rounded-2xl border border-green-800 bg-green-950/30 p-5 mb-5"><p className="font-semibold text-green-200 mb-1">Assessment received.</p><p className="text-sm text-green-100/70">We now have the process and your first-pass assessment. If you want, book a short review and your email will be pre-filled.</p></div>}
                   {leadState === "error" && leadError && <p className="mb-4 text-sm text-orange-200">{leadError}</p>}
 
                   <div className="grid sm:grid-cols-2 gap-3">
-                    <a
-                      href={bookingUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={markBookingStarted}
-                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#e85d2a] px-4 py-3 text-sm font-semibold text-white hover:bg-[#d14e1e]"
-                    ><Calendar className="w-4 h-4" /> Discuss this assessment</a>
-                    <a
-                      href={assessmentMail}
-                      onClick={() => trackCustomEvent("assessment_contact_intent", { intent: "process_assessment", complexity: assessment.complexity })}
-                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-600 px-4 py-3 text-sm font-semibold text-slate-200 hover:bg-slate-800"
-                    ><Mail className="w-4 h-4" /> Email it to us</a>
+                    <a href={bookingUrl} target="_blank" rel="noreferrer" onClick={markBookingStarted} className="inline-flex items-center justify-center gap-2 rounded-full bg-[#c83927] px-4 py-3 text-sm font-semibold text-white hover:bg-[#a92f21] [--aim-icon-accent:#fff]"><BookingIcon className="w-5 h-5" /> Discuss this assessment</a>
+                    <a href={assessmentMail} onClick={() => trackCustomEvent("assessment_contact_intent", { intent: "process_assessment", complexity: assessment.complexity })} className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-600 px-4 py-3 text-sm font-semibold text-slate-200 hover:bg-slate-800 [--aim-icon-accent:#f0a08b]"><EnquiryIcon className="w-5 h-5" /> Email it to us</a>
                   </div>
                 </div>
               )}
             </div>
           </div>
+
+          <div className="mt-6 flex items-center gap-3 text-xs text-slate-500 [--aim-icon-accent:#c83927]"><ControlIcon className="w-5 h-5 text-[#0f172b]" /><span>Your information is used only to assess and respond to your enquiry.</span></div>
         </div>
       </div>
     </section>
