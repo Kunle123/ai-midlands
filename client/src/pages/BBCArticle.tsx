@@ -1,7 +1,7 @@
 // AI Midlands — BBC Radio WM Article Page
 
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Calendar, Clock, Radio, ArrowRight, Mail } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, ArrowRight, Mail } from "lucide-react";
 import { Link } from "wouter";
 
 export default function BBCArticle() {
@@ -28,8 +28,12 @@ export default function BBCArticle() {
         <div className="bg-[#fdf6ee] border-b border-orange-100">
           <div className="container py-12 md:py-16">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 bg-slate-900 text-white text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
-                <Radio className="w-3.5 h-3.5 text-orange-400" /> As heard on BBC Radio West Midlands
+              <div className="inline-flex items-center gap-3 border-y border-[#d9d1ca] py-3 mb-6">
+                <img src="/brand/bbc-logo.svg" alt="BBC" className="w-[76px] h-auto shrink-0" />
+                <div>
+                  <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#8a5a4f]">As heard on</div>
+                  <div className="text-sm font-semibold text-[#0f172b]">BBC Radio West Midlands</div>
+                </div>
               </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.1] mb-5">What BBC Radio WM got right about AI and customer service</h1>
               <p className="text-slate-600 text-lg leading-relaxed mb-8">The question isn't whether AI should replace people. It's where AI frees people to do the work that actually matters.</p>
