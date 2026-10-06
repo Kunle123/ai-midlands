@@ -43,28 +43,31 @@ function buildAssessment(process: string): Assessment {
   if (systems.length >= 3) score += 1;
   if (/sensitive|personal data|financial|regulated|confidential/.test(text)) score += 1;
 
-  let title = "A bounded workflow automation looks practical";
-  let summary = "This looks like a repeatable process where information can be captured once, moved to the right place and used to trigger the next step automatically.";
+  let title = "A bounded workflow improvement looks practical";
+  let summary = "This looks like a repeatable process where the first job is to make the hand-offs simpler, then capture information once, move it to the right place and trigger the next useful step automatically.";
   let approach = [
-    "Map the current trigger, hand-offs and final outcome.",
-    "Connect the smallest number of systems needed to remove the manual step.",
+    "Map the current trigger, hand-offs, decisions and final outcome.",
+    "Remove avoidable steps, duplicate entry or unnecessary tool changes first.",
+    "Connect the smallest number of systems needed to improve the whole process.",
     "Keep exceptions visible so a person can intervene when needed.",
   ];
   let humanControl = "Review exceptions and approve any action that needs judgement.";
 
   if (/spreadsheet|excel|csv|report|download|combine|copy and paste|copy/.test(text)) {
-    title = "This is a strong candidate for admin and data automation";
-    summary = "The repetitive collection, copying or combining of information can usually be turned into one controlled workflow, leaving the team with a prepared output rather than manual consolidation.";
+    title = "This is a strong candidate for process and data automation";
+    summary = "The repetitive collection, copying or combining of information can usually be simplified first, then turned into one controlled workflow that leaves the team with a prepared output rather than manual consolidation.";
     approach = [
       "Identify the source files or systems and the fields that matter.",
+      "Remove duplicate collection or unnecessary transfer steps.",
       "Automate the collection, cleaning and combination of the data.",
       "Produce the report, record or update in the format the team already uses.",
     ];
     humanControl = "A person can review the prepared output before it is circulated or used for a decision.";
   } else if (/customer|enquiry|question|chatbot|book|booking|appointment|website/.test(text)) {
-    title = "This could become a customer assistant that completes the next action";
-    summary = "Rather than stopping at an answer, the journey can understand the request, give a useful response and carry the customer into a booking, lead or follow-up workflow.";
+    title = "This could become a simpler customer journey with a useful assistant";
+    summary = "Rather than stopping at an answer or sending the customer into another journey, the process can be simplified so the assistant understands the request, gives a useful response and carries the customer into a booking, lead or follow-up workflow.";
     approach = [
+      "Map the current customer journey and remove unnecessary hand-offs or repeat questions.",
       "Define the questions the assistant should answer and the information it can use.",
       "Connect the next action — for example booking, CRM lead creation or follow-up.",
       "Record the outcome back into the business system so the team has a clean hand-off.",
@@ -72,17 +75,19 @@ function buildAssessment(process: string): Assessment {
     humanControl = "Escalate unclear requests and keep a person in control of exceptions or sensitive conversations.";
   } else if (/invoice|won|order|finance|payment|crm/.test(text)) {
     title = "This looks like a connected workflow between business systems";
-    summary = "A change in one system can become the trigger for the next step in another, avoiding duplicate entry and making the hand-off visible end to end.";
+    summary = "The hand-off can usually be simplified so a change in one system becomes the trigger for the next step in another, avoiding duplicate entry and keeping the whole process visible end to end.";
     approach = [
       "Agree the event that starts the workflow and the data that must move.",
+      "Remove any duplicate checks or re-entry that add no value.",
       "Create or update the downstream record automatically.",
       "Return a confirmation or reference so the originating system stays current.",
     ];
     humanControl = "Use approval gates for financial, contractual or irreversible actions where appropriate.";
   } else if (/prospect|sales|follow up|follow-up|outreach|personalised|personalized/.test(text)) {
-    title = "This could remove much of the preparation around sales follow-up";
-    summary = "Existing customer and opportunity context can prepare the next communication automatically while keeping the final decision to send with your team.";
+    title = "This could simplify the preparation around sales follow-up";
+    summary = "Existing customer and opportunity context can remove repetitive preparation and prepare the next communication automatically while keeping the final decision to send with your team.";
     approach = [
+      "Map what the salesperson checks and prepares today, and remove duplicate steps.",
       "Use the relevant account, contact and opportunity context already held in your systems.",
       "Prepare the follow-up and present it for review rather than sending blindly.",
       "Record the approved action back in CRM so activity remains visible.",
@@ -256,7 +261,7 @@ export function ProcessAssessment() {
           <div className="max-w-3xl mb-10">
             <div className="flex items-center gap-3 mb-4 text-[#0f172b] [--aim-icon-accent:#c83927]"><AssessmentIcon className="w-7 h-7" /><p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em]">Start with your problem</p></div>
             <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-tight mb-5">What would you like to work better?</h2>
-            <p className="text-lg text-slate-600 leading-relaxed">Describe one process that is repetitive, slow or awkward. We’ll give you an immediate first-pass view of what looks practical, the likely shape of a solution and the budget band it may sit in.</p>
+            <p className="text-lg text-slate-600 leading-relaxed">Describe one process that is repetitive, slow or awkward. We’ll give you an immediate first-pass view of where the process itself could be simpler, what genuinely looks worth automating, the systems likely involved and the budget band it may sit in.</p>
           </div>
 
           <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-6 items-start">
@@ -283,10 +288,10 @@ export function ProcessAssessment() {
                 <div className="h-full flex flex-col justify-between gap-10">
                   <div>
                     <div className="flex items-center gap-3 mb-4 [--aim-icon-accent:#f0a08b]"><EnquiryIcon className="w-7 h-7 text-white" /><p className="text-[#f0a08b] text-xs font-bold uppercase tracking-[0.16em]">What you’ll get</p></div>
-                    <h3 className="text-2xl font-semibold mb-5">A practical first view, not an AI sales pitch.</h3>
-                    <div className="space-y-3 text-slate-300">{["What looks automatable", "Likely systems and hand-offs", "Where human control should remain", "Indicative complexity and budget band", "A sensible next step"].map(item => <div key={item} className="flex items-start gap-3"><StepMark /><span>{item}</span></div>)}</div>
+                    <h3 className="text-2xl font-semibold mb-5">A practical view of the process first, technology second.</h3>
+                    <div className="space-y-3 text-slate-300">{["Where the process itself could be simpler", "What genuinely looks worth automating", "Likely systems and hand-offs", "Where human control should remain", "Indicative complexity, budget and next step"].map(item => <div key={item} className="flex items-start gap-3"><StepMark /><span>{item}</span></div>)}</div>
                   </div>
-                  <p className="text-xs text-slate-500">This is an indicative assessment, not a fixed quote. We confirm feasibility after checking the actual systems, access and rules involved.</p>
+                  <p className="text-xs text-slate-500">This is an indicative assessment, not a fixed quote. We confirm feasibility after checking the actual process, systems, access and rules involved.</p>
                 </div>
               ) : (
                 <div>
