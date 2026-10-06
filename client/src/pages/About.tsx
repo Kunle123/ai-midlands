@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Link } from "wouter";
 import { AimArrow, ApprovalIcon, BookingIcon, ControlIcon, EnquiryIcon, IntegrationIcon, WorkflowIcon } from "@/components/brand/AiMidlandsIcons";
 
-const FOUNDER_IMAGE = "https://arokin.org/media/kunle-ibidun-founder.jpg";
+const FOUNDER_IMAGE = "/brand/kunle-founder.jpg";
 
 const principles = [
   { title: "Redesign before automation", text: "We map how the work actually happens and remove avoidable steps before deciding what should be automated.", icon: EnquiryIcon },
