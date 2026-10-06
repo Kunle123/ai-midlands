@@ -13,7 +13,7 @@ const SERVICES: Array<{ number: string; title: string; description: string; exam
   {
     number: "01",
     title: "Automate enquiries and admin",
-    description: "Turn incoming emails, forms and documents into structured records, tasks and updates without re-keying information by hand.",
+    description: "Simplify how incoming emails, forms and documents are handled, then move useful information into the right records, tasks and updates without re-keying it by hand.",
     examples: ["Email → CRM or spreadsheet", "Document → structured data", "New enquiry → routed task"],
     flow: "enquiry",
     href: "/business-automation",
@@ -21,7 +21,7 @@ const SERVICES: Array<{ number: string; title: string; description: string; exam
   {
     number: "02",
     title: "Automate business processes",
-    description: "Connect the steps your team already performs so one business event can trigger the next action automatically.",
+    description: "Map the hand-offs first, remove avoidable steps, then connect the systems your team already uses so one business event can trigger the next action automatically.",
     examples: ["CRM win → invoice", "Approval → follow-up task", "Status change → customer update"],
     flow: "workflow",
     href: "/workflow-automation",
@@ -29,7 +29,7 @@ const SERVICES: Array<{ number: string; title: string; description: string; exam
   {
     number: "03",
     title: "Build useful customer assistants",
-    description: "Give customers fast, useful answers and let the assistant carry the conversation through to a real business outcome.",
+    description: "Design the customer journey around the outcome, then let the assistant answer useful questions and carry the conversation through to a booking, lead or other real business action.",
     examples: ["Question → useful answer", "Answer → appointment", "Conversation → CRM lead"],
     flow: "assistant",
     href: "/customer-assistants",
@@ -37,7 +37,7 @@ const SERVICES: Array<{ number: string; title: string; description: string; exam
   {
     number: "04",
     title: "Improve sales follow-up",
-    description: "Use the information already in your CRM and systems to prepare relevant outreach, while keeping people in control of what gets sent.",
+    description: "Remove repetitive preparation from follow-up and use the information already in your CRM and systems to prepare relevant outreach, while keeping people in control of what gets sent.",
     examples: ["CRM context → draft", "Draft → human approval", "Send → CRM update"],
     flow: "outreach",
     href: "/sales-automation",
@@ -72,15 +72,16 @@ const PROOF_EXAMPLES: Array<{ eyebrow: string; title: string; before: string; au
 ];
 
 const DELIVERY_STEPS = [
-  ["01", "Listen", "Show us one repetitive, slow or awkward process."],
-  ["02", "Map", "We make the trigger, systems, hand-offs, exceptions and outcome visible."],
-  ["03", "Propose", "We recommend the smallest useful intervention and make the commercial shape clear."],
-  ["04", "Implement", "We build it around the tools you already use and test it with you."],
-  ["05", "Improve", "Once it works reliably, we support it and extend only where there is value."],
+  ["01", "Listen", "We start with the people doing the work and what feels repetitive, slow or awkward."],
+  ["02", "Map", "We make the trigger, systems, hand-offs, decisions, exceptions and outcome visible."],
+  ["03", "Simplify", "We remove avoidable steps, duplicate entry and unnecessary tools before adding technology."],
+  ["04", "Propose", "We decide where AI, automation or integration genuinely helps and make the commercial shape clear."],
+  ["05", "Implement", "We build around the tools you already use, test the whole process and improve it with you."],
 ];
 
 const FAQS = [
   ["Can you work with the systems we already use?", "Usually, yes. We check how your existing tools exchange information — through APIs, exports, email, files or other supported routes — and choose the simplest reliable option."],
+  ["Will this mean another system for the team to use?", "Not by default. A core design principle is to fit the technology around the work and the systems your team already uses. We only introduce another application when it clearly makes the overall process better."],
   ["Do we need an AI strategy first?", "No. A specific process that wastes time, creates duplicate work or slows a customer down is enough to start."],
   ["How long does a small automation take?", "A bounded starter workflow can often be delivered in around one to two weeks once access, rules and test examples are available."],
   ["Can a person approve actions before they happen?", "Yes. Human approval can sit immediately before emails are sent, records are committed, financial actions are taken or any other step where judgement matters."],
@@ -137,7 +138,7 @@ export default function Home() {
               <div className="max-w-xl">
                 <p className="text-[#b43a28] text-sm font-semibold mb-4">Things we can fix</p>
                 <h2 className="text-4xl md:text-6xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.02] mb-6">Practical AI, attached to real work.</h2>
-                <p className="text-slate-600 text-lg leading-relaxed">Understand the work, connect the right systems, automate the repeatable steps and keep people in control of the judgement.</p>
+                <p className="text-slate-600 text-lg leading-relaxed">Understand the work, simplify the process, connect the right systems, automate the repeatable steps and keep people in control of the judgement.</p>
               </div>
               <EditorialIllustration variant="process" />
             </div>
@@ -212,13 +213,29 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="border-y border-[#e4ddd6] bg-white py-24 md:py-32">
+          <div className="container">
+            <div className="max-w-6xl mx-auto grid lg:grid-cols-[0.76fr_1.24fr] gap-12 lg:gap-20 items-start">
+              <div>
+                <p className="text-[#b43a28] text-sm font-semibold mb-4">Process redesign is standard</p>
+                <h2 className="text-4xl md:text-6xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.02]">We don’t automate processes blindly.</h2>
+              </div>
+              <div className="space-y-6 text-lg leading-relaxed text-slate-600 max-w-3xl">
+                <p>Automating one step does not necessarily make work easier. If your team has to open another application, remember another password, copy information somewhere else or change the way they work simply to accommodate the automation, we have probably moved the problem rather than solved it.</p>
+                <p>We listen to the people doing the work, map how information and decisions actually move through the business, and look for the simplest way the process could work. Then we decide where AI, automation or integration genuinely helps.</p>
+                <p className="text-2xl md:text-3xl font-semibold tracking-[-0.03em] text-[#0f172b] leading-tight">The technology should fit the work. Not the other way around.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section id="approach" className="bg-[#0f172b] text-white py-24 md:py-36 overflow-hidden">
           <div className="container">
             <div className="max-w-6xl mx-auto grid lg:grid-cols-[0.92fr_1.08fr] gap-14 lg:gap-20 items-start">
               <div className="lg:sticky lg:top-28">
                 <p className="text-[#f0a08b] text-sm font-semibold mb-4">How we work</p>
-                <h2 className="text-4xl md:text-6xl font-semibold tracking-[-0.04em] leading-[1.02] mb-6 text-white">Listen. Map. Propose. Implement.</h2>
-                <p className="text-slate-300 text-lg leading-relaxed mb-8">A small, controlled intervention rather than a transformation programme. Start with one useful process and prove it in your environment.</p>
+                <h2 className="text-4xl md:text-6xl font-semibold tracking-[-0.04em] leading-[1.02] mb-6 text-white">Listen. Map. Simplify. Then implement.</h2>
+                <p className="text-slate-300 text-lg leading-relaxed mb-8">A small, controlled intervention rather than a transformation programme. We understand and simplify the process before recommending technology, then prove the change in your environment.</p>
                 <EditorialIllustration variant="review" />
               </div>
               <div className="relative pl-9 md:pl-12">
@@ -247,7 +264,7 @@ export default function Home() {
             <div className="max-w-xl">
               <p className="text-[#b43a28] text-sm font-semibold mb-4">Founder-led delivery</p>
               <h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.04] mb-6">AI integration needs delivery experience as much as it needs AI expertise.</h2>
-              <p className="text-slate-600 text-lg leading-relaxed mb-7">AI Midlands is founder-led by Kunle Ibidun, bringing more than 20 years of digital delivery, integration, API, cloud and data experience to practical AI implementation.</p>
+              <p className="text-slate-600 text-lg leading-relaxed mb-7">AI Midlands is founder-led by Kunle Ibidun, bringing more than 20 years of digital delivery, integration, API, cloud and data experience to process redesign and practical AI implementation.</p>
               <div className="grid sm:grid-cols-2 gap-5 mb-8">
                 <div className="flex gap-3 items-start"><span className="mt-2 h-px w-7 bg-[#c83927] shrink-0" /><p className="text-sm text-slate-700">Human approval where judgement matters.</p></div>
                 <div className="flex gap-3 items-start"><span className="mt-2 h-px w-7 bg-[#c83927] shrink-0" /><p className="text-sm text-slate-700">Clear, visible data flows and controls.</p></div>
@@ -273,7 +290,7 @@ export default function Home() {
 
         <section className="bg-[#fff1e9] py-20 md:py-24">
           <div className="container"><div className="max-w-6xl mx-auto grid md:grid-cols-[1fr_auto] gap-10 items-end">
-            <div className="max-w-3xl"><p className="text-[#b43a28] text-sm font-semibold mb-4">A sensible first step</p><h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.04]">Show us one process. We’ll tell you what looks practical.</h2></div>
+            <div className="max-w-3xl"><p className="text-[#b43a28] text-sm font-semibold mb-4">A sensible first step</p><h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.04]">Show us one process. We’ll tell you what could be simpler — and what is actually worth automating.</h2></div>
             <a href="#assessment" className="inline-flex items-center gap-3 border-b-2 border-[#c83927] pb-1 text-base font-semibold text-[#0f172b] hover:text-[#c83927] transition-colors">Assess a process <AimArrow className="w-5 h-5" /></a>
           </div></div>
         </section>
@@ -281,7 +298,7 @@ export default function Home() {
 
       <footer className="bg-[#0f172b] text-slate-300 py-12 md:py-16">
         <div className="container"><div className="max-w-6xl mx-auto grid md:grid-cols-[1.2fr_0.8fr] gap-10 items-end">
-          <div><img src="/brand/ai-midlands-logo.svg" alt="AI Midlands" className="h-[48px] w-auto mb-5 brightness-0 invert" /><p className="text-slate-400 max-w-md">Practical AI automation and integration, designed around the work your business already does.</p><p className="text-slate-500 text-sm mt-3">Midlands based · UK wide</p></div>
+          <div><img src="/brand/ai-midlands-logo.svg" alt="AI Midlands" className="h-[48px] w-auto mb-5 brightness-0 invert" /><p className="text-slate-400 max-w-md">Process redesign, practical AI automation and integration, designed around the work your business already does.</p><p className="text-slate-500 text-sm mt-3">Midlands based · UK wide</p></div>
           <div className="md:text-right"><a href="mailto:hello@ai-midlands.co.uk" className="text-lg text-white hover:text-[#f0a08b]">hello@ai-midlands.co.uk</a><div className="flex flex-wrap md:justify-end gap-x-5 gap-y-2 text-sm text-slate-400 mt-5"><Link href="/about"><span className="hover:text-white cursor-pointer">About</span></Link><Link href="/privacy"><span className="hover:text-white cursor-pointer">Privacy</span></Link><Link href="/terms"><span className="hover:text-white cursor-pointer">Terms</span></Link></div></div>
         </div></div>
       </footer>
