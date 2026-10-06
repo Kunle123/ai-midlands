@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { Hero } from "@/components/hero/Hero";
 import { ProcessAssessment } from "@/components/ProcessAssessment";
-import { Button } from "@/components/ui/button";
+import { EditorialIllustration } from "@/components/brand/EditorialIllustration";
 import {
   AimArrow,
   ApprovalIcon,
@@ -16,7 +16,7 @@ import {
 
 const FOUNDER_IMAGE = "https://arokin.org/media/kunle-ibidun-founder.jpg";
 
-const SERVICE_CARDS = [
+const SERVICES = [
   {
     number: "01",
     title: "Automate enquiries and admin",
@@ -53,7 +53,7 @@ const SERVICE_CARDS = [
 
 const PROOF_EXAMPLES = [
   {
-    eyebrow: "ENQUIRY HANDLING",
+    eyebrow: "Enquiry handling",
     title: "From an email to a usable business record",
     before: "A person reads a customer email, identifies the service and value, then copies the information into a spreadsheet or CRM.",
     automation: "The enquiry is read once. Customer, service, location and value are identified and structured automatically.",
@@ -61,7 +61,7 @@ const PROOF_EXAMPLES = [
     icon: EnquiryIcon,
   },
   {
-    eyebrow: "CONNECTED WORKFLOW",
+    eyebrow: "Connected workflow",
     title: "From a won deal to an invoice",
     before: "A salesperson marks an opportunity Won, then somebody re-enters the same customer and deal information into finance.",
     automation: "The CRM event creates the invoice using information already held in the business systems.",
@@ -69,7 +69,7 @@ const PROOF_EXAMPLES = [
     icon: WorkflowIcon,
   },
   {
-    eyebrow: "CUSTOMER ASSISTANT",
+    eyebrow: "Customer assistant",
     title: "From a website question to a booked follow-up",
     before: "A visitor gets an answer, then has to find another form or wait for somebody to pick up the enquiry.",
     automation: "The assistant answers the question, offers the next action and records a call request in CRM.",
@@ -79,11 +79,11 @@ const PROOF_EXAMPLES = [
 ];
 
 const DELIVERY_STEPS = [
-  ["01", "Show us the problem", "Describe one repetitive, slow or awkward process."],
-  ["02", "We find the simplest useful solution", "We map the trigger, systems, hand-offs and exceptions before choosing technology."],
-  ["03", "We build it around your tools", "We connect only the systems needed to make that process work better."],
-  ["04", "You test and approve it", "Human approval remains wherever judgement, risk or customer impact requires it."],
-  ["05", "We support and improve it", "Once it works reliably, we can support it and extend the same approach to the next bottleneck."],
+  ["01", "Listen", "Show us one repetitive, slow or awkward process."],
+  ["02", "Map", "We make the trigger, systems, hand-offs, exceptions and outcome visible."],
+  ["03", "Propose", "We recommend the smallest useful intervention and make the commercial shape clear."],
+  ["04", "Implement", "We build it around the tools you already use and test it with you."],
+  ["05", "Improve", "Once it works reliably, we support it and extend only where there is value."],
 ];
 
 const FAQS = [
@@ -94,80 +94,75 @@ const FAQS = [
 ];
 
 function BrandIconFrame({ children }: { children: React.ReactNode }) {
-  return <div className="w-11 h-11 rounded-2xl border border-[#eadfd6] bg-[#fffaf6] text-[#0f172b] grid place-items-center [--aim-icon-accent:#c83927]">{children}</div>;
+  return <span className="inline-grid h-10 w-10 place-items-center text-[#0f172b] [--aim-icon-accent:#c83927]">{children}</span>;
 }
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#faf8f5] text-slate-800 selection:bg-orange-200 selection:text-orange-900">
-      <div className="bg-[#0f172b] text-slate-300 text-[12px] py-2 px-4 text-center">
-        <Link href="/bbc-article">
-          <span className="inline-flex items-center gap-2.5 hover:text-white transition-colors cursor-pointer">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#c83927]" />
-            <span>Trusted commentary featured on <span className="font-semibold text-white">BBC Radio West Midlands</span> — Kunle Ibidun on AI and the future of customer service</span>
-            <span className="text-[#d95535]">→</span>
-          </span>
-        </Link>
-      </div>
-
-      <header className="sticky top-0 z-30 border-b border-[#eadfd6] bg-[#faf8f5]/95 backdrop-blur-xl">
-        <div className="container min-h-[76px] flex items-center justify-between gap-6">
+      <header className="sticky top-0 z-30 border-b border-[#e8e0d8] bg-[#faf8f5]/94 backdrop-blur-xl">
+        <div className="container min-h-[78px] flex items-center justify-between gap-6">
           <Link href="/">
-            <div className="flex items-center gap-3 cursor-pointer shrink-0" aria-label="AI Midlands home">
+            <div className="cursor-pointer shrink-0" aria-label="AI Midlands home">
               <img src="/brand/ai-midlands-logo.svg" alt="AI Midlands" className="h-[42px] w-auto object-contain" />
             </div>
           </Link>
-          <nav className="hidden lg:flex items-center gap-7 text-sm">
+          <nav className="hidden lg:flex items-center gap-8 text-sm">
             <a href="#services" className="text-slate-600 hover:text-[#c83927] transition-colors">Services</a>
             <a href="#proof" className="text-slate-600 hover:text-[#c83927] transition-colors">Examples</a>
             <a href="#pricing" className="text-slate-600 hover:text-[#c83927] transition-colors">Pricing</a>
             <a href="#approach" className="text-slate-600 hover:text-[#c83927] transition-colors">How we work</a>
             <Link href="/about"><span className="cursor-pointer text-slate-600 hover:text-[#c83927] transition-colors">About</span></Link>
           </nav>
-          <div className="flex items-center gap-4 shrink-0">
-            <a href="tel:07966461005" className="hidden xl:block text-sm text-slate-500 hover:text-[#c83927] transition-colors">07966 461005</a>
-            <Button className="rounded-full bg-[#c83927] hover:bg-[#a92f21] text-white h-10 px-5 text-sm shadow-none" asChild><a href="#assessment">Assess a process</a></Button>
-          </div>
+          <a href="#assessment" className="inline-flex items-center gap-3 border-b-2 border-[#c83927] pb-1 text-sm font-semibold text-[#0f172b] hover:text-[#c83927] transition-colors">
+            Assess a process <AimArrow className="w-4 h-4" />
+          </a>
         </div>
       </header>
 
       <main>
         <Hero />
 
-        <section className="border-y border-[#e8e0d8] bg-white/75">
-          <div className="container py-7">
-            <div className="max-w-6xl mx-auto grid md:grid-cols-[1.4fr_1fr] gap-8 items-center">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 mb-2">Start with the work</p>
-                <p className="text-[#0f172b] text-lg md:text-xl font-semibold tracking-[-0.02em]">A business process you want to improve — not an AI platform you have to find a use for.</p>
+        <section className="border-y border-[#e8e0d8] bg-white/70">
+          <div className="container py-8">
+            <div className="max-w-6xl mx-auto grid md:grid-cols-[1.25fr_1fr] gap-8 items-center">
+              <p className="text-[#0f172b] text-lg md:text-xl font-semibold tracking-[-0.02em]">Start with a business process you want to improve — not an AI platform you have to find a use for.</p>
+              <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-slate-500 md:justify-end">
+                {['Email','CRM','Spreadsheets','Finance','Websites','APIs'].map(item => <span key={item}>{item}</span>)}
               </div>
-              <p className="text-sm text-slate-500 md:text-right leading-7">Email&nbsp;&nbsp;·&nbsp;&nbsp;CRM&nbsp;&nbsp;·&nbsp;&nbsp;Spreadsheets&nbsp;&nbsp;·&nbsp;&nbsp;Finance&nbsp;&nbsp;·&nbsp;&nbsp;Websites&nbsp;&nbsp;·&nbsp;&nbsp;APIs</p>
             </div>
           </div>
         </section>
 
         <ProcessAssessment />
 
-        <section id="services" className="container py-20 md:py-28">
+        <section id="services" className="container py-24 md:py-36">
           <div className="max-w-6xl mx-auto">
-            <div className="max-w-3xl mb-14">
-              <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em] mb-4">Things we can fix</p>
-              <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.05] mb-5">Practical AI services built around the work your business already does.</h2>
-              <p className="text-slate-600 text-lg leading-relaxed">The animation above shows the pattern: information arrives, AI understands it, systems connect, and a useful next action happens. These services apply that pattern to real business work.</p>
+            <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-12 lg:gap-16 items-center mb-16 md:mb-24">
+              <div className="max-w-xl">
+                <p className="text-[#b43a28] text-sm font-semibold mb-4">Things we can fix</p>
+                <h2 className="text-4xl md:text-6xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.02] mb-6">Practical AI, attached to real work.</h2>
+                <p className="text-slate-600 text-lg leading-relaxed">The pattern is simple: understand the work, connect the right systems, automate the repeatable steps and keep people in control of the judgement.</p>
+              </div>
+              <EditorialIllustration variant="process" />
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              {SERVICE_CARDS.map(({ number, title, description, examples, icon: Icon, href }) => (
+            <div className="border-t border-[#dcd4cc]">
+              {SERVICES.map(({ number, title, description, examples, icon: Icon, href }) => (
                 <Link key={title} href={href}>
-                  <article className="group h-full min-h-[360px] cursor-pointer rounded-[28px] border border-[#e5ddd5] bg-white p-7 md:p-8 transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,43,0.08)]">
-                    <div className="flex items-start justify-between gap-6 mb-8">
-                      <BrandIconFrame><Icon className="w-6 h-6" /></BrandIconFrame>
-                      <span className="text-[#c83927] text-xs font-bold tracking-[0.16em]">{number}</span>
+                  <article className="group grid md:grid-cols-[92px_1fr_1fr_44px] gap-5 md:gap-8 items-start py-8 md:py-10 border-b border-[#dcd4cc] cursor-pointer transition-colors hover:bg-white/55 -mx-4 px-4 md:-mx-6 md:px-6">
+                    <div className="flex items-center gap-4 md:block">
+                      <span className="text-[#c83927] text-xs font-bold tracking-[0.14em]">{number}</span>
+                      <div className="mt-0 md:mt-5"><BrandIconFrame><Icon className="w-7 h-7" /></BrandIconFrame></div>
                     </div>
-                    <h3 className="text-2xl md:text-[28px] font-semibold tracking-[-0.035em] leading-tight text-[#0f172b] mb-4">{title}</h3>
-                    <p className="text-slate-600 leading-relaxed mb-6">{description}</p>
-                    <div className="border-t border-[#eee7e0] pt-5 space-y-2.5 mb-7">{examples.map(example => <p key={example} className="text-sm text-slate-600"><span className="text-[#c83927] mr-2">—</span>{example}</p>)}</div>
-                    <span className="inline-flex items-center gap-2 text-sm font-semibold text-[#a83324]">See this service <AimArrow className="w-4 h-4" /></span>
+                    <div>
+                      <h3 className="text-2xl md:text-3xl font-semibold tracking-[-0.025em] text-[#0f172b] mb-3">{title}</h3>
+                      <p className="text-slate-600 leading-relaxed max-w-xl">{description}</p>
+                    </div>
+                    <div className="space-y-2 pt-1">
+                      {examples.map(example => <p key={example} className="text-sm text-slate-600"><span className="text-[#c83927] mr-2">—</span>{example}</p>)}
+                    </div>
+                    <AimArrow className="w-5 h-5 mt-2 transition-transform group-hover:translate-x-1" />
                   </article>
                 </Link>
               ))}
@@ -175,24 +170,28 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="proof" className="bg-[#fffdf9] border-y border-[#e8e0d8] py-20 md:py-28">
+        <section id="proof" className="bg-white border-y border-[#e8e0d8] py-24 md:py-36">
           <div className="container">
             <div className="max-w-6xl mx-auto">
-              <div className="max-w-3xl mb-12">
-                <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em] mb-4">What the automation changes</p>
-                <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.05] mb-5">See the hand-off before and after.</h2>
-                <p className="text-slate-600 text-lg leading-relaxed">These are demonstrations of the workflows shown on this site, not customer case studies.</p>
+              <div className="grid lg:grid-cols-[0.72fr_1.28fr] gap-12 lg:gap-20 items-end mb-16">
+                <div>
+                  <p className="text-[#b43a28] text-sm font-semibold mb-4">What the automation changes</p>
+                  <h2 className="text-4xl md:text-6xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.02]">See the hand-off, not the hype.</h2>
+                </div>
+                <div>
+                  <p className="text-slate-600 text-lg leading-relaxed max-w-2xl mb-6">These are demonstrations of the workflows shown on this site, not customer case studies. The point is to make the change in work visible.</p>
+                  <EditorialIllustration variant="handoff" />
+                </div>
               </div>
-              <div className="grid lg:grid-cols-3 gap-5">
-                {PROOF_EXAMPLES.map(({ eyebrow, title, before, automation, outcome, icon: Icon }) => (
-                  <article key={title} className="rounded-[26px] border border-[#e5ddd5] bg-white p-6 md:p-7">
-                    <div className="flex items-center gap-3 mb-6"><BrandIconFrame><Icon className="w-6 h-6" /></BrandIconFrame><span className="text-[11px] font-bold tracking-[0.16em] text-[#b43a28]">{eyebrow}</span></div>
-                    <h3 className="text-xl font-semibold tracking-[-0.025em] text-[#0f172b] mb-6">{title}</h3>
-                    <div className="space-y-5 text-sm leading-relaxed">
-                      <div><p className="text-slate-400 text-[11px] uppercase tracking-[0.14em] mb-1">Before</p><p className="text-slate-600">{before}</p></div>
-                      <div><p className="text-[#b43a28] text-[11px] uppercase tracking-[0.14em] mb-1">Automation</p><p className="text-slate-700">{automation}</p></div>
-                      <div><p className="text-slate-400 text-[11px] uppercase tracking-[0.14em] mb-1">Outcome</p><p className="text-slate-700">{outcome}</p></div>
-                    </div>
+
+              <div className="space-y-0 border-y border-[#dcd4cc]">
+                {PROOF_EXAMPLES.map(({ eyebrow, title, before, automation, outcome, icon: Icon }, index) => (
+                  <article key={title} className="grid lg:grid-cols-[70px_1.2fr_1fr_1fr_1fr] gap-5 lg:gap-8 py-8 md:py-10 border-b last:border-b-0 border-[#e4ddd6] items-start">
+                    <div className="pt-1"><BrandIconFrame><Icon className="w-7 h-7" /></BrandIconFrame></div>
+                    <div><p className="text-[#b43a28] text-xs font-semibold mb-2">0{index + 1} · {eyebrow}</p><h3 className="text-xl md:text-2xl font-semibold tracking-[-0.02em] text-[#0f172b]">{title}</h3></div>
+                    <div><p className="text-xs text-slate-400 mb-2">Before</p><p className="text-sm text-slate-600 leading-relaxed">{before}</p></div>
+                    <div><p className="text-xs text-[#b43a28] mb-2">Automation</p><p className="text-sm text-slate-700 leading-relaxed">{automation}</p></div>
+                    <div><p className="text-xs text-slate-400 mb-2">Outcome</p><p className="text-sm text-slate-700 leading-relaxed">{outcome}</p></div>
                   </article>
                 ))}
               </div>
@@ -202,81 +201,95 @@ export default function Home() {
 
         <section id="pricing" className="container py-20 md:py-28">
           <div className="max-w-6xl mx-auto">
-            <div className="max-w-3xl mb-12">
-              <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em] mb-4">Indicative pricing</p>
-              <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.06] mb-5">Enough information to know whether a conversation is worth having.</h2>
-              <p className="text-slate-600 text-lg leading-relaxed">We scope the actual process before quoting, but you should not have to guess whether AI Midlands means hundreds, thousands or tens of thousands of pounds.</p>
+            <div className="grid lg:grid-cols-[0.85fr_1.15fr] gap-12 items-end mb-12">
+              <div><p className="text-[#b43a28] text-sm font-semibold mb-4">Indicative pricing</p><h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.04]">Enough information to know whether a conversation is worth having.</h2></div>
+              <p className="text-slate-600 text-lg leading-relaxed max-w-2xl">We scope the actual process before quoting, but you should not have to guess whether AI Midlands means hundreds, thousands or tens of thousands of pounds.</p>
             </div>
-            <div className="grid md:grid-cols-3 border-y border-[#ded6ce] divide-y md:divide-y-0 md:divide-x divide-[#ded6ce]">
+            <div className="grid md:grid-cols-3 border-y border-[#d9d1ca] divide-y md:divide-y-0 md:divide-x divide-[#d9d1ca]">
               {[
                 ["Starter automation", "from £1,250", "One bounded process, normally involving one or two existing tools."],
                 ["Connected workflow", "from £2,500", "Multiple business steps or systems, with integration, approvals and testing."],
                 ["Bespoke integration", "Scoped", "Complex APIs, legacy systems, sensitive information or wider operational change."],
               ].map(([label, price, copy], index) => (
-                <article key={label} className="p-7 md:p-8 min-h-[280px] flex flex-col">
-                  <BrandIconFrame>{index === 0 ? <ScopeIcon className="w-6 h-6" /> : index === 1 ? <IntegrationIcon className="w-6 h-6" /> : <ControlIcon className="w-6 h-6" />}</BrandIconFrame>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.17em] text-[#b43a28] mt-6 mb-3">{label}</p>
+                <article key={label} className="p-7 md:p-9 min-h-[260px] flex flex-col">
+                  <div className="mb-7">{index === 0 ? <ScopeIcon className="w-8 h-8 [--aim-icon-accent:#c83927]" /> : index === 1 ? <IntegrationIcon className="w-8 h-8 [--aim-icon-accent:#c83927]" /> : <ControlIcon className="w-8 h-8 [--aim-icon-accent:#c83927]" />}</div>
+                  <p className="text-sm font-semibold text-[#b43a28] mb-2">{label}</p>
                   <p className="text-3xl md:text-4xl font-semibold tracking-[-0.04em] text-[#0f172b] mb-4">{price}</p>
                   <p className="text-slate-600 leading-relaxed">{copy}</p>
                 </article>
               ))}
             </div>
-            <p className="text-xs text-slate-500 mt-5">Prices are indicative starting points, exclude VAT where applicable, and depend on system access, integration constraints, testing and support requirements.</p>
+            <p className="text-sm text-slate-500 mt-5">Prices are indicative starting points, exclude VAT where applicable, and depend on system access, integration constraints, testing and support requirements.</p>
           </div>
         </section>
 
-        <section id="approach" className="bg-[#0f172b] py-20 md:py-28 text-white">
+        <section id="approach" className="bg-[#0f172b] text-white py-24 md:py-36 overflow-hidden">
           <div className="container">
-            <div className="max-w-6xl mx-auto">
-              <div className="max-w-3xl mb-12">
-                <p className="text-[#f0a08b] text-xs font-semibold uppercase tracking-[0.18em] mb-4">How we work</p>
-                <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] leading-[1.05] mb-5">A small, controlled intervention rather than a transformation programme.</h2>
-                <p className="text-slate-300 text-lg leading-relaxed">Start with one useful process, prove it in your environment and only expand when there is a reason to.</p>
+            <div className="max-w-6xl mx-auto grid lg:grid-cols-[0.92fr_1.08fr] gap-14 lg:gap-20 items-start">
+              <div className="lg:sticky lg:top-28">
+                <p className="text-[#f0a08b] text-sm font-semibold mb-4">How we work</p>
+                <h2 className="text-4xl md:text-6xl font-semibold tracking-[-0.04em] leading-[1.02] mb-6 text-white">Listen. Map. Propose. Implement.</h2>
+                <p className="text-slate-300 text-lg leading-relaxed mb-8">A small, controlled intervention rather than a transformation programme. Start with one useful process and prove it in your environment.</p>
+                <EditorialIllustration variant="review" />
               </div>
-              <div className="grid md:grid-cols-5 gap-px bg-slate-700 border border-slate-700 rounded-[26px] overflow-hidden">
-                {DELIVERY_STEPS.map(([number, title, text]) => <div key={number} className="bg-[#131d34] p-6 min-h-[260px]"><span className="text-[#f0a08b] text-xs font-bold tracking-[0.16em]">{number}</span><h3 className="font-semibold text-white mt-8 mb-3 leading-snug">{title}</h3><p className="text-sm text-slate-400 leading-relaxed">{text}</p></div>)}
+              <div className="border-t border-slate-700">
+                {DELIVERY_STEPS.map(([number, title, text]) => (
+                  <div key={number} className="grid grid-cols-[54px_1fr] gap-5 py-7 md:py-9 border-b border-slate-700">
+                    <span className="text-[#f0a08b] text-sm font-bold tracking-[0.1em]">{number}</span>
+                    <div><h3 className="text-xl md:text-2xl font-semibold text-white mb-2">{title}</h3><p className="text-slate-400 leading-relaxed">{text}</p></div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-        <section className="container py-20 md:py-28">
-          <div className="max-w-6xl mx-auto grid lg:grid-cols-[1.1fr_0.9fr] gap-12 items-center">
+        <section className="container py-24 md:py-32">
+          <div className="max-w-6xl mx-auto grid lg:grid-cols-[0.95fr_1.05fr] gap-12 lg:gap-20 items-center">
+            <figure className="relative max-w-[520px]">
+              <div className="absolute -left-6 -top-6 h-28 w-28 border-l border-t border-[#c83927]/30" aria-hidden="true" />
+              <img src={FOUNDER_IMAGE} alt="Kunle Ibidun, founder of AI Midlands" className="relative w-full aspect-[4/3] object-cover object-top" />
+            </figure>
             <div>
-              <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em] mb-4">Founder-led delivery</p>
-              <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.06] mb-5">AI integration needs delivery experience as much as it needs AI expertise.</h2>
+              <p className="text-[#b43a28] text-sm font-semibold mb-4">Founder-led delivery</p>
+              <h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.04] mb-6">AI integration needs delivery experience as much as it needs AI expertise.</h2>
               <p className="text-slate-600 text-lg leading-relaxed mb-6">AI Midlands is founder-led by Kunle Ibidun, bringing more than 20 years of digital delivery, integration, API, cloud and data experience to practical AI implementation.</p>
-              <div className="flex flex-wrap gap-3 mb-7">
-                <span className="inline-flex items-center gap-2 text-sm text-slate-700"><ApprovalIcon className="w-5 h-5 [--aim-icon-accent:#c83927]" /> Human approval where it matters</span>
-                <span className="inline-flex items-center gap-2 text-sm text-slate-700"><ControlIcon className="w-5 h-5 [--aim-icon-accent:#c83927]" /> Clear data flows and controls</span>
+              <div className="grid sm:grid-cols-2 gap-4 py-6 border-y border-[#ddd5ce] mb-7">
+                <span className="inline-flex items-start gap-3 text-sm text-slate-700"><ApprovalIcon className="w-5 h-5 mt-0.5 [--aim-icon-accent:#c83927] shrink-0" /> Human approval where it matters</span>
+                <span className="inline-flex items-start gap-3 text-sm text-slate-700"><ControlIcon className="w-5 h-5 mt-0.5 [--aim-icon-accent:#c83927] shrink-0" /> Clear data flows and controls</span>
               </div>
-              <Link href="/about"><span className="inline-flex items-center gap-2 text-sm font-semibold text-[#a83324] cursor-pointer">Meet Kunle and see how AI Midlands works <AimArrow className="w-4 h-4" /></span></Link>
+              <Link href="/bbc-article"><span className="inline-flex items-center gap-3 text-sm text-slate-600 mb-6 cursor-pointer hover:text-[#c83927]"><span className="font-semibold text-[#0f172b]">BBC Radio West Midlands</span> · commentary on AI and customer service <AimArrow className="w-4 h-4" /></span></Link>
+              <div><Link href="/about"><span className="inline-flex items-center gap-2 text-sm font-semibold text-[#a83324] cursor-pointer">Meet Kunle and see how AI Midlands works <AimArrow className="w-4 h-4" /></span></Link></div>
             </div>
-            <div className="rounded-[30px] overflow-hidden border border-[#e5ddd5] bg-white aspect-[4/3]"><img src={FOUNDER_IMAGE} alt="Kunle Ibidun, founder of AI Midlands" className="w-full h-full object-cover object-top" /></div>
           </div>
         </section>
 
         <section id="questions" className="bg-white border-y border-[#e8e0d8] py-20 md:py-28">
           <div className="container">
             <div className="max-w-6xl mx-auto grid lg:grid-cols-[0.7fr_1.3fr] gap-12 items-start">
-              <div><p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em] mb-4">Before you buy</p><h2 className="text-3xl md:text-4xl font-semibold tracking-[-0.035em] text-[#0f172b] leading-tight mb-4">The practical questions we expect you to ask.</h2></div>
+              <div><p className="text-[#b43a28] text-sm font-semibold mb-4">Before you buy</p><h2 className="text-3xl md:text-4xl font-semibold tracking-[-0.035em] text-[#0f172b] leading-tight">The practical questions we expect you to ask.</h2></div>
               <div className="divide-y divide-[#e5ddd5] border-y border-[#e5ddd5]">{FAQS.map(([question, answer]) => <details key={question} className="group py-5"><summary className="cursor-pointer list-none flex items-center justify-between gap-4 font-semibold text-[#0f172b]"><span>{question}</span><span className="text-[#c83927] text-xl font-normal group-open:rotate-45 transition-transform">+</span></summary><p className="pt-3 pr-10 text-slate-600 leading-relaxed">{answer}</p></details>)}</div>
             </div>
           </div>
         </section>
 
-        <section className="bg-[#fff4ed] py-16 md:py-20">
+        <section className="bg-[#fff1e9] py-20 md:py-24">
           <div className="container">
-            <div className="max-w-5xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-8">
-              <div className="max-w-2xl"><p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em] mb-3">Ready to start?</p><h2 className="text-3xl md:text-4xl font-semibold tracking-[-0.035em] text-[#0f172b]">Show us one process. We’ll tell you what looks practical.</h2></div>
-              <Button className="rounded-full bg-[#c83927] hover:bg-[#a92f21] text-white h-12 px-7 text-base shadow-none" asChild><a href="#assessment">Assess a process</a></Button>
+            <div className="max-w-6xl mx-auto grid md:grid-cols-[1fr_auto] gap-10 items-end">
+              <div className="max-w-3xl"><p className="text-[#b43a28] text-sm font-semibold mb-4">A sensible first step</p><h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.04]">Show us one process. We’ll tell you what looks practical.</h2></div>
+              <a href="#assessment" className="inline-flex items-center gap-3 border-b-2 border-[#c83927] pb-1 text-base font-semibold text-[#0f172b] hover:text-[#c83927] transition-colors">Assess a process <AimArrow className="w-5 h-5" /></a>
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="bg-white border-t border-[#e8e0d8] py-8">
-        <div className="container"><div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-5"><div><img src="/brand/ai-midlands-logo.svg" alt="AI Midlands" className="h-[40px] w-auto mb-2" /><p className="text-slate-500 text-xs">Midlands based · UK wide</p></div><div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-500"><Link href="/about"><span className="hover:text-[#c83927] cursor-pointer">About</span></Link><Link href="/privacy"><span className="hover:text-[#c83927] cursor-pointer">Privacy</span></Link><Link href="/terms"><span className="hover:text-[#c83927] cursor-pointer">Terms</span></Link><a href="mailto:hello@ai-midlands.co.uk" className="hover:text-[#c83927]">hello@ai-midlands.co.uk</a><a href="tel:07966461005" className="hover:text-[#c83927]">07966 461005</a></div></div></div>
+      <footer className="bg-[#0f172b] text-slate-300 py-12 md:py-16">
+        <div className="container">
+          <div className="max-w-6xl mx-auto grid md:grid-cols-[1.2fr_0.8fr] gap-10 items-end">
+            <div><img src="/brand/ai-midlands-logo.svg" alt="AI Midlands" className="h-[46px] w-auto mb-5 brightness-0 invert" /><p className="text-slate-400 max-w-md">Practical AI automation and integration, designed around the work your business already does.</p><p className="text-slate-500 text-sm mt-3">Midlands based · UK wide</p></div>
+            <div className="md:text-right"><a href="mailto:hello@ai-midlands.co.uk" className="text-lg text-white hover:text-[#f0a08b]">hello@ai-midlands.co.uk</a><div className="flex flex-wrap md:justify-end gap-x-5 gap-y-2 text-sm text-slate-400 mt-5"><Link href="/about"><span className="hover:text-white cursor-pointer">About</span></Link><Link href="/privacy"><span className="hover:text-white cursor-pointer">Privacy</span></Link><Link href="/terms"><span className="hover:text-white cursor-pointer">Terms</span></Link></div></div>
+          </div>
+        </div>
       </footer>
     </div>
   );
