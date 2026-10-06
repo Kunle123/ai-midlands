@@ -50,8 +50,8 @@ const services: Record<ServiceKey, ServiceConfig> = {
     systems: ["Email", "CRM", "Spreadsheets", "Forms", "Shared inboxes"],
     emailSubject: "Business automation enquiry",
     metaDescription: "AI Midlands redesigns repetitive admin processes and connects email, forms, spreadsheets and CRM so enquiries become organised work without extra re-keying.",
-    price: "from £1,250",
-    priceNote: "A bounded starter automation involving one or two existing tools.",
+    price: "from £2,000",
+    priceNote: "Includes process mapping and analysis of the current workflow, design of the simpler process, implementation of a bounded automation across one or two existing tools, testing and handover.",
     icon: EnquiryIcon,
   },
   "workflow-automation": {
@@ -69,8 +69,8 @@ const services: Record<ServiceKey, ServiceConfig> = {
     systems: ["CRM", "Finance", "Operations", "APIs", "Email"],
     emailSubject: "Workflow automation enquiry",
     metaDescription: "AI Midlands maps and simplifies business hand-offs, then connects CRM, finance, operations and other systems so work moves without manual re-keying.",
-    price: "from £2,500",
-    priceNote: "Connected workflows involving multiple steps, systems, approvals or integration work.",
+    price: "from £3,500",
+    priceNote: "Includes process mapping and analysis across the workflow, process redesign, integration and automation across multiple systems, approval points, end-to-end testing and handover.",
     icon: WorkflowIcon,
   },
   "customer-assistants": {
@@ -88,8 +88,8 @@ const services: Record<ServiceKey, ServiceConfig> = {
     systems: ["Website", "CRM", "Calendar", "Knowledge base", "Email"],
     emailSubject: "Customer assistant enquiry",
     metaDescription: "AI Midlands designs customer journeys and builds assistants that answer questions, book calls and create CRM leads instead of stopping at chatbot responses.",
-    price: "from £2,500",
-    priceNote: "A useful assistant connected to a real next action such as booking or lead creation.",
+    price: "from £3,500",
+    priceNote: "Includes customer-journey mapping and analysis, design of the improved hand-off, connection to a real next action such as booking or CRM lead creation, testing and handover.",
     icon: AssistantIcon,
   },
   "sales-automation": {
@@ -107,8 +107,8 @@ const services: Record<ServiceKey, ServiceConfig> = {
     systems: ["CRM", "Email", "Account data", "Sales pipeline", "Approvals"],
     emailSubject: "Sales automation enquiry",
     metaDescription: "AI Midlands redesigns sales follow-up around your existing CRM, then uses AI to prepare personalised outreach with human approval and automatic CRM updates.",
-    price: "from £1,250",
-    priceNote: "A bounded sales workflow can start small; deeper CRM integration is scoped separately.",
+    price: "from £2,000",
+    priceNote: "Includes process mapping and analysis of the current sales follow-up, redesign of the workflow, a bounded automation, testing and handover. Deeper CRM integration is scoped separately.",
     icon: OutreachIcon,
   },
 };
