@@ -191,4 +191,9 @@
   .heading-font {
     font-family: 'Fraunces', Georgia, serif;
   }
+
+  /* Founder portraits contain absolutely positioned media. Give the figure a real width so the aspect-ratio frame cannot collapse inside the grid. */
+  figure:has(img[alt="Kunle Ibidun, founder of AI Midlands"]) {
+    width: 100%;
+  }
 }
