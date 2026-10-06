@@ -5,7 +5,7 @@ import { EditorialIllustration } from "@/components/brand/EditorialIllustration"
 import { ServiceFlowGraphic } from "@/components/brand/ServiceFlowGraphic";
 import { AimArrow } from "@/components/brand/AiMidlandsIcons";
 
-const FOUNDER_IMAGE = "https://arokin.org/media/kunle-ibidun-founder.jpg";
+const FOUNDER_IMAGE = "/brand/kunle-founder.jpg";
 
 type FlowVariant = "enquiry" | "workflow" | "assistant" | "outreach";
 
@@ -258,7 +258,7 @@ export default function Home() {
               <div className="absolute -left-7 -top-7 h-28 w-28 border-l border-t border-[#c83927]/40" aria-hidden="true" />
               <div className="absolute -left-5 bottom-[-20px] w-[72%] h-[44%] bg-[#f4dfd5]" aria-hidden="true" />
               <div className="relative aspect-[4/5] overflow-hidden bg-[#eee6df]">
-                <img src={FOUNDER_IMAGE} alt="Kunle Ibidun, founder of AI Midlands" className="absolute inset-0 h-full w-full object-cover object-[50%_24%] scale-[1.24]" />
+                <img src={FOUNDER_IMAGE} alt="Kunle Ibidun, founder of AI Midlands" className="absolute inset-0 h-full w-full object-cover object-center" />
               </div>
             </figure>
             <div className="max-w-xl">
