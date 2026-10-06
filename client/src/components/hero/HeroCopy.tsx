@@ -1,7 +1,7 @@
 export function HeroCopy() {
   return (
     <section className="copy">
-      <div className="eyebrow">AI AUTOMATION · INTEGRATION · CUSTOMER ASSISTANTS · WORKFLOWS</div>
+      <div className="eyebrow">Practical AI integration for real business work</div>
       <h1>
         Put AI to work in
         <br />
