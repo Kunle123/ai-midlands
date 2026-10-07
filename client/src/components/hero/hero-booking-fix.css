@@ -67,19 +67,19 @@
 }
 
 .aim-hero .beat-three .booking-crm > .ai-sweep {
-  animation: aiSweep 1s cubic-bezier(.25,.7,.3,1) 4.55s both !important;
+  animation: aiSweep 1s cubic-bezier(.25,.7,.3,1) 4.9s both !important;
 }
 
 .aim-hero .beat-three .new-lead {
-  animation: leadInsert .55s cubic-bezier(.22,.8,.32,1) 4.5s forwards !important;
+  animation: leadInsert .55s cubic-bezier(.22,.8,.32,1) 4.85s forwards !important;
 }
 
 .aim-hero .beat-three .booking-bridge .return-packet {
-  animation: bookingReturnAcross .8s ease 5.25s both !important;
+  animation: bookingReturnAcross .8s ease 5.45s both !important;
 }
 
 .aim-hero .beat-three .call-confirm {
-  animation: bookingConfirmation .3s ease 5.85s forwards !important;
+  animation: bookingConfirmation .3s ease 6.3s forwards !important;
 }
 
 @keyframes bookingAnswerIn {

@@ -311,6 +311,28 @@
   animation-delay: 4.05s;
 }
 
+/* Keep the destination invoice as an empty shell until the CRM packet has
+   actually arrived. The packet finishes at 3.15s; only then does invoice data
+   resolve, followed by the processing sweep and the confirmation trip back. */
+.aim-hero .build-invoice .sent,
+.aim-hero .build-invoice .invoice-row,
+.aim-hero .build-invoice .invoice-line {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+.aim-hero .build-invoice .sent {
+  animation: invoiceContentIn .28s ease 3.25s forwards;
+}
+
+.aim-hero .build-invoice .invoice-row {
+  animation: invoiceContentIn .34s ease 3.34s forwards;
+}
+
+.aim-hero .build-invoice .invoice-line {
+  animation: invoiceContentIn .34s ease 3.46s forwards;
+}
+
 /* 3 — Assist customers: answer, Book a call, create the CRM lead, then show
    the customer's confirmation. */
 .aim-hero .conversation .answer {
@@ -484,6 +506,27 @@
   to { opacity: 1; transform: scale(1.01); }
 }
 
+@keyframes invoiceContentIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Mobile transfer animations keep the message itself upright. Only its route
+   changes from horizontal to vertical. */
+@keyframes packetDown {
+  0% { opacity: 0; transform: translate(-50%, 0); }
+  12% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, 31px); }
+}
+
+@keyframes returnUp {
+  0% { opacity: 0; transform: translateY(0); }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-30px); }
+}
+
 @keyframes revealUp {
   from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: none; }
@@ -521,11 +564,45 @@
   }
   .aim-hero .motion-arrow { transform: rotate(90deg); }
   .aim-hero .data-bridge {
-    height: 34px;
-    transform: rotate(90deg);
-    width: 56px;
-    justify-self: center;
+    height: 58px;
+    width: 100%;
+    justify-self: stretch;
+    transform: none;
   }
+
+  .aim-hero .data-bridge::before {
+    left: 50%;
+    right: auto;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    height: auto;
+  }
+
+  .aim-hero .data-packet {
+    top: 0;
+    left: 50%;
+    animation-name: packetDown;
+  }
+
+  .aim-hero .return-packet {
+    top: 34px;
+    left: calc(50% + 12px);
+    right: auto;
+    animation-name: returnUp;
+  }
+
+  /* Beat 3 has deliberately later timing because the customer must press
+     Book a call before anything is sent to the CRM. Preserve that timing while
+     using the same upright vertical transfer on mobile. */
+  .aim-hero .beat-three .booking-bridge .data-packet {
+    animation: packetDown .95s cubic-bezier(.22,.8,.32,1) 3.8s both !important;
+  }
+
+  .aim-hero .beat-three .booking-bridge .return-packet {
+    animation: returnUp .8s ease 5.45s both !important;
+  }
+
   .aim-hero .beat-label { margin-top: 8px; }
   .aim-hero .beat-progress { margin-bottom: 10px; }
 }
@@ -539,6 +616,9 @@
   .aim-hero .data-packet,
   .aim-hero .return-packet,
   .aim-hero .build-invoice,
+  .aim-hero .build-invoice .sent,
+  .aim-hero .build-invoice .invoice-row,
+  .aim-hero .build-invoice .invoice-line,
   .aim-hero .reveal-answer,
   .aim-hero .animated-book,
   .aim-hero .call-confirm,
@@ -560,6 +640,9 @@
   }
 
   .aim-hero .build-invoice,
+  .aim-hero .build-invoice .sent,
+  .aim-hero .build-invoice .invoice-row,
+  .aim-hero .build-invoice .invoice-line,
   .aim-hero .reveal-answer,
   .aim-hero .animated-book,
   .aim-hero .call-confirm,
