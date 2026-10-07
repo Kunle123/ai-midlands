@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { AimArrow, ApprovalIcon, BookingIcon, ControlIcon, EnquiryIcon, IntegrationIcon, WorkflowIcon } from "@/components/brand/AiMidlandsIcons";
 
 const FOUNDER_IMAGE = "/brand/kunle-founder.jpg";
+const BOOK_CALL_URL = "https://calendly.com/kunle2000/30min";
 
 const principles = [
   { title: "Redesign before automation", text: "We map how the work actually happens and remove avoidable steps before deciding what should be automated.", icon: EnquiryIcon },
@@ -25,11 +26,20 @@ export default function About() {
 
   return (
     <div className="min-h-screen bg-[#faf8f5] text-slate-800">
-      <header className="sticky top-0 z-30 border-b border-[#eadfd6] bg-[#faf8f5]/95 backdrop-blur-xl">
-        <div className="container min-h-[76px] flex items-center justify-between gap-6">
-          <Link href="/"><img src="/brand/ai-midlands-logo.svg" alt="AI Midlands" className="h-[42px] w-auto cursor-pointer" /></Link>
-          <nav className="hidden lg:flex items-center gap-7 text-sm"><Link href="/"><span className="cursor-pointer text-slate-600 hover:text-[#c83927]">Home</span></Link><Link href="/business-automation"><span className="cursor-pointer text-slate-600 hover:text-[#c83927]">Services</span></Link><span className="font-semibold text-[#0f172b]">About</span></nav>
-          <a href="https://calendly.com/kunle2000/30min" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[#c83927] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#a92f21] [--aim-icon-accent:#fff]"><BookingIcon className="w-5 h-5" /> Book a call</a>
+      <header className="sticky top-0 z-30 border-b border-[#e8e0d8] bg-[#faf8f5]/94 backdrop-blur-xl">
+        <div className="container min-h-[74px] flex items-center justify-between gap-6">
+          <Link href="/"><div className="cursor-pointer shrink-0" aria-label="AI Midlands home"><img src="/brand/ai-midlands-logo.svg" alt="AI Midlands" className="h-[46px] w-auto object-contain" /></div></Link>
+          <nav className="hidden lg:flex items-center gap-8 text-sm">
+            <a href="/#services" className="text-slate-600 hover:text-[#c83927] transition-colors">Services</a>
+            <a href="/#proof" className="text-slate-600 hover:text-[#c83927] transition-colors">Examples</a>
+            <a href="/#pricing" className="text-slate-600 hover:text-[#c83927] transition-colors">Pricing</a>
+            <a href="/#approach" className="text-slate-600 hover:text-[#c83927] transition-colors">How we work</a>
+            <span className="font-semibold text-[#0f172b]">About</span>
+          </nav>
+          <div className="flex items-center gap-4">
+            <a href="/#assessment" className="hidden sm:inline-flex items-center gap-2 border-b-2 border-[#c83927] pb-1 text-sm font-semibold text-[#0f172b] hover:text-[#c83927] transition-colors">Assess a process <AimArrow className="w-4 h-4" /></a>
+            <a href={BOOK_CALL_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[#c83927] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#a92f21] transition-colors [--aim-icon-accent:#fff]">Book a call <AimArrow className="w-4 h-4" /></a>
+          </div>
         </div>
       </header>
 
@@ -41,7 +51,7 @@ export default function About() {
               <h1 className="text-4xl md:text-6xl font-semibold tracking-[-0.05em] leading-[1.02] text-[#0f172b] mb-7">Practical AI, delivered with enterprise discipline.</h1>
               <p className="text-xl leading-relaxed text-slate-700 mb-5">I’m Kunle Ibidun, founder of AI Midlands. I’ve spent more than two decades delivering complex digital, integration and technology change.</p>
               <p className="text-lg leading-relaxed text-slate-600 mb-8">AI Midlands starts with the work itself: how people, information and decisions move today, what could be simpler, and only then where AI, automation or integration genuinely helps.</p>
-              <div className="flex flex-wrap gap-3"><a href="https://calendly.com/kunle2000/30min" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[#c83927] px-6 py-3 text-white font-semibold hover:bg-[#a92f21] [--aim-icon-accent:#fff]"><BookingIcon className="w-5 h-5" /> Book an automation review</a><a href="mailto:hello@ai-midlands.co.uk?subject=AI%20Midlands%20automation%20enquiry" className="inline-flex items-center gap-2 rounded-full border border-[#d9cfc6] bg-white px-6 py-3 text-slate-700 font-semibold hover:border-[#c83927] [--aim-icon-accent:#c83927]"><EnquiryIcon className="w-5 h-5" /> Tell me the process</a></div>
+              <div className="flex flex-wrap gap-3"><a href={BOOK_CALL_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[#c83927] px-6 py-3 text-white font-semibold hover:bg-[#a92f21] [--aim-icon-accent:#fff]"><BookingIcon className="w-5 h-5" /> Book an automation review</a><a href="mailto:hello@ai-midlands.co.uk?subject=AI%20Midlands%20automation%20enquiry" className="inline-flex items-center gap-2 rounded-full border border-[#d9cfc6] bg-white px-6 py-3 text-slate-700 font-semibold hover:border-[#c83927] [--aim-icon-accent:#c83927]"><EnquiryIcon className="w-5 h-5" /> Tell me the process</a></div>
             </div>
             <figure className="relative max-w-[500px] lg:ml-auto"><div className="absolute -inset-5 rounded-[2rem] bg-[#f4dfd5] -rotate-2" aria-hidden="true" /><div className="relative overflow-hidden rounded-[1.75rem] border border-[#eadfd6] bg-white"><img src={FOUNDER_IMAGE} alt="Kunle Ibidun, founder of AI Midlands" className="aspect-[3/4] w-full object-cover object-top" /><figcaption className="border-t border-[#eadfd6] bg-white px-5 py-4"><p className="font-semibold text-[#0f172b]">Kunle Ibidun</p><p className="text-sm text-slate-500">Founder · AI Midlands</p></figcaption></div></figure>
           </div>
