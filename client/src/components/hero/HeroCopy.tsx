@@ -2,7 +2,7 @@ export function HeroCopy() {
   return (
     <section className="copy">
       <div className="eyebrow">AI that fits the work.</div>
-      <h1>Cut the chasing, copy-pasting and admin that slow your team down.</h1>
+      <h1>Make everyday work easier.</h1>
       <p>
         When an enquiry arrives, a deal is won, or a customer needs an answer, your team should not have to move the same details between systems. AI Midlands helps you simplify the process first, then automate the parts that are safe and worth doing.
       </p>

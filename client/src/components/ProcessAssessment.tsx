@@ -277,8 +277,7 @@ export function ProcessAssessment() {
                 className="w-full resize-none rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-800 outline-none transition focus:border-[#c83927] focus:ring-4 focus:ring-[#f8ddd3]"
               />
               {error && <p className="mt-2 text-sm text-red-700">{error}</p>}
-              <div className="mt-4 flex items-center justify-between gap-4">
-                <p className="text-xs leading-relaxed text-slate-400">A short, anonymised description is enough. Please do not include passwords, customer records, or confidential information.</p>
+              <div className="mt-4 flex justify-end">
                 <button type="submit" className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#c83927] px-5 py-3 font-semibold text-white transition-colors hover:bg-[#a92f21]">Get a first view of this process <AimArrow className="w-4 h-4 [--aim-icon-accent:#fff]" /></button>
               </div>
             </form>
