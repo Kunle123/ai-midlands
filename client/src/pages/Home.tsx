@@ -6,6 +6,7 @@ import { ServiceFlowGraphic } from "@/components/brand/ServiceFlowGraphic";
 import { AimArrow } from "@/components/brand/AiMidlandsIcons";
 
 const FOUNDER_IMAGE = "/brand/kunle-founder.jpg";
+const BOOK_CALL_URL = "https://calendly.com/kunle2000/30min";
 
 type FlowVariant = "enquiry" | "workflow" | "assistant" | "outreach";
 
@@ -114,7 +115,10 @@ export default function Home() {
             <a href="#approach" className="text-slate-600 hover:text-[#c83927] transition-colors">How we work</a>
             <Link href="/about"><span className="cursor-pointer text-slate-600 hover:text-[#c83927] transition-colors">About</span></Link>
           </nav>
-          <a href="#assessment" className="inline-flex items-center gap-3 border-b-2 border-[#c83927] pb-1 text-sm font-semibold text-[#0f172b] hover:text-[#c83927] transition-colors">Assess a process <AimArrow className="w-4 h-4" /></a>
+          <div className="flex items-center gap-4">
+            <a href="#assessment" className="hidden sm:inline-flex items-center gap-2 border-b-2 border-[#c83927] pb-1 text-sm font-semibold text-[#0f172b] hover:text-[#c83927] transition-colors">Assess a process <AimArrow className="w-4 h-4" /></a>
+            <a href={BOOK_CALL_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[#c83927] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#a92f21] transition-colors [--aim-icon-accent:#fff]">Book a call <AimArrow className="w-4 h-4" /></a>
+          </div>
         </div>
       </header>
 
@@ -292,7 +296,10 @@ export default function Home() {
         <section className="bg-[#fff1e9] py-20 md:py-24">
           <div className="container"><div className="max-w-6xl mx-auto grid md:grid-cols-[1fr_auto] gap-10 items-end">
             <div className="max-w-3xl"><p className="text-[#b43a28] text-sm font-semibold mb-4">A sensible first step</p><h2 className="text-4xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.04]">Show us one process. We’ll tell you what could be simpler — and what is actually worth automating.</h2></div>
-            <a href="#assessment" className="inline-flex items-center gap-3 border-b-2 border-[#c83927] pb-1 text-base font-semibold text-[#0f172b] hover:text-[#c83927] transition-colors">Assess a process <AimArrow className="w-5 h-5" /></a>
+            <div className="flex flex-wrap items-center gap-5 md:justify-end">
+              <a href={BOOK_CALL_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-3 rounded-full bg-[#c83927] px-6 py-3.5 text-base font-semibold text-white hover:bg-[#a92f21] transition-colors [--aim-icon-accent:#fff]">Book a call <AimArrow className="w-5 h-5" /></a>
+              <a href="#assessment" className="inline-flex items-center gap-3 border-b-2 border-[#c83927] pb-1 text-base font-semibold text-[#0f172b] hover:text-[#c83927] transition-colors">Assess a process <AimArrow className="w-5 h-5" /></a>
+            </div>
           </div></div>
         </section>
       </main>
