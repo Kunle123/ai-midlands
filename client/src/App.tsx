@@ -6,6 +6,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { TrackingConsent } from "./components/TrackingConsent";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import About from "./pages/About";
+import AdminPerformance from "./pages/AdminPerformance";
 import Home from "./pages/Home";
 import BBCArticle from "./pages/BBCArticle";
 import Privacy from "./pages/Privacy";
@@ -22,6 +23,7 @@ function Router() {
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path={"/about"} component={About} />
+      <Route path={"/admin/performance"} component={AdminPerformance} />
       <Route path={"/privacy"} component={Privacy} />
       <Route path={"/terms"} component={Terms} />
       <Route path={"/business-automation"} component={BusinessAutomationLanding} />
