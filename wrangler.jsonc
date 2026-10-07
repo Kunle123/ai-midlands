@@ -11,7 +11,14 @@
       "/api/*"
     ]
   },
-  "previews": {}
+  "previews": {},
+  "d1_databases": [
+    {
+      "binding": "LEADS_DB",
+      "database_name": "ai-midlands-leads",
+      "database_id": "eda99a44-dc5e-4b4e-b591-bfbd0a8688e7"
+    }
+  ]
 
   // Lead capture is enabled once a D1 binding named LEADS_DB is added.
   // Recommended command:
