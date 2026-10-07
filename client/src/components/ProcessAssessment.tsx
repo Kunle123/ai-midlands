@@ -259,27 +259,27 @@ export function ProcessAssessment() {
       <div className="container">
         <div className="max-w-6xl mx-auto">
           <div className="max-w-3xl mb-10">
-            <div className="flex items-center gap-3 mb-4 text-[#0f172b] [--aim-icon-accent:#c83927]"><AssessmentIcon className="w-7 h-7" /><p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em]">Start with your problem</p></div>
-            <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-tight mb-5">What would you like to work better?</h2>
-            <p className="text-lg text-slate-600 leading-relaxed">Describe one process that is repetitive, slow or awkward. We’ll give you an immediate first-pass view of where the process itself could be simpler, what genuinely looks worth automating, the systems likely involved and the budget band it may sit in.</p>
+            <div className="flex items-center gap-3 mb-4 text-[#0f172b] [--aim-icon-accent:#c83927]"><AssessmentIcon className="w-7 h-7" /><p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em]">Start with the problem</p></div>
+            <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-tight mb-5">Tell us about one task your team should not have to do by hand.</h2>
+            <p className="text-lg text-slate-600 leading-relaxed">In a few lines, tell us what happens now. We will come back with a straight view of what could be simplified, what might be worth automating, which systems are involved, and the likely budget range.</p>
           </div>
 
           <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-6 items-start">
             <form onSubmit={assess} className="rounded-[28px] border border-[#eadfd6] bg-white p-6 md:p-8">
-              <label htmlFor="process-assessment" className="block font-semibold text-[#0f172b] mb-2">Describe the process</label>
-              <p className="text-sm text-slate-500 mb-4">For example: “Every Friday Sarah downloads three spreadsheets and combines them for our sales meeting.”</p>
+              <label htmlFor="process-assessment" className="block font-semibold text-[#0f172b] mb-2">What happens today?</label>
+              <p className="text-sm text-slate-500 mb-4">For example: “Each Friday, we combine three sales spreadsheets before the team meeting.”</p>
               <textarea
                 id="process-assessment"
                 value={process}
                 onChange={(event) => setProcess(event.target.value)}
                 rows={7}
-                placeholder="What happens today, who does it, and which systems or files are involved?"
+                placeholder="For example: “Each Friday, we combine three sales spreadsheets before the team meeting.”"
                 className="w-full resize-none rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-800 outline-none transition focus:border-[#c83927] focus:ring-4 focus:ring-[#f8ddd3]"
               />
               {error && <p className="mt-2 text-sm text-red-700">{error}</p>}
               <div className="mt-4 flex items-center justify-between gap-4">
-                <p className="text-xs leading-relaxed text-slate-400">Don’t include passwords, confidential records or personal customer data.</p>
-                <button type="submit" className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#c83927] px-5 py-3 font-semibold text-white transition-colors hover:bg-[#a92f21]">Assess this process <AimArrow className="w-4 h-4 [--aim-icon-accent:#fff]" /></button>
+                <p className="text-xs leading-relaxed text-slate-400">A short, anonymised description is enough. Please do not include passwords, customer records, or confidential information.</p>
+                <button type="submit" className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#c83927] px-5 py-3 font-semibold text-white transition-colors hover:bg-[#a92f21]">Get a first view of this process <AimArrow className="w-4 h-4 [--aim-icon-accent:#fff]" /></button>
               </div>
             </form>
 
@@ -287,11 +287,12 @@ export function ProcessAssessment() {
               {!assessment ? (
                 <div className="h-full flex flex-col justify-between gap-10">
                   <div>
-                    <div className="flex items-center gap-3 mb-4 [--aim-icon-accent:#f0a08b]"><EnquiryIcon className="w-7 h-7 text-white" /><p className="text-[#f0a08b] text-xs font-bold uppercase tracking-[0.16em]">What you’ll get</p></div>
-                    <h3 className="text-2xl font-semibold mb-5">A practical view of the process first, technology second.</h3>
-                    <div className="space-y-3 text-slate-300">{["Where the process itself could be simpler", "What genuinely looks worth automating", "Likely systems and hand-offs", "Where human control should remain", "Indicative complexity, budget and next step"].map(item => <div key={item} className="flex items-start gap-3"><StepMark /><span>{item}</span></div>)}</div>
+                    <div className="flex items-center gap-3 mb-4 [--aim-icon-accent:#f0a08b]"><EnquiryIcon className="w-7 h-7 text-white" /><p className="text-[#f0a08b] text-xs font-bold uppercase tracking-[0.16em]">What you will get</p></div>
+                    <h3 className="text-2xl font-semibold mb-3">A clear view of what to fix first.</h3>
+                    <p className="text-slate-400 mb-5">We will look at the process before suggesting a tool.</p>
+                    <div className="space-y-3 text-slate-300">{["The steps that could be simpler", "The hand-offs that may be worth automating", "The systems and people involved", "The points where someone should stay in control", "A likely level of complexity, budget range, and sensible next step"].map(item => <div key={item} className="flex items-start gap-3"><StepMark /><span>{item}</span></div>)}</div>
                   </div>
-                  <p className="text-xs text-slate-500">This is an indicative assessment, not a fixed quote. We confirm feasibility after checking the actual process, systems, access and rules involved.</p>
+                  <p className="text-xs text-slate-500">This is an initial view, not a fixed quote. We confirm what is feasible once we have checked the real process, systems, access, and rules involved.</p>
                 </div>
               ) : (
                 <div>

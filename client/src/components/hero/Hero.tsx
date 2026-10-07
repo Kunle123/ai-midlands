@@ -11,8 +11,8 @@ export function Hero() {
       <HeroCopy />
       <div className="hero-stage-shell">
         <div className="hero-stage-meta" aria-hidden="true">
-          <span>Business automation, shown working</span>
-          <span>4 live examples</span>
+          <span>Typical workflows in action</span>
+          <span>See how a routine hand-off can move from an incoming enquiry to a usable record without repetitive admin.</span>
         </div>
         <BusinessWorkspace />
       </div>
