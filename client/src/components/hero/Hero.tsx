@@ -3,6 +3,7 @@ import { HeroCopy } from "./HeroCopy";
 import "./hero-baseline.css";
 import "./hero-workflows.css";
 import "./hero-premium.css";
+import "./hero-industrial-background.css";
 
 export function Hero() {
   return (

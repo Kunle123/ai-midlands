@@ -1,0 +1,8 @@
+.aim-hero {
+  background-image:
+    linear-gradient(rgba(250, 248, 245, 0.84), rgba(250, 248, 245, 0.84)),
+    url("/brand/hero-industrial-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
