@@ -10,9 +10,22 @@ export function HeroCopy() {
       <p>
         We start with how the work actually happens, simplify the process, then connect AI, automation or integration only where it genuinely helps. The technology should fit the work — not make your team work around the technology.
       </p>
-      <a className="primary" href="#assessment">
-        Assess a process <span>→</span>
-      </a>
+      <div className="flex flex-wrap items-center gap-5 mt-1">
+        <a
+          href="https://calendly.com/kunle2000/30min"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-3 rounded-full bg-[#c83927] px-6 py-3.5 text-base font-semibold text-white shadow-[0_12px_28px_rgba(200,57,39,0.16)] transition-colors hover:bg-[#a92f21]"
+        >
+          Book a call <span>→</span>
+        </a>
+        <a
+          href="#assessment"
+          className="inline-flex items-center gap-3 border-b-2 border-[#c83927] pb-1 text-base font-semibold text-[#0f172b] transition-colors hover:text-[#c83927]"
+        >
+          Assess a process <span>→</span>
+        </a>
+      </div>
       <a className="bbc-proof" href="/bbc-article" aria-label="Read about Kunle Ibidun on BBC Radio West Midlands">
         <img className="bbc-proof-logo" src="/brand/bbc-logo.svg" alt="BBC" />
         <span className="bbc-proof-copy">
