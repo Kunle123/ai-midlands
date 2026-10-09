@@ -181,8 +181,9 @@ async function createLead(request: Request, env: Env, ctx: ExecutionContextLike)
       name, company, email, phone, process_text,
       assessment_title, complexity, budget_band, timeframe, systems_json,
       human_control, assessment_json, page_path,
-      utm_source, utm_medium, utm_campaign, utm_content, utm_term, oppref
-    ) VALUES (?, ?, ?, 'lead', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      utm_source, utm_medium, utm_campaign, utm_content, utm_term, oppref,
+      gclid, gbraid, wbraid
+    ) VALUES (?, ?, ?, 'lead', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).bind(
     id,
     now,
@@ -206,6 +207,9 @@ async function createLead(request: Request, env: Env, ctx: ExecutionContextLike)
     attributionValue(payload.attribution, "utm_content"),
     attributionValue(payload.attribution, "utm_term"),
     attributionValue(payload.attribution, "oppref"),
+    attributionValue(payload.attribution, "gclid"),
+    attributionValue(payload.attribution, "gbraid"),
+    attributionValue(payload.attribution, "wbraid"),
   ).run();
 
   const notificationText = leadNotificationText({
