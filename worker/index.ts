@@ -7,10 +7,10 @@ import {
 import {
   cancelCalendlyBooking,
   D1BookingStore,
-  googleAdsBookingConfigured,
+  ga4BookingConfigured,
   linkConfirmedCalendlyBooking,
-  uploadReadyBookings,
-} from "./booking-upload.ts";
+  sendReadyBookings,
+} from "./booking-ga4.ts";
 
 type D1Result = { success?: boolean; meta?: { changes?: number } };
 
@@ -43,15 +43,8 @@ type Env = {
   RESEND_API_KEY?: string;
   LEADS_ADMIN_TOKEN?: string;
   CALENDLY_WEBHOOK_SIGNING_KEY?: string;
-  GOOGLE_ADS_CLIENT_ID?: string;
-  GOOGLE_ADS_CLIENT_SECRET?: string;
-  GOOGLE_ADS_REFRESH_TOKEN?: string;
-  GOOGLE_ADS_DEVELOPER_TOKEN?: string;
-  GOOGLE_ADS_CUSTOMER_ID?: string;
-  GOOGLE_ADS_CONVERSION_ACTION_ID?: string;
-  GOOGLE_ADS_API_VERSION?: string;
-  GOOGLE_ADS_BOOKING_CONVERSION_VALUE?: string;
-  GOOGLE_ADS_LOGIN_CUSTOMER_ID?: string;
+  GA4_MEASUREMENT_ID?: string;
+  GA4_API_SECRET?: string;
 };
 
 type ExecutionContextLike = {
@@ -287,9 +280,8 @@ async function markBookingStarted(leadId: string, env: Env): Promise<Response> {
 
 type BookingAttributionInput = {
   consent?: unknown;
-  gclid?: unknown;
-  gbraid?: unknown;
-  wbraid?: unknown;
+  client_id?: unknown;
+  session_id?: unknown;
   utm_source?: unknown;
   utm_medium?: unknown;
   utm_campaign?: unknown;
@@ -304,10 +296,9 @@ async function createBookingAttribution(request: Request, env: Env): Promise<Res
     return json({ ok: false, code: "invalid_origin" }, 403);
   }
   const input = await readJson<BookingAttributionInput>(request);
-  const gclid = cleanText(input?.gclid, 200);
-  const gbraid = cleanText(input?.gbraid, 200);
-  const wbraid = cleanText(input?.wbraid, 200);
-  const rejection = bookingAttributionRejection({ consent: input?.consent, gclid, gbraid, wbraid });
+  const clientId = cleanText(input?.client_id, 64);
+  const sessionId = cleanText(input?.session_id, 32);
+  const rejection = bookingAttributionRejection({ consent: input?.consent, clientId, sessionId });
   if (!input || rejection) {
     const code = rejection || "consent_required";
     return json({ ok: false, code }, code === "consent_required" ? 403 : 400);
@@ -315,9 +306,9 @@ async function createBookingAttribution(request: Request, env: Env): Promise<Res
   const token = crypto.randomUUID();
   await env.LEADS_DB.prepare(`
     INSERT INTO booking_attribution
-    (token, created_at, gclid, gbraid, wbraid, utm_source, utm_medium, utm_campaign, utm_content, utm_term)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).bind(token, new Date().toISOString(), gclid, gbraid, wbraid,
+    (token, created_at, ga_client_id, ga_session_id, utm_source, utm_medium, utm_campaign, utm_content, utm_term)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).bind(token, new Date().toISOString(), clientId, sessionId,
     cleanText(input.utm_source, 300), cleanText(input.utm_medium, 300),
     cleanText(input.utm_campaign, 300), cleanText(input.utm_content, 300),
     cleanText(input.utm_term, 300)).run();
@@ -404,10 +395,10 @@ async function calendlyWebhook(request: Request, env: Env): Promise<Response> {
 }
 
 
-async function uploadGoogleBookings(env: Env): Promise<Response> {
+async function sendBookedConsultations(env: Env): Promise<Response> {
   if (!env.LEADS_DB) return json({ ok: false, code: "lead_store_not_configured" }, 503);
-  const summary = await uploadReadyBookings(new D1BookingStore(env.LEADS_DB), env, fetch);
-  const status = summary.code === "google_ads_not_configured" ? 503 : summary.ok ? 200 : 502;
+  const summary = await sendReadyBookings(new D1BookingStore(env.LEADS_DB), env, fetch);
+  const status = summary.code === "ga4_not_configured" ? 503 : summary.ok ? 200 : 502;
   return json(summary, status);
 }
 
@@ -449,12 +440,12 @@ async function adminUpdateStatus(request: Request, leadId: string, env: Env): Pr
 
 export default {
   async scheduled(_event: unknown, env: Env, ctx: ExecutionContextLike): Promise<void> {
-    ctx.waitUntil(uploadGoogleBookings(env).then(async response => {
+    ctx.waitUntil(sendBookedConsultations(env).then(async response => {
       if (response.ok) return;
       const summary = await response.json().catch(() => null) as { code?: string; attempted?: number; failed?: number } | null;
-      console.error("google_ads_booking_upload", summary?.code || "failed", summary?.attempted ?? 0, summary?.failed ?? 0);
+      console.error("ga4_booked_consultation", summary?.code || "failed", summary?.attempted ?? 0, summary?.failed ?? 0);
     }).catch(() => {
-      console.error("google_ads_booking_upload", "failed");
+      console.error("ga4_booked_consultation", "failed");
     }));
   },
   async fetch(request: Request, env: Env, ctx: ExecutionContextLike): Promise<Response> {
@@ -467,7 +458,7 @@ export default {
         notifications: Boolean(env.RESEND_API_KEY || env.LEAD_NOTIFY),
         notificationProvider: env.RESEND_API_KEY ? "resend" : env.LEAD_NOTIFY ? "cloudflare" : null,
         calendlyWebhook: Boolean(env.CALENDLY_WEBHOOK_SIGNING_KEY),
-        googleAdsBookingUpload: googleAdsBookingConfigured(env),
+        ga4BookedConsultation: ga4BookingConfigured(env),
       });
     }
 
@@ -488,9 +479,9 @@ export default {
       return calendlyWebhook(request, env);
     }
 
-    if (url.pathname === "/api/admin/google-ads/upload-bookings" && request.method === "POST") {
+    if (url.pathname === "/api/admin/ga4/booked-consultations" && request.method === "POST") {
       if (!authorised(request, env)) return json({ ok: false, code: "unauthorised" }, 401);
-      return uploadGoogleBookings(env);
+      return sendBookedConsultations(env);
     }
 
     if (url.pathname === "/api/admin/leads" && request.method === "GET") {

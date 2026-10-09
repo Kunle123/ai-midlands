@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { D1BookingStore, uploadReadyBookings, type BookingDatabase } from "./booking-upload.ts";
+import { D1BookingStore, sendReadyBookings, type BookingDatabase } from "./booking-ga4.ts";
 
 const TOKEN = "11111111-1111-4111-8111-111111111111";
 const TOKEN_TWO = "22222222-2222-4222-8222-222222222222";
@@ -7,22 +7,20 @@ const TOKEN_TWO = "22222222-2222-4222-8222-222222222222";
 type Row = {
   token: string;
   created_at: string;
-  gclid: string | null;
-  gbraid: string | null;
-  wbraid: string | null;
+  ga_client_id: string | null;
+  ga_session_id: string | null;
   calendly_invitee_uri: string | null;
   booking_created_at: string | null;
   conversion_state: string;
   upload_claimed_at: string | null;
 };
 
-function readyRow(token: string, gclid = "gclid-1"): Row {
+function readyRow(token: string): Row {
   return {
     token,
     created_at: "2026-10-09T18:00:00.000Z",
-    gclid,
-    gbraid: null,
-    wbraid: null,
+    ga_client_id: "111.222",
+    ga_session_id: "1699999999",
     calendly_invitee_uri: "invitee-1",
     booking_created_at: "2026-10-09T19:30:00.987Z",
     conversion_state: "ready",
@@ -116,64 +114,51 @@ class FakeDb implements BookingDatabase {
 }
 
 const configured = {
-  GOOGLE_ADS_CLIENT_ID: "client",
-  GOOGLE_ADS_CLIENT_SECRET: "secret",
-  GOOGLE_ADS_REFRESH_TOKEN: "refresh",
-  GOOGLE_ADS_DEVELOPER_TOKEN: "developer",
-  GOOGLE_ADS_CUSTOMER_ID: "6483337211",
-  GOOGLE_ADS_CONVERSION_ACTION_ID: "7833321822",
+  GA4_MEASUREMENT_ID: "G-W3T6L19819",
+  GA4_API_SECRET: "test-api-secret",
 };
 
 function jsonResponse(status: number, body: unknown): Response {
   return new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
 }
 
-describe("offline booking upload", () => {
-  it("uploads one confirmed booking at the default £25 and does not upload it again", async () => {
+function emptyResponse(status: number): Response {
+  return new Response(null, { status });
+}
+
+describe("GA4 booked consultation send", () => {
+  it("sends one confirmed booking at £25 and does not send it again", async () => {
     const db = new FakeDb();
     db.rows.set(TOKEN, readyRow(TOKEN));
     db.rows.set("pending-token", { ...readyRow("pending-token"), conversion_state: "pending", booking_created_at: null, calendly_invitee_uri: null });
     db.rows.set("canceled-token", { ...readyRow("canceled-token"), conversion_state: "canceled" });
     const fetchImpl = vi.fn(async (input: RequestInfo | URL) => {
       const url = String(input);
-      if (url.includes("oauth2.googleapis.com")) return jsonResponse(200, { access_token: "access" });
-      return jsonResponse(200, { results: [{ conversionAction: "customers/6483337211/conversionActions/7833321822", orderId: TOKEN }] });
+      if (url.includes("/debug/")) return jsonResponse(200, { validationMessages: [] });
+      return emptyResponse(204);
     });
     const store = new D1BookingStore(db);
-    const first = await uploadReadyBookings(store, configured, fetchImpl, Date.parse("2026-10-09T20:00:00.000Z"));
-    const second = await uploadReadyBookings(store, configured, fetchImpl, Date.parse("2026-10-09T20:30:00.000Z"));
-    const uploadCalls = fetchImpl.mock.calls.filter(call => String(call[0]).includes("uploadClickConversions"));
-    expect(first).toMatchObject({ ok: true, uploaded: 1, failed: 0 });
-    expect(second).toMatchObject({ ok: true, attempted: 0, uploaded: 0 });
-    expect(uploadCalls).toHaveLength(1);
-    const payload = JSON.parse(String((uploadCalls[0]?.[1] as RequestInit).body));
-    expect(payload.conversions[0]).toMatchObject({
-      conversionValue: 25,
-      currencyCode: "GBP",
-      orderId: TOKEN,
-      conversionDateTime: "2026-10-09 19:30:00+00:00",
-      conversionAction: "customers/6483337211/conversionActions/7833321822",
+    const first = await sendReadyBookings(store, configured, fetchImpl, Date.parse("2026-10-09T20:00:00.000Z"));
+    const second = await sendReadyBookings(store, configured, fetchImpl, Date.parse("2026-10-09T20:30:00.000Z"));
+    const collectCalls = fetchImpl.mock.calls.filter(call => String(call[0]).includes("/mp/collect") && !String(call[0]).includes("/debug/"));
+    expect(first).toMatchObject({ ok: true, sent: 1, failed: 0 });
+    expect(second).toMatchObject({ ok: true, attempted: 0, sent: 0 });
+    expect(collectCalls).toHaveLength(1);
+    const collectUrl = new URL(String(collectCalls[0]?.[0]));
+    expect(collectUrl.searchParams.get("measurement_id")).toBe("G-W3T6L19819");
+    expect(collectUrl.searchParams.get("api_secret")).toBe("test-api-secret");
+    const payload = JSON.parse(String((collectCalls[0]?.[1] as RequestInit).body));
+    expect(payload.events[0]).toMatchObject({
+      name: "booked_consultation",
+      params: { value: 25, currency: "GBP", transaction_id: TOKEN },
     });
-    expect(JSON.stringify(payload)).not.toMatch(/email|phone/i);
+    expect(JSON.stringify(payload)).not.toMatch(/api_secret|email|gclid/i);
     expect(db.rows.get(TOKEN)?.conversion_state).toBe("uploaded");
     expect(db.rows.get("pending-token")?.conversion_state).toBe("pending");
     expect(db.rows.get("canceled-token")?.conversion_state).toBe("canceled");
   });
 
-  it("uses a configured booking value without affecting the request shape", async () => {
-    const db = new FakeDb();
-    db.rows.set(TOKEN, readyRow(TOKEN));
-    const fetchImpl = vi.fn(async (input: RequestInfo | URL) => {
-      if (String(input).includes("oauth2")) return jsonResponse(200, { access_token: "access" });
-      return jsonResponse(200, { results: [{ orderId: TOKEN }] });
-    });
-    await uploadReadyBookings(new D1BookingStore(db), { ...configured, GOOGLE_ADS_BOOKING_CONVERSION_VALUE: "40" }, fetchImpl);
-    const upload = fetchImpl.mock.calls.find(call => String(call[0]).includes("uploadClickConversions"));
-    const payload = JSON.parse(String((upload?.[1] as RequestInit).body));
-    expect(payload.conversions[0].conversionValue).toBe(40);
-  });
-
-  it("lets only one claim upload a booking", async () => {
+  it("lets only one claim send a booking", async () => {
     const db = new FakeDb();
     db.rows.set(TOKEN, readyRow(TOKEN));
     const store = new D1BookingStore(db);
@@ -182,60 +167,48 @@ describe("offline booking upload", () => {
     expect(await store.claim(TOKEN, now)).toBe(false);
   });
 
-  it("retries an API failure and then settles a duplicate acknowledgement", async () => {
+  it("retries a collect failure and does not collect when debug validation fails", async () => {
     const db = new FakeDb();
     db.rows.set(TOKEN, readyRow(TOKEN));
-    db.rows.set(TOKEN_TWO, readyRow(TOKEN_TWO, "gclid-2"));
-    let uploads = 0;
+    db.rows.set(TOKEN_TWO, { ...readyRow(TOKEN_TWO), ga_client_id: "333.444" });
+    let collects = 0;
     const fetchImpl = vi.fn(async (input: RequestInfo | URL) => {
-      if (String(input).includes("oauth2")) return jsonResponse(200, { access_token: "access" });
-      uploads += 1;
-      if (uploads === 1) return jsonResponse(503, {});
-      if (uploads === 2) {
-        return jsonResponse(200, {
-          partialFailureError: { details: [{ errors: [{ errorCode: { conversionUploadError: "DUPLICATE_ORDER_ID" } }] }] },
-          results: [{}],
-        });
-      }
-      return jsonResponse(200, { results: [{ orderId: TOKEN_TWO }] });
+      if (String(input).includes("/debug/")) return jsonResponse(200, { validationMessages: [] });
+      collects += 1;
+      if (collects === 1) return emptyResponse(503);
+      return emptyResponse(204);
     });
     const store = new D1BookingStore(db);
-    const first = await uploadReadyBookings(store, configured, fetchImpl, Date.parse("2026-10-09T20:00:00.000Z"));
+    const first = await sendReadyBookings(store, configured, fetchImpl, Date.parse("2026-10-09T20:00:00.000Z"));
     expect(first.failed).toBeGreaterThan(0);
     expect(db.rows.get(TOKEN)?.conversion_state).toBe("ready");
-    const second = await uploadReadyBookings(store, configured, fetchImpl, Date.parse("2026-10-09T20:30:00.000Z"));
-    expect(second.uploaded).toBe(1);
+    const second = await sendReadyBookings(store, configured, fetchImpl, Date.parse("2026-10-09T20:30:00.000Z"));
+    expect(second.sent).toBe(1);
     expect(db.rows.get(TOKEN)?.conversion_state).toBe("uploaded");
     expect(db.rows.get(TOKEN_TWO)?.conversion_state).toBe("uploaded");
   });
 
-  it("does not retry a permanently rejected click", async () => {
+  it("does not retry a payload GA4 rejects", async () => {
     const db = new FakeDb();
     db.rows.set(TOKEN, readyRow(TOKEN));
     const fetchImpl = vi.fn(async (input: RequestInfo | URL) => {
-      if (String(input).includes("oauth2")) return jsonResponse(200, { access_token: "access" });
-      return jsonResponse(200, {
-        partialFailureError: { details: [{ errors: [{ errorCode: { conversionUploadError: "UNPARSEABLE_GCLID" } }] }] },
-        results: [{}],
-      });
+      if (String(input).includes("/debug/")) return jsonResponse(200, { validationMessages: [{ validationCode: "VALUE_INVALID" }] });
+      return emptyResponse(204);
     });
     const store = new D1BookingStore(db);
-    await uploadReadyBookings(store, configured, fetchImpl);
-    await uploadReadyBookings(store, configured, fetchImpl);
-    const uploads = fetchImpl.mock.calls.filter(call => String(call[0]).includes("uploadClickConversions"));
-    expect(uploads).toHaveLength(1);
+    await sendReadyBookings(store, configured, fetchImpl, Date.parse("2026-10-09T20:00:00.000Z"));
+    await sendReadyBookings(store, configured, fetchImpl, Date.parse("2026-10-09T20:30:00.000Z"));
+    const collects = fetchImpl.mock.calls.filter(call => String(call[0]).includes("/mp/collect") && !String(call[0]).includes("/debug/"));
+    expect(collects).toHaveLength(0);
     expect(db.rows.get(TOKEN)?.conversion_state).toBe("rejected");
   });
 
-  it("does not upload when Google Ads credentials are missing", async () => {
+  it("does not send when the GA4 secret is missing", async () => {
     const db = new FakeDb();
     db.rows.set(TOKEN, readyRow(TOKEN));
     const fetchImpl = vi.fn();
-    const summary = await uploadReadyBookings(new D1BookingStore(db), {
-      GOOGLE_ADS_CUSTOMER_ID: "6483337211",
-      GOOGLE_ADS_CONVERSION_ACTION_ID: "7833321822",
-    }, fetchImpl);
-    expect(summary).toMatchObject({ ok: false, code: "google_ads_not_configured", uploaded: 0 });
+    const summary = await sendReadyBookings(new D1BookingStore(db), { GA4_MEASUREMENT_ID: "G-W3T6L19819" }, fetchImpl);
+    expect(summary).toMatchObject({ ok: false, code: "ga4_not_configured", sent: 0 });
     expect(fetchImpl).not.toHaveBeenCalled();
     expect(db.rows.get(TOKEN)?.conversion_state).toBe("ready");
   });

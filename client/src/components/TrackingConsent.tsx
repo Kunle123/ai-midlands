@@ -6,6 +6,7 @@ import {
   getAttribution,
   initialiseTracking,
   preserveOpprefOnInternalLink,
+  readGa4Identity,
   setTrackingConsent,
   trackCustomEvent,
   trackPageView,
@@ -58,7 +59,7 @@ export function TrackingConsent() {
           trackCustomEvent("booking_started", { intent, link_text: linkText });
           const attribution = getAttribution();
           const bookingEvent = isKunleCalendlyBookingUrl(attributedUrl);
-          if (bookingEvent && consent === "granted" && (attribution.gclid || attribution.gbraid || attribution.wbraid)
+          if (bookingEvent && consent === "granted"
               && !event.defaultPrevented && event.button === 0
               && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
             event.preventDefault();
@@ -69,26 +70,27 @@ export function TrackingConsent() {
               else if (anchor.target === "_blank") window.open(destination, "_blank", "noopener");
               else window.location.assign(destination);
             };
-            void fetch("/api/booking-attribution", {
-              method: "POST",
-              headers: { "content-type": "application/json" },
-              body: JSON.stringify({
-                consent: true,
-                gclid: attribution.gclid,
-                gbraid: attribution.gbraid,
-                wbraid: attribution.wbraid,
-                utm_source: attribution.utm_source,
-                utm_medium: attribution.utm_medium,
-                utm_campaign: attribution.utm_campaign,
-                utm_content: attribution.utm_content,
-                utm_term: attribution.utm_term,
-              }),
-            }).then(async response => {
+            void (async () => {
+              const identity = await readGa4Identity();
+              if (!identity) return attributedUrl;
+              const response = await fetch("/api/booking-attribution", {
+                method: "POST",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify({
+                  consent: true,
+                  client_id: identity.clientId,
+                  session_id: identity.sessionId,
+                  utm_source: attribution.utm_source,
+                  utm_medium: attribution.utm_medium,
+                  utm_campaign: attribution.utm_campaign,
+                  utm_content: attribution.utm_content,
+                  utm_term: attribution.utm_term,
+                }),
+              });
               if (!response.ok) return attributedUrl;
               const data = await response.json() as { token?: string };
-              if (!data.token) return attributedUrl;
-              return calendlyUrlWithBookingToken(attributedUrl, data.token);
-            }).then(go).catch(() => go(attributedUrl));
+              return data.token ? calendlyUrlWithBookingToken(attributedUrl, data.token) : attributedUrl;
+            })().then(go).catch(() => go(attributedUrl));
           }
           return;
         }

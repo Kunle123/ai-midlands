@@ -2,9 +2,8 @@
 CREATE TABLE IF NOT EXISTS booking_attribution (
   token TEXT PRIMARY KEY,
   created_at TEXT NOT NULL,
-  gclid TEXT,
-  gbraid TEXT,
-  wbraid TEXT,
+  ga_client_id TEXT NOT NULL,
+  ga_session_id TEXT NOT NULL,
   utm_source TEXT,
   utm_medium TEXT,
   utm_campaign TEXT,

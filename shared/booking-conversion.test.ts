@@ -1,14 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
   bookingAttributionRejection,
-  bookingConversionValue,
   bookingTokenFromTracking,
-  buildClickConversion,
+  buildBookedConsultation,
   calendlySignatureFresh,
   calendlyUrlWithBookingToken,
-  formatGoogleAdsDateTime,
-  googleAdsClickIdentifier,
-  interpretGoogleAdsUpload,
+  ga4IdentityFromCookies,
+  interpretGa4Collect,
+  interpretGa4Debug,
   isKunleCalendlyBookingUrl,
   onInviteeCanceled,
   onInviteeCreated,
@@ -23,9 +22,8 @@ function row(overrides: Partial<BookingRecord> = {}): BookingRecord {
   return {
     token: TOKEN,
     createdAt: "2026-10-09T18:00:00.000Z",
-    gclid: "test-gclid",
-    gbraid: "",
-    wbraid: "",
+    gaClientId: "111.222",
+    gaSessionId: "1699999999",
     calendlyInviteeUri: null,
     bookingCreatedAt: null,
     conversionState: "pending",
@@ -47,10 +45,17 @@ async function sign(secret: string, timestamp: string, body: string): Promise<st
 }
 
 describe("booking consent and Calendly URL", () => {
-  it("requires measurement consent and a Google click id before a booking token", () => {
-    expect(bookingAttributionRejection({ consent: false, gclid: "abc" })).toBe("consent_required");
-    expect(bookingAttributionRejection({ consent: true })).toBe("no_google_click");
-    expect(bookingAttributionRejection({ consent: true, gclid: "abc" })).toBeNull();
+  it("requires measurement consent and a GA4 client and session before a booking token", () => {
+    expect(bookingAttributionRejection({ consent: false, clientId: "111.222", sessionId: "1699999999" })).toBe("consent_required");
+    expect(bookingAttributionRejection({ consent: true })).toBe("ga4_client_required");
+    expect(bookingAttributionRejection({ consent: true, clientId: "111.222", sessionId: "1699999999" })).toBeNull();
+  });
+
+  it("reads GA4 identifiers from the measurement cookies", () => {
+    const cookies = "_ga=GA1.1.111.222; _ga_W3T6L19819=GS2.1.s1699999999$o1$g1$t1699999999$j0$l0$h0";
+    expect(ga4IdentityFromCookies(cookies, "G-W3T6L19819")).toEqual({ clientId: "111.222", sessionId: "1699999999" });
+    expect(ga4IdentityFromCookies("_ga=GA1.1.111.222; _ga_W3T6L19819=GS1.1.1700000000.1.1.1700000000.0.0.0", "G-W3T6L19819")?.sessionId).toBe("1700000000");
+    expect(ga4IdentityFromCookies(cookies, "G-OTHER")).toBeNull();
   });
 
   it("recognises only the 30-minute Calendly event", () => {
@@ -71,40 +76,35 @@ describe("booking consent and Calendly URL", () => {
   });
 });
 
-describe("booking conversion payload", () => {
-  it("defaults the booking value to £25 and keeps an explicit value", () => {
-    expect(bookingConversionValue(undefined)).toBe(25);
-    expect(bookingConversionValue("")).toBe(25);
-    expect(bookingConversionValue("nope")).toBe(25);
-    expect(bookingConversionValue("40")).toBe(40);
-  });
+describe("booked consultation payload", () => {
+  const nowMs = Date.parse("2026-10-09T21:21:08.000Z");
 
-  it("formats Google Ads timestamps without milliseconds", () => {
-    expect(formatGoogleAdsDateTime("2026-10-09T21:21:08.987Z")).toBe("2026-10-09 21:21:08+00:00");
-    expect(formatGoogleAdsDateTime("not-a-date")).toBeNull();
-  });
-
-  it("sends one click id, the confirmed action, and no personal details", () => {
-    expect(googleAdsClickIdentifier({ gclid: "g", gbraid: "b", wbraid: "w" })).toEqual({ gclid: "g" });
-    expect(googleAdsClickIdentifier({ gclid: "", gbraid: "", wbraid: "" })).toBeNull();
-    const conversion = buildClickConversion({
-      customerId: "6483337211",
-      conversionActionId: "7833321822",
+  it("sends booked_consultation at £25 and no personal details", () => {
+    const payload = buildBookedConsultation({
+      clientId: "111.222",
+      sessionId: "1699999999",
       token: TOKEN,
       bookingCreatedAt: "2026-10-09T21:21:08.987Z",
-      conversionValue: 25,
-      gclid: "test-gclid",
+      nowMs,
     });
-    expect(conversion).toMatchObject({
-      conversionAction: "customers/6483337211/conversionActions/7833321822",
-      conversionDateTime: "2026-10-09 21:21:08+00:00",
-      conversionValue: 25,
-      currencyCode: "GBP",
-      orderId: TOKEN,
-      gclid: "test-gclid",
+    expect(payload).toMatchObject({
+      client_id: "111.222",
+      events: [{
+        name: "booked_consultation",
+        params: { currency: "GBP", value: 25, session_id: "1699999999", transaction_id: TOKEN },
+      }],
     });
-    expect(conversion).not.toHaveProperty("gbraid");
-    expect(JSON.stringify(conversion)).not.toMatch(/email|phone|name/i);
+    expect(JSON.stringify(payload)).not.toMatch(/email|phone|gclid|api_secret/i);
+  });
+
+  it("rejects an event older than the Measurement Protocol window", () => {
+    expect(buildBookedConsultation({
+      clientId: "111.222",
+      sessionId: "1699999999",
+      token: TOKEN,
+      bookingCreatedAt: "2026-10-01T21:21:08.000Z",
+      nowMs,
+    })).toBeNull();
   });
 });
 
@@ -176,23 +176,15 @@ describe("confirmed booking state", () => {
   });
 });
 
-describe("Google Ads upload acknowledgement", () => {
-  it("accepts an echoed result and does not treat an empty result as success", () => {
-    expect(interpretGoogleAdsUpload(200, {
-      results: [{ conversionAction: "customers/6483337211/conversionActions/7833321822", orderId: TOKEN }],
-    })).toBe("uploaded");
-    expect(interpretGoogleAdsUpload(200, { results: [{}] })).toBe("retry");
+describe("GA4 Measurement Protocol acknowledgement", () => {
+  it("accepts a debug payload with no validation messages and a 204 collect response", () => {
+    expect(interpretGa4Debug(200, { validationMessages: [] })).toBe("valid");
+    expect(interpretGa4Collect(204)).toBe("accepted");
   });
 
-  it("retries transport failures, settles duplicates, and rejects a bad click id", () => {
-    expect(interpretGoogleAdsUpload(503, {})).toBe("retry");
-    expect(interpretGoogleAdsUpload(200, {
-      partialFailureError: { details: [{ errors: [{ errorCode: { conversionUploadError: "CLICK_CONVERSION_ALREADY_EXISTS" } }] }] },
-      results: [{}],
-    })).toBe("duplicate");
-    expect(interpretGoogleAdsUpload(200, {
-      partialFailureError: { details: [{ errors: [{ errorCode: { conversionUploadError: "UNPARSEABLE_GCLID" } }] }] },
-      results: [{}],
-    })).toBe("rejected");
+  it("retries transport failures and rejects an invalid payload", () => {
+    expect(interpretGa4Debug(503, {})).toBe("retry");
+    expect(interpretGa4Debug(200, { validationMessages: [{ validationCode: "VALUE_INVALID" }] })).toBe("rejected");
+    expect(interpretGa4Collect(500)).toBe("retry");
   });
 });

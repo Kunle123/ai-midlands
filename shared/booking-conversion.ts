@@ -1,41 +1,30 @@
 export const CALENDLY_BOOKING_URL = "https://calendly.com/kunle2000/30min";
 export const CALENDLY_BOOKING_PATH = "/kunle2000/30min";
-export const DEFAULT_BOOKING_CONVERSION_VALUE = 25;
+export const BOOKED_CONSULTATION_EVENT = "booked_consultation";
+export const BOOKING_CONVERSION_VALUE = 25;
 export const BOOKING_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 export const UPLOAD_CLAIM_TIMEOUT_MS = 15 * 60 * 1000;
+export const GA4_EVENT_MAX_AGE_MS = 72 * 60 * 60 * 1000;
 
 const BOOKING_TOKEN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const GA4_MEASUREMENT_ID = /^G-[A-Z0-9]+$/;
+const GA4_CLIENT_ID = /^\d{1,20}\.\d{1,20}$/;
+const GA4_SESSION_ID = /^\d{1,20}$/;
 
 export type BookingState = "pending" | "ready" | "uploading" | "uploaded" | "rejected" | "canceled";
 
 export type BookingRecord = {
   token: string;
   createdAt: string;
-  gclid: string;
-  gbraid: string;
-  wbraid: string;
+  gaClientId: string;
+  gaSessionId: string;
   calendlyInviteeUri: string | null;
   bookingCreatedAt: string | null;
   conversionState: BookingState;
   uploadClaimedAt: string | null;
 };
 
-export type UploadOutcome = "uploaded" | "duplicate" | "retry" | "rejected";
-
-const PERMANENT_UPLOAD_ERRORS = new Set([
-  "UNPARSEABLE_GCLID",
-  "UNPARSEABLE_GBRAID",
-  "UNPARSEABLE_WBRAID",
-  "EXPIRED_EVENT",
-  "EVENT_NOT_FOUND",
-  "CLICK_NOT_FOUND",
-  "CONVERSION_PRECEDES_EVENT",
-  "TOO_RECENT_CONVERSION_ACTION",
-  "INVALID_CONVERSION_ACTION",
-  "INVALID_CONVERSION_ACTION_TYPE",
-  "INVALID_CUSTOMER_FOR_CLICK",
-  "ONE_PER_CLICK_CONVERSION_ACTION_NOT_PERMITTED",
-]);
+export type Ga4SendOutcome = "valid" | "accepted" | "retry" | "rejected";
 
 export function isKunleCalendlyBookingUrl(target: string, base = "https://ai-midlands.co.uk"): boolean {
   try {
@@ -58,100 +47,92 @@ export function calendlyUrlWithBookingToken(target: string, token: string): stri
   return url.toString();
 }
 
-export function bookingConversionValue(raw: string | undefined): number {
-  if (raw == null || raw.trim() === "") return DEFAULT_BOOKING_CONVERSION_VALUE;
-  const value = Number(raw);
-  if (!Number.isFinite(value) || value < 0) return DEFAULT_BOOKING_CONVERSION_VALUE;
-  return Math.round(value * 100) / 100;
+export function validGa4MeasurementId(value: string | undefined): string | null {
+  const measurementId = value?.trim() || "";
+  return GA4_MEASUREMENT_ID.test(measurementId) ? measurementId : null;
 }
 
-export function formatGoogleAdsDateTime(value: string): string | null {
-  const date = new Date(value);
-  if (!Number.isFinite(date.getTime())) return null;
-  return `${date.toISOString().slice(0, 19).replace("T", " ")}+00:00`;
+export function validGa4ClientId(value: string | undefined): string | null {
+  const clientId = value?.trim() || "";
+  return GA4_CLIENT_ID.test(clientId) ? clientId : null;
 }
 
-export function googleAdsClickIdentifier(row: {
-  gclid?: string | null;
-  gbraid?: string | null;
-  wbraid?: string | null;
-}): { gclid: string } | { gbraid: string } | { wbraid: string } | null {
-  const gclid = row.gclid?.trim();
-  const gbraid = row.gbraid?.trim();
-  const wbraid = row.wbraid?.trim();
-  if (gclid) return { gclid };
-  if (gbraid) return { gbraid };
-  if (wbraid) return { wbraid };
-  return null;
+export function validGa4SessionId(value: string | number | undefined): string | null {
+  const sessionId = String(value ?? "").trim();
+  return GA4_SESSION_ID.test(sessionId) ? sessionId : null;
+}
+
+export function ga4SessionCookieName(measurementId: string): string | null {
+  const id = validGa4MeasurementId(measurementId);
+  return id ? `_ga_${id.slice(2)}` : null;
+}
+
+function cookieValue(cookieHeader: string, name: string): string {
+  const parts = cookieHeader.split(";").map(part => part.trim());
+  const prefix = `${name}=`;
+  return parts.find(part => part.startsWith(prefix))?.slice(prefix.length) || "";
+}
+
+export function ga4IdentityFromCookies(
+  cookieHeader: string,
+  measurementId: string,
+): { clientId: string; sessionId: string } | null {
+  const clientId = validGa4ClientId(cookieValue(cookieHeader, "_ga").match(/GA\d+\.\d+\.(\d+\.\d+)/)?.[1]);
+  const sessionCookie = cookieValue(cookieHeader, ga4SessionCookieName(measurementId) || "");
+  const sessionMatch = sessionCookie.match(/^GS1\.1\.(\d+)\./) || sessionCookie.match(/^GS2\.1\.s(\d+)(?:\$|$)/);
+  const sessionId = validGa4SessionId(sessionMatch?.[1]);
+  return clientId && sessionId ? { clientId, sessionId } : null;
 }
 
 export function bookingAttributionRejection(input: {
   consent?: unknown;
-  gclid?: string;
-  gbraid?: string;
-  wbraid?: string;
-}): "consent_required" | "no_google_click" | null {
+  clientId?: string;
+  sessionId?: string;
+}): "consent_required" | "ga4_client_required" | null {
   if (input.consent !== true) return "consent_required";
-  if (!googleAdsClickIdentifier(input)) return "no_google_click";
+  if (!validGa4ClientId(input.clientId) || !validGa4SessionId(input.sessionId)) return "ga4_client_required";
   return null;
 }
 
-export function buildClickConversion(input: {
-  customerId: string;
-  conversionActionId: string;
+export function buildBookedConsultation(input: {
+  clientId: string;
+  sessionId: string;
   token: string;
   bookingCreatedAt: string;
-  conversionValue: number;
-  gclid?: string | null;
-  gbraid?: string | null;
-  wbraid?: string | null;
+  nowMs: number;
 }): Record<string, unknown> | null {
-  const click = googleAdsClickIdentifier(input);
-  const conversionDateTime = formatGoogleAdsDateTime(input.bookingCreatedAt);
-  if (!click || !conversionDateTime) return null;
+  const clientId = validGa4ClientId(input.clientId);
+  const sessionId = validGa4SessionId(input.sessionId);
+  const bookedAt = Date.parse(input.bookingCreatedAt);
+  if (!clientId || !sessionId || !Number.isFinite(bookedAt)) return null;
+  if (input.nowMs - bookedAt > GA4_EVENT_MAX_AGE_MS) return null;
+  const eventMs = Math.min(bookedAt, input.nowMs);
   return {
-    conversionAction: `customers/${input.customerId}/conversionActions/${input.conversionActionId}`,
-    conversionDateTime,
-    conversionValue: input.conversionValue,
-    currencyCode: "GBP",
-    orderId: input.token,
-    consent: { adUserData: "GRANTED", adPersonalization: "DENIED" },
-    ...click,
+    client_id: clientId,
+    timestamp_micros: String(eventMs * 1000),
+    events: [{
+      name: BOOKED_CONSULTATION_EVENT,
+      params: {
+        session_id: sessionId,
+        engagement_time_msec: 100,
+        currency: "GBP",
+        value: BOOKING_CONVERSION_VALUE,
+        transaction_id: input.token,
+      },
+    }],
   };
 }
 
-function collectErrorCodes(body: unknown, into: string[] = []): string[] {
-  if (!body || typeof body !== "object") return into;
-  const record = body as Record<string, unknown>;
-  const errorCode = record.errorCode;
-  if (errorCode && typeof errorCode === "object") {
-    for (const value of Object.values(errorCode as Record<string, unknown>)) {
-      if (typeof value === "string") into.push(value);
-    }
-  }
-  for (const value of Object.values(record)) {
-    if (Array.isArray(value)) {
-      for (const item of value) collectErrorCodes(item, into);
-    } else if (value && typeof value === "object") {
-      collectErrorCodes(value, into);
-    }
-  }
-  return into;
+export function interpretGa4Debug(status: number, body: unknown): Ga4SendOutcome {
+  if (status === 429 || status >= 500 || status === 0) return "retry";
+  if (status !== 200 || !body || typeof body !== "object") return "retry";
+  const messages = (body as { validationMessages?: unknown }).validationMessages;
+  if (!Array.isArray(messages)) return "retry";
+  return messages.length === 0 ? "valid" : "rejected";
 }
 
-export function interpretGoogleAdsUpload(status: number, body: unknown): UploadOutcome {
-  if (status === 429 || status === 401 || status === 403 || status >= 500) return "retry";
-  const codes = collectErrorCodes(body);
-  if (codes.some(code => /ALREADY_EXISTS|DUPLICATE/.test(code))) return "duplicate";
-  const record = body && typeof body === "object" ? body as { partialFailureError?: unknown; results?: Array<Record<string, unknown>> } : {};
-  if (status === 200 && !record.partialFailureError) {
-    const result = record.results?.[0];
-    if (result && (result.conversionAction || result.gclid || result.gbraid || result.wbraid || result.orderId)) {
-      return "uploaded";
-    }
-    return "retry";
-  }
-  if (codes.some(code => PERMANENT_UPLOAD_ERRORS.has(code))) return "rejected";
+export function interpretGa4Collect(status: number): Ga4SendOutcome {
+  if (status === 204 || status === 200) return "accepted";
   return "retry";
 }
 
