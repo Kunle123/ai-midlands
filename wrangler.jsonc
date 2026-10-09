@@ -12,6 +12,7 @@
     ]
   },
   "previews": {},
+  "triggers": { "crons": ["*/30 * * * *"] },
   "d1_databases": [
     {
       "binding": "LEADS_DB",
