@@ -288,6 +288,61 @@ function constantTimeEqual(a: string, b: string): boolean {
   return result === 0;
 }
 
+
+type BookingAttributionInput = {
+  consent?: unknown;
+  gclid?: unknown;
+  gbraid?: unknown;
+  wbraid?: unknown;
+  utm_source?: unknown;
+  utm_medium?: unknown;
+  utm_campaign?: unknown;
+  utm_content?: unknown;
+  utm_term?: unknown;
+};
+
+async function createBookingAttribution(request: Request, env: Env): Promise<Response> {
+  if (!env.LEADS_DB) return json({ ok: false, code: "lead_store_not_configured" }, 503);
+  const origin = request.headers.get("origin");
+  if (origin && new URL(origin).origin !== new URL(request.url).origin) {
+    return json({ ok: false, code: "invalid_origin" }, 403);
+  }
+  const input = await readJson<BookingAttributionInput>(request);
+  if (!input || input.consent !== true) return json({ ok: false, code: "consent_required" }, 403);
+  const gclid = cleanText(input.gclid, 200);
+  const gbraid = cleanText(input.gbraid, 200);
+  const wbraid = cleanText(input.wbraid, 200);
+  if (![gclid, gbraid, wbraid].some(Boolean)) return json({ ok: false, code: "no_google_click" }, 400);
+  const token = crypto.randomUUID();
+  await env.LEADS_DB.prepare(`
+    INSERT INTO booking_attribution
+    (token, created_at, gclid, gbraid, wbraid, utm_source, utm_medium, utm_campaign, utm_content, utm_term)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).bind(token, new Date().toISOString(), gclid, gbraid, wbraid,
+    cleanText(input.utm_source, 300), cleanText(input.utm_medium, 300),
+    cleanText(input.utm_campaign, 300), cleanText(input.utm_content, 300),
+    cleanText(input.utm_term, 300)).run();
+  return json({ ok: true, token }, 201);
+}
+
+async function linkCalendlyBooking(payload: Record<string, unknown>, env: Env): Promise<void> {
+  if (!env.LEADS_DB) return;
+  const tracking = payload.tracking && typeof payload.tracking === "object"
+    ? payload.tracking as Record<string, unknown> : {};
+  const token = cleanText(tracking.utm_content, 100);
+  if (!/^[0-9a-f]{8}-[0-9a-f-]{27,40}$/i.test(token)) return;
+  const uri = cleanText(payload.uri, 1200);
+  if (!uri) return;
+  const createdAt = cleanText(payload.created_at, 80) || new Date().toISOString();
+  const cutoff = new Date(Date.now() - 7 * 24 * 3600_000).toISOString();
+  // Only link one confirmed booking to a recently issued token. Replay is idempotent.
+  await env.LEADS_DB.prepare(`
+    UPDATE booking_attribution
+    SET calendly_invitee_uri = ?, booking_created_at = ?, conversion_state = 'ready'
+    WHERE token = ? AND created_at >= ? AND calendly_invitee_uri IS NULL
+  `).bind(uri, createdAt, token, cutoff).run();
+}
+
 async function calendlyWebhook(request: Request, env: Env): Promise<Response> {
   if (!env.LEADS_DB) return json({ ok: false, code: "lead_store_not_configured" }, 503);
   if (!env.CALENDLY_WEBHOOK_SIGNING_KEY) return json({ ok: false, code: "calendly_webhook_not_configured" }, 503);
@@ -313,6 +368,7 @@ async function calendlyWebhook(request: Request, env: Env): Promise<Response> {
 
   const eventType = cleanText(body.event, 80);
   const payload = body.payload && typeof body.payload === "object" ? body.payload as Record<string, unknown> : {};
+  if (eventType === "invitee.created") await linkCalendlyBooking(payload, env);
   const email = cleanText(payload.email, 254).toLowerCase();
   if (!isEmail(email)) return json({ ok: true, matched: false });
 
@@ -402,6 +458,10 @@ export default {
         notificationProvider: env.RESEND_API_KEY ? "resend" : env.LEAD_NOTIFY ? "cloudflare" : null,
         calendlyWebhook: Boolean(env.CALENDLY_WEBHOOK_SIGNING_KEY),
       });
+    }
+
+    if (url.pathname === "/api/booking-attribution" && request.method === "POST") {
+      return createBookingAttribution(request, env);
     }
 
     if (url.pathname === "/api/leads" && request.method === "POST") {
