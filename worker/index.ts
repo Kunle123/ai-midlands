@@ -1,3 +1,17 @@
+import {
+  bookingAttributionRejection,
+  bookingTokenFromTracking,
+  payloadMatchesBookingEvent,
+  verifyCalendlyWebhook,
+} from "../shared/booking-conversion.ts";
+import {
+  cancelCalendlyBooking,
+  D1BookingStore,
+  ga4BookingConfigured,
+  linkConfirmedCalendlyBooking,
+  sendReadyBookings,
+} from "./booking-ga4.ts";
+
 type D1Result = { success?: boolean; meta?: { changes?: number } };
 
 type D1StatementLike = {
@@ -29,6 +43,8 @@ type Env = {
   RESEND_API_KEY?: string;
   LEADS_ADMIN_TOKEN?: string;
   CALENDLY_WEBHOOK_SIGNING_KEY?: string;
+  GA4_MEASUREMENT_ID?: string;
+  GA4_API_SECRET?: string;
 };
 
 type ExecutionContextLike = {
@@ -81,7 +97,7 @@ async function readJson<T>(request: Request): Promise<T | null> {
   const length = Number(request.headers.get("content-length") || "0");
   if (length > 50_000) return null;
   try {
-    return await request.json<T>();
+    return await request.json() as T;
   } catch {
     return null;
   }
@@ -181,8 +197,9 @@ async function createLead(request: Request, env: Env, ctx: ExecutionContextLike)
       name, company, email, phone, process_text,
       assessment_title, complexity, budget_band, timeframe, systems_json,
       human_control, assessment_json, page_path,
-      utm_source, utm_medium, utm_campaign, utm_content, utm_term, oppref
-    ) VALUES (?, ?, ?, 'lead', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      utm_source, utm_medium, utm_campaign, utm_content, utm_term, oppref,
+      gclid, gbraid, wbraid
+    ) VALUES (?, ?, ?, 'lead', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).bind(
     id,
     now,
@@ -206,6 +223,9 @@ async function createLead(request: Request, env: Env, ctx: ExecutionContextLike)
     attributionValue(payload.attribution, "utm_content"),
     attributionValue(payload.attribution, "utm_term"),
     attributionValue(payload.attribution, "oppref"),
+    attributionValue(payload.attribution, "gclid"),
+    attributionValue(payload.attribution, "gbraid"),
+    attributionValue(payload.attribution, "wbraid"),
   ).run();
 
   const notificationText = leadNotificationText({
@@ -258,30 +278,41 @@ async function markBookingStarted(leadId: string, env: Env): Promise<Response> {
   return json({ ok: true });
 }
 
-function parseCalendlySignature(header: string | null): { timestamp: string; signature: string } | null {
-  if (!header) return null;
-  const pairs = Object.fromEntries(header.split(",").map(part => part.trim().split("=", 2)));
-  return pairs.t && pairs.v1 ? { timestamp: pairs.t, signature: pairs.v1 } : null;
-}
+type BookingAttributionInput = {
+  consent?: unknown;
+  client_id?: unknown;
+  session_id?: unknown;
+  utm_source?: unknown;
+  utm_medium?: unknown;
+  utm_campaign?: unknown;
+  utm_content?: unknown;
+  utm_term?: unknown;
+};
 
-async function hmacHex(secret: string, payload: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    "raw",
-    encoder.encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"],
-  );
-  const signature = await crypto.subtle.sign("HMAC", key, encoder.encode(payload));
-  return Array.from(new Uint8Array(signature)).map(byte => byte.toString(16).padStart(2, "0")).join("");
-}
-
-function constantTimeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let result = 0;
-  for (let i = 0; i < a.length; i += 1) result |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return result === 0;
+async function createBookingAttribution(request: Request, env: Env): Promise<Response> {
+  if (!env.LEADS_DB) return json({ ok: false, code: "lead_store_not_configured" }, 503);
+  const origin = request.headers.get("origin");
+  if (origin && new URL(origin).origin !== new URL(request.url).origin) {
+    return json({ ok: false, code: "invalid_origin" }, 403);
+  }
+  const input = await readJson<BookingAttributionInput>(request);
+  const clientId = cleanText(input?.client_id, 64);
+  const sessionId = cleanText(input?.session_id, 32);
+  const rejection = bookingAttributionRejection({ consent: input?.consent, clientId, sessionId });
+  if (!input || rejection) {
+    const code = rejection || "consent_required";
+    return json({ ok: false, code }, code === "consent_required" ? 403 : 400);
+  }
+  const token = crypto.randomUUID();
+  await env.LEADS_DB.prepare(`
+    INSERT INTO booking_attribution
+    (token, created_at, ga_client_id, ga_session_id, utm_source, utm_medium, utm_campaign, utm_content, utm_term)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).bind(token, new Date().toISOString(), clientId, sessionId,
+    cleanText(input.utm_source, 300), cleanText(input.utm_medium, 300),
+    cleanText(input.utm_campaign, 300), cleanText(input.utm_content, 300),
+    cleanText(input.utm_term, 300)).run();
+  return json({ ok: true, token }, 201);
 }
 
 async function calendlyWebhook(request: Request, env: Env): Promise<Response> {
@@ -289,16 +320,13 @@ async function calendlyWebhook(request: Request, env: Env): Promise<Response> {
   if (!env.CALENDLY_WEBHOOK_SIGNING_KEY) return json({ ok: false, code: "calendly_webhook_not_configured" }, 503);
 
   const rawBody = await request.text();
-  const signature = parseCalendlySignature(request.headers.get("Calendly-Webhook-Signature"));
-  if (!signature) return json({ ok: false, code: "missing_signature" }, 401);
-
-  const timestamp = Number(signature.timestamp);
-  if (!Number.isFinite(timestamp) || Math.abs(Date.now() / 1000 - timestamp) > 180) {
-    return json({ ok: false, code: "stale_signature" }, 401);
-  }
-
-  const expected = await hmacHex(env.CALENDLY_WEBHOOK_SIGNING_KEY, `${signature.timestamp}.${rawBody}`);
-  if (!constantTimeEqual(expected, signature.signature)) return json({ ok: false, code: "invalid_signature" }, 401);
+  const verification = await verifyCalendlyWebhook({
+    secret: env.CALENDLY_WEBHOOK_SIGNING_KEY,
+    signatureHeader: request.headers.get("Calendly-Webhook-Signature"),
+    rawBody,
+    nowMs: Date.now(),
+  });
+  if (verification !== "ok") return json({ ok: false, code: verification }, 401);
 
   let body: Record<string, unknown>;
   try {
@@ -309,6 +337,22 @@ async function calendlyWebhook(request: Request, env: Env): Promise<Response> {
 
   const eventType = cleanText(body.event, 80);
   const payload = body.payload && typeof body.payload === "object" ? body.payload as Record<string, unknown> : {};
+  const store = new D1BookingStore(env.LEADS_DB);
+  const tracking = payload.tracking && typeof payload.tracking === "object" ? payload.tracking : {};
+  const token = bookingTokenFromTracking(tracking);
+  const inviteeUri = cleanText(payload.uri, 1200);
+  if (eventType === "invitee.created" && payloadMatchesBookingEvent(payload) && token && inviteeUri) {
+    await linkConfirmedCalendlyBooking(
+      store,
+      token,
+      inviteeUri,
+      cleanText(payload.created_at, 80) || new Date().toISOString(),
+      Date.now(),
+    );
+  }
+  if (eventType === "invitee.canceled" && inviteeUri) {
+    await cancelCalendlyBooking(store, token, inviteeUri);
+  }
   const email = cleanText(payload.email, 254).toLowerCase();
   if (!isEmail(email)) return json({ ok: true, matched: false });
 
@@ -350,6 +394,14 @@ async function calendlyWebhook(request: Request, env: Env): Promise<Response> {
   return json({ ok: true, ignored: true });
 }
 
+
+async function sendBookedConsultations(env: Env): Promise<Response> {
+  if (!env.LEADS_DB) return json({ ok: false, code: "lead_store_not_configured" }, 503);
+  const summary = await sendReadyBookings(new D1BookingStore(env.LEADS_DB), env, fetch);
+  const status = summary.code === "ga4_not_configured" ? 503 : summary.ok ? 200 : 502;
+  return json(summary, status);
+}
+
 function authorised(request: Request, env: Env): boolean {
   if (!env.LEADS_ADMIN_TOKEN) return false;
   const header = request.headers.get("authorization") || "";
@@ -387,6 +439,15 @@ async function adminUpdateStatus(request: Request, leadId: string, env: Env): Pr
 }
 
 export default {
+  async scheduled(_event: unknown, env: Env, ctx: ExecutionContextLike): Promise<void> {
+    ctx.waitUntil(sendBookedConsultations(env).then(async response => {
+      if (response.ok) return;
+      const summary = await response.json().catch(() => null) as { code?: string; attempted?: number; failed?: number } | null;
+      console.error("ga4_booked_consultation", summary?.code || "failed", summary?.attempted ?? 0, summary?.failed ?? 0);
+    }).catch(() => {
+      console.error("ga4_booked_consultation", "failed");
+    }));
+  },
   async fetch(request: Request, env: Env, ctx: ExecutionContextLike): Promise<Response> {
     const url = new URL(request.url);
 
@@ -397,7 +458,12 @@ export default {
         notifications: Boolean(env.RESEND_API_KEY || env.LEAD_NOTIFY),
         notificationProvider: env.RESEND_API_KEY ? "resend" : env.LEAD_NOTIFY ? "cloudflare" : null,
         calendlyWebhook: Boolean(env.CALENDLY_WEBHOOK_SIGNING_KEY),
+        ga4BookedConsultation: ga4BookingConfigured(env),
       });
+    }
+
+    if (url.pathname === "/api/booking-attribution" && request.method === "POST") {
+      return createBookingAttribution(request, env);
     }
 
     if (url.pathname === "/api/leads" && request.method === "POST") {
@@ -411,6 +477,11 @@ export default {
 
     if (url.pathname === "/api/calendly" && request.method === "POST") {
       return calendlyWebhook(request, env);
+    }
+
+    if (url.pathname === "/api/admin/ga4/booked-consultations" && request.method === "POST") {
+      if (!authorised(request, env)) return json({ ok: false, code: "unauthorised" }, 401);
+      return sendBookedConsultations(env);
     }
 
     if (url.pathname === "/api/admin/leads" && request.method === "GET") {

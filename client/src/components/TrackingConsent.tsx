@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
+import { calendlyUrlWithBookingToken, isKunleCalendlyBookingUrl } from "@shared/booking-conversion";
 import {
   getTrackingConsent,
+  getAttribution,
   initialiseTracking,
   preserveOpprefOnInternalLink,
+  readGa4Identity,
   setTrackingConsent,
   trackCustomEvent,
   trackPageView,
@@ -54,6 +57,41 @@ export function TrackingConsent() {
           const attributedUrl = withUtmParams(url.toString());
           anchor.setAttribute("href", attributedUrl);
           trackCustomEvent("booking_started", { intent, link_text: linkText });
+          const attribution = getAttribution();
+          const bookingEvent = isKunleCalendlyBookingUrl(attributedUrl);
+          if (bookingEvent && consent === "granted"
+              && !event.defaultPrevented && event.button === 0
+              && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+            event.preventDefault();
+            // Open synchronously so browser popup blockers do not suppress the booking.
+            const newTab = anchor.target === "_blank" ? window.open("about:blank", "_blank") : null;
+            const go = (destination: string) => {
+              if (newTab) newTab.location.replace(destination);
+              else if (anchor.target === "_blank") window.open(destination, "_blank", "noopener");
+              else window.location.assign(destination);
+            };
+            void (async () => {
+              const identity = await readGa4Identity();
+              if (!identity) return attributedUrl;
+              const response = await fetch("/api/booking-attribution", {
+                method: "POST",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify({
+                  consent: true,
+                  client_id: identity.clientId,
+                  session_id: identity.sessionId,
+                  utm_source: attribution.utm_source,
+                  utm_medium: attribution.utm_medium,
+                  utm_campaign: attribution.utm_campaign,
+                  utm_content: attribution.utm_content,
+                  utm_term: attribution.utm_term,
+                }),
+              });
+              if (!response.ok) return attributedUrl;
+              const data = await response.json() as { token?: string };
+              return data.token ? calendlyUrlWithBookingToken(attributedUrl, data.token) : attributedUrl;
+            })().then(go).catch(() => go(attributedUrl));
+          }
           return;
         }
 

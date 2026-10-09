@@ -12,6 +12,10 @@
     ]
   },
   "previews": {},
+  "triggers": { "crons": ["*/30 * * * *"] },
+  "vars": {
+    "GA4_MEASUREMENT_ID": "G-W3T6L19819"
+  },
   "d1_databases": [
     {
       "binding": "LEADS_DB",
@@ -30,4 +34,5 @@
   // - LEAD_NOTIFY: Cloudflare Email Service send_email binding to hello@ai-midlands.co.uk
   // - LEADS_ADMIN_TOKEN: secret for protected lead export/status endpoints
   // - CALENDLY_WEBHOOK_SIGNING_KEY: secret used to verify Calendly webhooks
+  // - GA4_API_SECRET: Measurement Protocol secret. Never place it in vars or logs.
 }

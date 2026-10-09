@@ -1,7 +1,9 @@
+import { ga4IdentityFromCookies, validGa4ClientId, validGa4MeasurementId, validGa4SessionId } from "@shared/booking-conversion";
+
 export type TrackingConsent = "unknown" | "granted" | "denied";
 
 type Attribution = Partial<Record<
-  "utm_source" | "utm_medium" | "utm_campaign" | "utm_content" | "utm_term" | "oppref",
+  "utm_source" | "utm_medium" | "utm_campaign" | "utm_content" | "utm_term" | "oppref" | "gclid" | "gbraid" | "wbraid",
   string
 >>;
 
@@ -24,6 +26,9 @@ const ATTRIBUTION_KEYS = [
   "utm_content",
   "utm_term",
   "oppref",
+  "gclid",
+  "gbraid",
+  "wbraid",
 ] as const;
 
 let currentConsent: TrackingConsent = "unknown";
@@ -78,11 +83,19 @@ function persistAttribution() {
 }
 
 export function getAttribution(): Attribution {
-  return {
+  const attribution: Attribution = {
     ...(currentConsent === "granted" ? readStoredAttribution() : {}),
     ...captureFirstTouch(),
     ...readAttributionFromUrl(),
   };
+  // Ad click identifiers are personal advertising attribution data.
+  // Never include them in leads or outbound URLs without measurement consent.
+  if (currentConsent !== "granted") {
+    delete attribution.gclid;
+    delete attribution.gbraid;
+    delete attribution.wbraid;
+  }
+  return attribution;
 }
 
 export function getTrackingConsent(): TrackingConsent {
@@ -144,6 +157,18 @@ function initialiseGA() {
     window.dataLayer?.push(args);
   };
 
+  window.gtag("consent", "default", {
+    analytics_storage: "denied",
+    ad_storage: "denied",
+    ad_user_data: "denied",
+    ad_personalization: "denied",
+  });
+  window.gtag("consent", "update", {
+    analytics_storage: "granted",
+    ad_storage: "granted",
+    ad_user_data: "granted",
+    ad_personalization: "denied",
+  });
   window.gtag("js", new Date());
   window.gtag("config", measurementId, { send_page_view: false });
 
@@ -266,6 +291,45 @@ export function trackCustomEvent(
   debug(name, params);
 }
 
+function readGa4Field(measurementId: string, field: "client_id" | "session_id"): Promise<string> {
+  return new Promise(resolve => {
+    if (typeof window.gtag !== "function") {
+      resolve("");
+      return;
+    }
+    let settled = false;
+    const finish = (value: string) => {
+      if (settled) return;
+      settled = true;
+      resolve(value);
+    };
+    const timer = setTimeout(() => finish(""), 700);
+    try {
+      window.gtag("get", measurementId, field, (value: unknown) => {
+        clearTimeout(timer);
+        finish(String(value ?? ""));
+      });
+    } catch {
+      clearTimeout(timer);
+      finish("");
+    }
+  });
+}
+
+export async function readGa4Identity(): Promise<{ clientId: string; sessionId: string } | null> {
+  if (currentConsent !== "granted" || typeof document === "undefined") return null;
+  const measurementId = validGa4MeasurementId(import.meta.env.VITE_GA_MEASUREMENT_ID);
+  if (!measurementId) return null;
+  const [clientField, sessionField] = await Promise.all([
+    readGa4Field(measurementId, "client_id"),
+    readGa4Field(measurementId, "session_id"),
+  ]);
+  const fromGtagClient = validGa4ClientId(clientField);
+  const fromGtagSession = validGa4SessionId(sessionField);
+  if (fromGtagClient && fromGtagSession) return { clientId: fromGtagClient, sessionId: fromGtagSession };
+  return ga4IdentityFromCookies(document.cookie || "", measurementId);
+}
+
 export function trackLeadCreated(intent?: string) {
   if (currentConsent !== "granted") return;
 
@@ -279,6 +343,8 @@ export function withUtmParams(target: string): string {
   try {
     const url = new URL(target, window.location.origin);
     const attribution = getAttribution();
+    // Calendly accepts UTM parameters; Google click IDs require a separate,
+    // consented booking-session association and must not be treated as UTMs.
     for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const) {
       const value = attribution[key];
       if (value && !url.searchParams.has(key)) url.searchParams.set(key, value);
