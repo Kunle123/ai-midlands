@@ -29,6 +29,13 @@ type Env = {
   RESEND_API_KEY?: string;
   LEADS_ADMIN_TOKEN?: string;
   CALENDLY_WEBHOOK_SIGNING_KEY?: string;
+  GOOGLE_ADS_CLIENT_ID?: string;
+  GOOGLE_ADS_CLIENT_SECRET?: string;
+  GOOGLE_ADS_REFRESH_TOKEN?: string;
+  GOOGLE_ADS_DEVELOPER_TOKEN?: string;
+  GOOGLE_ADS_CUSTOMER_ID?: string;
+  GOOGLE_ADS_CONVERSION_ACTION_ID?: string;
+  GOOGLE_ADS_API_VERSION?: string;
 };
 
 type ExecutionContextLike = {
@@ -410,6 +417,60 @@ async function calendlyWebhook(request: Request, env: Env): Promise<Response> {
   return json({ ok: true, ignored: true });
 }
 
+
+async function uploadGoogleBookings(env: Env): Promise<Response> {
+  if (!env.LEADS_DB) return json({ ok: false, code: "lead_store_not_configured" }, 503);
+  const required = [env.GOOGLE_ADS_CLIENT_ID, env.GOOGLE_ADS_CLIENT_SECRET,
+    env.GOOGLE_ADS_REFRESH_TOKEN, env.GOOGLE_ADS_DEVELOPER_TOKEN,
+    env.GOOGLE_ADS_CUSTOMER_ID, env.GOOGLE_ADS_CONVERSION_ACTION_ID];
+  if (required.some(value => !value)) return json({ ok: false, code: "google_ads_not_configured" }, 503);
+  const customer = env.GOOGLE_ADS_CUSTOMER_ID!.replace(/\\D/g, "");
+  const action = env.GOOGLE_ADS_CONVERSION_ACTION_ID!.replace(/\\D/g, "");
+  const version = env.GOOGLE_ADS_API_VERSION || "v22";
+  if (!/^v\\d+$/.test(version) || !customer || !action) return json({ ok: false, code: "invalid_google_ads_config" }, 503);
+  const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST", headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ grant_type: "refresh_token",
+      client_id: env.GOOGLE_ADS_CLIENT_ID!, client_secret: env.GOOGLE_ADS_CLIENT_SECRET!,
+      refresh_token: env.GOOGLE_ADS_REFRESH_TOKEN! }),
+  });
+  if (!tokenResponse.ok) return json({ ok: false, code: "google_oauth_failed" }, 502);
+  const token = await tokenResponse.json() as { access_token?: string };
+  if (!token.access_token) return json({ ok: false, code: "google_oauth_missing_token" }, 502);
+  const rows = await env.LEADS_DB.prepare(`
+    SELECT token, gclid, gbraid, wbraid, booking_created_at
+    FROM booking_attribution WHERE conversion_state = 'ready'
+    AND booking_created_at IS NOT NULL ORDER BY booking_created_at LIMIT 50
+  `).all<{token:string;gclid:string|null;gbraid:string|null;wbraid:string|null;booking_created_at:string}>();
+  if (!rows.results?.length) return json({ ok: true, attempted: 0, uploaded: 0 });
+  const conversions = rows.results.map(row => {
+    const timestamp = new Date(row.booking_created_at);
+    // Google Ads requires a timezone offset, not a trailing Z.
+    const conversionDateTime = Number.isFinite(timestamp.getTime())
+      ? timestamp.toISOString().replace("T", " ").replace("Z", "+00:00") : "";
+    return { conversionAction: `customers/${customer}/conversionActions/${action}`,
+      conversionDateTime, conversionValue: 1, currencyCode: "GBP",
+      ...(row.gclid ? { gclid: row.gclid } : row.gbraid ? { gbraid: row.gbraid } : { wbraid: row.wbraid }) };
+  });
+  if (conversions.some(row => !row.conversionDateTime)) return json({ ok: false, code: "invalid_booking_timestamp" }, 422);
+  const response = await fetch(`https://googleads.googleapis.com/${version}/customers/${customer}:uploadClickConversions`, {
+    method: "POST",
+    headers: { authorization: `Bearer ${token.access_token}`,
+      "developer-token": env.GOOGLE_ADS_DEVELOPER_TOKEN!, "content-type": "application/json" },
+    body: JSON.stringify({ conversions, partialFailure: true }),
+  });
+  if (!response.ok) return json({ ok: false, code: "google_ads_upload_failed", status: response.status }, 502);
+  const result = await response.json() as { partialFailureError?: unknown; results?: unknown[] };
+  // Do not mark partial failures as delivered; keep rows retryable for review.
+  if (result.partialFailureError || (result.results?.length ?? 0) !== conversions.length)
+    return json({ ok: false, code: "google_ads_partial_failure", attempted: conversions.length }, 502);
+  for (const row of rows.results) {
+    await env.LEADS_DB.prepare("UPDATE booking_attribution SET conversion_state = 'uploaded' WHERE token = ? AND conversion_state = 'ready'")
+      .bind(row.token).run();
+  }
+  return json({ ok: true, attempted: conversions.length, uploaded: conversions.length });
+}
+
 function authorised(request: Request, env: Env): boolean {
   if (!env.LEADS_ADMIN_TOKEN) return false;
   const header = request.headers.get("authorization") || "";
@@ -475,6 +536,11 @@ export default {
 
     if (url.pathname === "/api/calendly" && request.method === "POST") {
       return calendlyWebhook(request, env);
+    }
+
+    if (url.pathname === "/api/admin/google-ads/upload-bookings" && request.method === "POST") {
+      if (!authorised(request, env)) return json({ ok: false, code: "unauthorised" }, 401);
+      return uploadGoogleBookings(env);
     }
 
     if (url.pathname === "/api/admin/leads" && request.method === "GET") {
