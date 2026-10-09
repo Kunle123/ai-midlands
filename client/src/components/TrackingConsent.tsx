@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import {
   getTrackingConsent,
+  getAttribution,
   initialiseTracking,
   preserveOpprefOnInternalLink,
   setTrackingConsent,
@@ -54,6 +55,32 @@ export function TrackingConsent() {
           const attributedUrl = withUtmParams(url.toString());
           anchor.setAttribute("href", attributedUrl);
           trackCustomEvent("booking_started", { intent, link_text: linkText });
+          const attribution = getAttribution();
+          if (consent === "granted" && (attribution.gclid || attribution.gbraid || attribution.wbraid)
+              && !event.defaultPrevented && event.button === 0
+              && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+            event.preventDefault();
+            // Open synchronously so browser popup blockers do not suppress the booking.
+            const newTab = anchor.target === "_blank" ? window.open("about:blank", "_blank") : null;
+            const go = (destination: string) => {
+              if (newTab) newTab.location.replace(destination);
+              else if (anchor.target === "_blank") window.open(destination, "_blank", "noopener");
+              else window.location.assign(destination);
+            };
+            void fetch("/api/booking-attribution", {
+              method: "POST",
+              headers: { "content-type": "application/json" },
+              body: JSON.stringify({ consent: true, ...attribution }),
+            }).then(async response => {
+              if (!response.ok) return attributedUrl;
+              const data = await response.json() as { token?: string };
+              if (!data.token) return attributedUrl;
+              const bookingUrl = new URL(attributedUrl);
+              // Calendly includes UTM tracking fields in its signed invitee webhook.
+              bookingUrl.searchParams.set("utm_content", data.token);
+              return bookingUrl.toString();
+            }).then(go).catch(() => go(attributedUrl));
+          }
           return;
         }
 
