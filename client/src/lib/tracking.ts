@@ -1,7 +1,7 @@
 export type TrackingConsent = "unknown" | "granted" | "denied";
 
 type Attribution = Partial<Record<
-  "utm_source" | "utm_medium" | "utm_campaign" | "utm_content" | "utm_term" | "oppref",
+  "utm_source" | "utm_medium" | "utm_campaign" | "utm_content" | "utm_term" | "oppref" | "gclid" | "gbraid" | "wbraid",
   string
 >>;
 
@@ -24,6 +24,9 @@ const ATTRIBUTION_KEYS = [
   "utm_content",
   "utm_term",
   "oppref",
+  "gclid",
+  "gbraid",
+  "wbraid",
 ] as const;
 
 let currentConsent: TrackingConsent = "unknown";
@@ -279,6 +282,8 @@ export function withUtmParams(target: string): string {
   try {
     const url = new URL(target, window.location.origin);
     const attribution = getAttribution();
+    // Calendly accepts UTM parameters; Google click IDs require a separate,
+    // consented booking-session association and must not be treated as UTMs.
     for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const) {
       const value = attribution[key];
       if (value && !url.searchParams.has(key)) url.searchParams.set(key, value);
