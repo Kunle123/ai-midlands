@@ -81,11 +81,19 @@ function persistAttribution() {
 }
 
 export function getAttribution(): Attribution {
-  return {
+  const attribution: Attribution = {
     ...(currentConsent === "granted" ? readStoredAttribution() : {}),
     ...captureFirstTouch(),
     ...readAttributionFromUrl(),
   };
+  // Ad click identifiers are personal advertising attribution data.
+  // Never include them in leads or outbound URLs without measurement consent.
+  if (currentConsent !== "granted") {
+    delete attribution.gclid;
+    delete attribution.gbraid;
+    delete attribution.wbraid;
+  }
+  return attribution;
 }
 
 export function getTrackingConsent(): TrackingConsent {
