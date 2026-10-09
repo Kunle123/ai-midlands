@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS booking_attribution (
   utm_term TEXT,
   calendly_invitee_uri TEXT UNIQUE,
   booking_created_at TEXT,
-  conversion_state TEXT NOT NULL DEFAULT 'pending'
+  conversion_state TEXT NOT NULL DEFAULT 'pending',
+  upload_claimed_at TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_booking_attribution_created ON booking_attribution(created_at);

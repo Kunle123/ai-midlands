@@ -13,6 +13,12 @@
   },
   "previews": {},
   "triggers": { "crons": ["*/30 * * * *"] },
+  "vars": {
+    "GOOGLE_ADS_CUSTOMER_ID": "6483337211",
+    "GOOGLE_ADS_CONVERSION_ACTION_ID": "7833321822",
+    "GOOGLE_ADS_BOOKING_CONVERSION_VALUE": "25",
+    "GOOGLE_ADS_API_VERSION": "v24"
+  },
   "d1_databases": [
     {
       "binding": "LEADS_DB",

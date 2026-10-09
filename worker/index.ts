@@ -1,3 +1,17 @@
+import {
+  bookingAttributionRejection,
+  bookingTokenFromTracking,
+  payloadMatchesBookingEvent,
+  verifyCalendlyWebhook,
+} from "../shared/booking-conversion.ts";
+import {
+  cancelCalendlyBooking,
+  D1BookingStore,
+  googleAdsBookingConfigured,
+  linkConfirmedCalendlyBooking,
+  uploadReadyBookings,
+} from "./booking-upload.ts";
+
 type D1Result = { success?: boolean; meta?: { changes?: number } };
 
 type D1StatementLike = {
@@ -36,6 +50,8 @@ type Env = {
   GOOGLE_ADS_CUSTOMER_ID?: string;
   GOOGLE_ADS_CONVERSION_ACTION_ID?: string;
   GOOGLE_ADS_API_VERSION?: string;
+  GOOGLE_ADS_BOOKING_CONVERSION_VALUE?: string;
+  GOOGLE_ADS_LOGIN_CUSTOMER_ID?: string;
 };
 
 type ExecutionContextLike = {
@@ -88,7 +104,7 @@ async function readJson<T>(request: Request): Promise<T | null> {
   const length = Number(request.headers.get("content-length") || "0");
   if (length > 50_000) return null;
   try {
-    return await request.json<T>();
+    return await request.json() as T;
   } catch {
     return null;
   }
@@ -269,33 +285,6 @@ async function markBookingStarted(leadId: string, env: Env): Promise<Response> {
   return json({ ok: true });
 }
 
-function parseCalendlySignature(header: string | null): { timestamp: string; signature: string } | null {
-  if (!header) return null;
-  const pairs = Object.fromEntries(header.split(",").map(part => part.trim().split("=", 2)));
-  return pairs.t && pairs.v1 ? { timestamp: pairs.t, signature: pairs.v1 } : null;
-}
-
-async function hmacHex(secret: string, payload: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    "raw",
-    encoder.encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"],
-  );
-  const signature = await crypto.subtle.sign("HMAC", key, encoder.encode(payload));
-  return Array.from(new Uint8Array(signature)).map(byte => byte.toString(16).padStart(2, "0")).join("");
-}
-
-function constantTimeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let result = 0;
-  for (let i = 0; i < a.length; i += 1) result |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return result === 0;
-}
-
-
 type BookingAttributionInput = {
   consent?: unknown;
   gclid?: unknown;
@@ -315,11 +304,14 @@ async function createBookingAttribution(request: Request, env: Env): Promise<Res
     return json({ ok: false, code: "invalid_origin" }, 403);
   }
   const input = await readJson<BookingAttributionInput>(request);
-  if (!input || input.consent !== true) return json({ ok: false, code: "consent_required" }, 403);
-  const gclid = cleanText(input.gclid, 200);
-  const gbraid = cleanText(input.gbraid, 200);
-  const wbraid = cleanText(input.wbraid, 200);
-  if (![gclid, gbraid, wbraid].some(Boolean)) return json({ ok: false, code: "no_google_click" }, 400);
+  const gclid = cleanText(input?.gclid, 200);
+  const gbraid = cleanText(input?.gbraid, 200);
+  const wbraid = cleanText(input?.wbraid, 200);
+  const rejection = bookingAttributionRejection({ consent: input?.consent, gclid, gbraid, wbraid });
+  if (!input || rejection) {
+    const code = rejection || "consent_required";
+    return json({ ok: false, code }, code === "consent_required" ? 403 : 400);
+  }
   const token = crypto.randomUUID();
   await env.LEADS_DB.prepare(`
     INSERT INTO booking_attribution
@@ -332,39 +324,18 @@ async function createBookingAttribution(request: Request, env: Env): Promise<Res
   return json({ ok: true, token }, 201);
 }
 
-async function linkCalendlyBooking(payload: Record<string, unknown>, env: Env): Promise<void> {
-  if (!env.LEADS_DB) return;
-  const tracking = payload.tracking && typeof payload.tracking === "object"
-    ? payload.tracking as Record<string, unknown> : {};
-  const token = cleanText(tracking.utm_content, 100);
-  if (!/^[0-9a-f]{8}-[0-9a-f-]{27,40}$/i.test(token)) return;
-  const uri = cleanText(payload.uri, 1200);
-  if (!uri) return;
-  const createdAt = cleanText(payload.created_at, 80) || new Date().toISOString();
-  const cutoff = new Date(Date.now() - 7 * 24 * 3600_000).toISOString();
-  // Only link one confirmed booking to a recently issued token. Replay is idempotent.
-  await env.LEADS_DB.prepare(`
-    UPDATE booking_attribution
-    SET calendly_invitee_uri = ?, booking_created_at = ?, conversion_state = 'ready'
-    WHERE token = ? AND created_at >= ? AND calendly_invitee_uri IS NULL
-  `).bind(uri, createdAt, token, cutoff).run();
-}
-
 async function calendlyWebhook(request: Request, env: Env): Promise<Response> {
   if (!env.LEADS_DB) return json({ ok: false, code: "lead_store_not_configured" }, 503);
   if (!env.CALENDLY_WEBHOOK_SIGNING_KEY) return json({ ok: false, code: "calendly_webhook_not_configured" }, 503);
 
   const rawBody = await request.text();
-  const signature = parseCalendlySignature(request.headers.get("Calendly-Webhook-Signature"));
-  if (!signature) return json({ ok: false, code: "missing_signature" }, 401);
-
-  const timestamp = Number(signature.timestamp);
-  if (!Number.isFinite(timestamp) || Math.abs(Date.now() / 1000 - timestamp) > 180) {
-    return json({ ok: false, code: "stale_signature" }, 401);
-  }
-
-  const expected = await hmacHex(env.CALENDLY_WEBHOOK_SIGNING_KEY, `${signature.timestamp}.${rawBody}`);
-  if (!constantTimeEqual(expected, signature.signature)) return json({ ok: false, code: "invalid_signature" }, 401);
+  const verification = await verifyCalendlyWebhook({
+    secret: env.CALENDLY_WEBHOOK_SIGNING_KEY,
+    signatureHeader: request.headers.get("Calendly-Webhook-Signature"),
+    rawBody,
+    nowMs: Date.now(),
+  });
+  if (verification !== "ok") return json({ ok: false, code: verification }, 401);
 
   let body: Record<string, unknown>;
   try {
@@ -375,7 +346,22 @@ async function calendlyWebhook(request: Request, env: Env): Promise<Response> {
 
   const eventType = cleanText(body.event, 80);
   const payload = body.payload && typeof body.payload === "object" ? body.payload as Record<string, unknown> : {};
-  if (eventType === "invitee.created") await linkCalendlyBooking(payload, env);
+  const store = new D1BookingStore(env.LEADS_DB);
+  const tracking = payload.tracking && typeof payload.tracking === "object" ? payload.tracking : {};
+  const token = bookingTokenFromTracking(tracking);
+  const inviteeUri = cleanText(payload.uri, 1200);
+  if (eventType === "invitee.created" && payloadMatchesBookingEvent(payload) && token && inviteeUri) {
+    await linkConfirmedCalendlyBooking(
+      store,
+      token,
+      inviteeUri,
+      cleanText(payload.created_at, 80) || new Date().toISOString(),
+      Date.now(),
+    );
+  }
+  if (eventType === "invitee.canceled" && inviteeUri) {
+    await cancelCalendlyBooking(store, token, inviteeUri);
+  }
   const email = cleanText(payload.email, 254).toLowerCase();
   if (!isEmail(email)) return json({ ok: true, matched: false });
 
@@ -420,59 +406,9 @@ async function calendlyWebhook(request: Request, env: Env): Promise<Response> {
 
 async function uploadGoogleBookings(env: Env): Promise<Response> {
   if (!env.LEADS_DB) return json({ ok: false, code: "lead_store_not_configured" }, 503);
-  const required = [env.GOOGLE_ADS_CLIENT_ID, env.GOOGLE_ADS_CLIENT_SECRET,
-    env.GOOGLE_ADS_REFRESH_TOKEN, env.GOOGLE_ADS_DEVELOPER_TOKEN,
-    env.GOOGLE_ADS_CUSTOMER_ID, env.GOOGLE_ADS_CONVERSION_ACTION_ID];
-  if (required.some(value => !value)) return json({ ok: false, code: "google_ads_not_configured" }, 503);
-  const customer = env.GOOGLE_ADS_CUSTOMER_ID!.replace(/\D/g, "");
-  const action = env.GOOGLE_ADS_CONVERSION_ACTION_ID!.replace(/\D/g, "");
-  const version = env.GOOGLE_ADS_API_VERSION || "v22";
-  if (!/^v\d+$/.test(version) || !customer || !action) return json({ ok: false, code: "invalid_google_ads_config" }, 503);
-  const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
-    method: "POST", headers: { "content-type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({ grant_type: "refresh_token",
-      client_id: env.GOOGLE_ADS_CLIENT_ID!, client_secret: env.GOOGLE_ADS_CLIENT_SECRET!,
-      refresh_token: env.GOOGLE_ADS_REFRESH_TOKEN! }),
-  });
-  if (!tokenResponse.ok) return json({ ok: false, code: "google_oauth_failed" }, 502);
-  const token = await tokenResponse.json() as { access_token?: string };
-  if (!token.access_token) return json({ ok: false, code: "google_oauth_missing_token" }, 502);
-  const rows = await env.LEADS_DB.prepare(`
-    SELECT token, gclid, gbraid, wbraid, booking_created_at
-    FROM booking_attribution WHERE conversion_state = 'ready'
-    AND booking_created_at IS NOT NULL ORDER BY booking_created_at LIMIT 50
-  `).all<{token:string;gclid:string|null;gbraid:string|null;wbraid:string|null;booking_created_at:string}>();
-  if (!rows.results?.length) return json({ ok: true, attempted: 0, uploaded: 0 });
-  let uploaded = 0;
-  let failed = 0;
-  // One upload per booking: partial failures cannot incorrectly mark another booking as uploaded.
-  for (const row of rows.results) {
-    const timestamp = new Date(row.booking_created_at);
-    if (!Number.isFinite(timestamp.getTime())) { failed++; continue; }
-    const conversionDateTime = timestamp.toISOString().replace("T", " ").replace("Z", "+00:00");
-    const conversion = {
-      conversionAction: `customers/${customer}/conversionActions/${action}`,
-      conversionDateTime, conversionValue: 1, currencyCode: "GBP",
-      ...(row.gclid ? { gclid: row.gclid } : row.gbraid ? { gbraid: row.gbraid } : { wbraid: row.wbraid }),
-    };
-    try {
-      const response = await fetch(`https://googleads.googleapis.com/${version}/customers/${customer}:uploadClickConversions`, {
-        method: "POST",
-        headers: { authorization: `Bearer ${token.access_token}`,
-          "developer-token": env.GOOGLE_ADS_DEVELOPER_TOKEN!, "content-type": "application/json" },
-        body: JSON.stringify({ conversions: [conversion], partialFailure: true }),
-      });
-      if (!response.ok) { failed++; continue; }
-      const result = await response.json() as { partialFailureError?: unknown; results?: unknown[] };
-      if (result.partialFailureError || result.results?.length !== 1) { failed++; continue; }
-      await env.LEADS_DB.prepare("UPDATE booking_attribution SET conversion_state = 'uploaded' WHERE token = ? AND conversion_state = 'ready'")
-        .bind(row.token).run();
-      uploaded++;
-    } catch {
-      failed++;
-    }
-  }
-  return json({ ok: failed === 0, attempted: rows.results.length, uploaded, failed }, failed ? 502 : 200);
+  const summary = await uploadReadyBookings(new D1BookingStore(env.LEADS_DB), env, fetch);
+  const status = summary.code === "google_ads_not_configured" ? 503 : summary.ok ? 200 : 502;
+  return json(summary, status);
 }
 
 function authorised(request: Request, env: Env): boolean {
@@ -513,7 +449,13 @@ async function adminUpdateStatus(request: Request, leadId: string, env: Env): Pr
 
 export default {
   async scheduled(_event: unknown, env: Env, ctx: ExecutionContextLike): Promise<void> {
-    ctx.waitUntil(uploadGoogleBookings(env).then(() => undefined).catch(() => undefined));
+    ctx.waitUntil(uploadGoogleBookings(env).then(async response => {
+      if (response.ok) return;
+      const summary = await response.json().catch(() => null) as { code?: string; attempted?: number; failed?: number } | null;
+      console.error("google_ads_booking_upload", summary?.code || "failed", summary?.attempted ?? 0, summary?.failed ?? 0);
+    }).catch(() => {
+      console.error("google_ads_booking_upload", "failed");
+    }));
   },
   async fetch(request: Request, env: Env, ctx: ExecutionContextLike): Promise<Response> {
     const url = new URL(request.url);
@@ -525,6 +467,7 @@ export default {
         notifications: Boolean(env.RESEND_API_KEY || env.LEAD_NOTIFY),
         notificationProvider: env.RESEND_API_KEY ? "resend" : env.LEAD_NOTIFY ? "cloudflare" : null,
         calendlyWebhook: Boolean(env.CALENDLY_WEBHOOK_SIGNING_KEY),
+        googleAdsBookingUpload: googleAdsBookingConfigured(env),
       });
     }
 

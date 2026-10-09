@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
+import { calendlyUrlWithBookingToken, isKunleCalendlyBookingUrl } from "@shared/booking-conversion";
 import {
   getTrackingConsent,
   getAttribution,
@@ -56,7 +57,8 @@ export function TrackingConsent() {
           anchor.setAttribute("href", attributedUrl);
           trackCustomEvent("booking_started", { intent, link_text: linkText });
           const attribution = getAttribution();
-          if (consent === "granted" && (attribution.gclid || attribution.gbraid || attribution.wbraid)
+          const bookingEvent = isKunleCalendlyBookingUrl(attributedUrl);
+          if (bookingEvent && consent === "granted" && (attribution.gclid || attribution.gbraid || attribution.wbraid)
               && !event.defaultPrevented && event.button === 0
               && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
             event.preventDefault();
@@ -70,15 +72,22 @@ export function TrackingConsent() {
             void fetch("/api/booking-attribution", {
               method: "POST",
               headers: { "content-type": "application/json" },
-              body: JSON.stringify({ consent: true, ...attribution }),
+              body: JSON.stringify({
+                consent: true,
+                gclid: attribution.gclid,
+                gbraid: attribution.gbraid,
+                wbraid: attribution.wbraid,
+                utm_source: attribution.utm_source,
+                utm_medium: attribution.utm_medium,
+                utm_campaign: attribution.utm_campaign,
+                utm_content: attribution.utm_content,
+                utm_term: attribution.utm_term,
+              }),
             }).then(async response => {
               if (!response.ok) return attributedUrl;
               const data = await response.json() as { token?: string };
               if (!data.token) return attributedUrl;
-              const bookingUrl = new URL(attributedUrl);
-              // Calendly includes UTM tracking fields in its signed invitee webhook.
-              bookingUrl.searchParams.set("utm_content", data.token);
-              return bookingUrl.toString();
+              return calendlyUrlWithBookingToken(attributedUrl, data.token);
             }).then(go).catch(() => go(attributedUrl));
           }
           return;
