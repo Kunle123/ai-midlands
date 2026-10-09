@@ -1,6 +1,16 @@
 # Google Ads booked-consultation conversion: activation checklist
 
-**Status: draft implementation; not activated or verified.**
+**Status: conversion action identified and documented; draft implementation not activated or verified.**
+
+## Confirmed Google Ads mapping (9 October 2026)
+- Google Ads customer ID: `6483337211`.
+- Newly created offline click-import conversion action ID: `7833321822`.
+- Conversion action resource: `customers/6483337211/conversionActions/7833321822`.
+- Current Google Ads name: `offline (upload)`; category: **Qualified lead**. Rename to **Booked consultation** in Google Ads for clarity.
+- Set Worker configuration `GOOGLE_ADS_CUSTOMER_ID=6483337211` and `GOOGLE_ADS_CONVERSION_ACTION_ID=7833321822` when deploying; this document does **not** set live Cloudflare secrets.
+- Current action is **Primary**, counts **Every conversion**, and defaults to £1 when no value is sent. Recommend switching count to **One** and keeping it **Secondary** until upload verification. Uploader currently sends £1 per booking; agree and configure a higher booking value before activating.
+- Google Ads currently reports no associated data source and no uploaded conversions. The Google Ads API upload path is the intended source.
+
 
 ## Flow
 1. With measurement consent, the website captures a Google click ID (gclid, gbraid or wbraid).
@@ -9,7 +19,7 @@
 4. A Cloudflare Worker cron runs every 30 minutes and uploads ready bookings through Google Ads uploadClickConversions. A protected operator endpoint POST /api/admin/google-ads/upload-bookings supports manual retries. Each booking is submitted individually and marked uploaded only after successful API acknowledgement.
 
 ## Required manual configuration
-- Create a **Google Ads imported/offline click conversion** named **Booked consultation**. This is **not** the existing website event-snippet conversion label. Obtain its numeric conversion action ID. Use the correct customer ID and developer token.
+- The **Google Ads imported/offline click conversion** already exists (ID `7833321822`, currently named `offline (upload)`). Do **not** create another. Rename it **Booked consultation** in Google Ads. It is **not** the existing website event-snippet conversion label. Use the correct customer ID and developer token.
 - Set Cloudflare Worker secrets GOOGLE_ADS_CLIENT_ID, GOOGLE_ADS_CLIENT_SECRET, GOOGLE_ADS_REFRESH_TOKEN, GOOGLE_ADS_DEVELOPER_TOKEN, GOOGLE_ADS_CUSTOMER_ID, GOOGLE_ADS_CONVERSION_ACTION_ID, LEADS_ADMIN_TOKEN, CALENDLY_WEBHOOK_SIGNING_KEY. GOOGLE_ADS_API_VERSION can be set to the currently supported version (default v22; verify against current Google Ads API support).
 - Register a Calendly invitee.created webhook targeting https://ai-midlands.co.uk/api/calendly. Verify signature and the tracking.utm_content field with a test booking.
 - Apply D1 migrations 0002 and 0003 before deploying the Worker.
