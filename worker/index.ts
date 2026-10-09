@@ -424,10 +424,10 @@ async function uploadGoogleBookings(env: Env): Promise<Response> {
     env.GOOGLE_ADS_REFRESH_TOKEN, env.GOOGLE_ADS_DEVELOPER_TOKEN,
     env.GOOGLE_ADS_CUSTOMER_ID, env.GOOGLE_ADS_CONVERSION_ACTION_ID];
   if (required.some(value => !value)) return json({ ok: false, code: "google_ads_not_configured" }, 503);
-  const customer = env.GOOGLE_ADS_CUSTOMER_ID!.replace(/\\D/g, "");
-  const action = env.GOOGLE_ADS_CONVERSION_ACTION_ID!.replace(/\\D/g, "");
+  const customer = env.GOOGLE_ADS_CUSTOMER_ID!.replace(/\D/g, "");
+  const action = env.GOOGLE_ADS_CONVERSION_ACTION_ID!.replace(/\D/g, "");
   const version = env.GOOGLE_ADS_API_VERSION || "v22";
-  if (!/^v\\d+$/.test(version) || !customer || !action) return json({ ok: false, code: "invalid_google_ads_config" }, 503);
+  if (!/^v\d+$/.test(version) || !customer || !action) return json({ ok: false, code: "invalid_google_ads_config" }, 503);
   const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST", headers: { "content-type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({ grant_type: "refresh_token",
@@ -443,32 +443,36 @@ async function uploadGoogleBookings(env: Env): Promise<Response> {
     AND booking_created_at IS NOT NULL ORDER BY booking_created_at LIMIT 50
   `).all<{token:string;gclid:string|null;gbraid:string|null;wbraid:string|null;booking_created_at:string}>();
   if (!rows.results?.length) return json({ ok: true, attempted: 0, uploaded: 0 });
-  const conversions = rows.results.map(row => {
-    const timestamp = new Date(row.booking_created_at);
-    // Google Ads requires a timezone offset, not a trailing Z.
-    const conversionDateTime = Number.isFinite(timestamp.getTime())
-      ? timestamp.toISOString().replace("T", " ").replace("Z", "+00:00") : "";
-    return { conversionAction: `customers/${customer}/conversionActions/${action}`,
-      conversionDateTime, conversionValue: 1, currencyCode: "GBP",
-      ...(row.gclid ? { gclid: row.gclid } : row.gbraid ? { gbraid: row.gbraid } : { wbraid: row.wbraid }) };
-  });
-  if (conversions.some(row => !row.conversionDateTime)) return json({ ok: false, code: "invalid_booking_timestamp" }, 422);
-  const response = await fetch(`https://googleads.googleapis.com/${version}/customers/${customer}:uploadClickConversions`, {
-    method: "POST",
-    headers: { authorization: `Bearer ${token.access_token}`,
-      "developer-token": env.GOOGLE_ADS_DEVELOPER_TOKEN!, "content-type": "application/json" },
-    body: JSON.stringify({ conversions, partialFailure: true }),
-  });
-  if (!response.ok) return json({ ok: false, code: "google_ads_upload_failed", status: response.status }, 502);
-  const result = await response.json() as { partialFailureError?: unknown; results?: unknown[] };
-  // Do not mark partial failures as delivered; keep rows retryable for review.
-  if (result.partialFailureError || (result.results?.length ?? 0) !== conversions.length)
-    return json({ ok: false, code: "google_ads_partial_failure", attempted: conversions.length }, 502);
+  let uploaded = 0;
+  let failed = 0;
+  // One upload per booking: partial failures cannot incorrectly mark another booking as uploaded.
   for (const row of rows.results) {
-    await env.LEADS_DB.prepare("UPDATE booking_attribution SET conversion_state = 'uploaded' WHERE token = ? AND conversion_state = 'ready'")
-      .bind(row.token).run();
+    const timestamp = new Date(row.booking_created_at);
+    if (!Number.isFinite(timestamp.getTime())) { failed++; continue; }
+    const conversionDateTime = timestamp.toISOString().replace("T", " ").replace("Z", "+00:00");
+    const conversion = {
+      conversionAction: `customers/${customer}/conversionActions/${action}`,
+      conversionDateTime, conversionValue: 1, currencyCode: "GBP",
+      ...(row.gclid ? { gclid: row.gclid } : row.gbraid ? { gbraid: row.gbraid } : { wbraid: row.wbraid }),
+    };
+    try {
+      const response = await fetch(`https://googleads.googleapis.com/${version}/customers/${customer}:uploadClickConversions`, {
+        method: "POST",
+        headers: { authorization: `Bearer ${token.access_token}`,
+          "developer-token": env.GOOGLE_ADS_DEVELOPER_TOKEN!, "content-type": "application/json" },
+        body: JSON.stringify({ conversions: [conversion], partialFailure: true }),
+      });
+      if (!response.ok) { failed++; continue; }
+      const result = await response.json() as { partialFailureError?: unknown; results?: unknown[] };
+      if (result.partialFailureError || result.results?.length !== 1) { failed++; continue; }
+      await env.LEADS_DB.prepare("UPDATE booking_attribution SET conversion_state = 'uploaded' WHERE token = ? AND conversion_state = 'ready'")
+        .bind(row.token).run();
+      uploaded++;
+    } catch {
+      failed++;
+    }
   }
-  return json({ ok: true, attempted: conversions.length, uploaded: conversions.length });
+  return json({ ok: failed === 0, attempted: rows.results.length, uploaded, failed }, failed ? 502 : 200);
 }
 
 function authorised(request: Request, env: Env): boolean {
@@ -508,6 +512,9 @@ async function adminUpdateStatus(request: Request, leadId: string, env: Env): Pr
 }
 
 export default {
+  async scheduled(_event: unknown, env: Env, ctx: ExecutionContextLike): Promise<void> {
+    ctx.waitUntil(uploadGoogleBookings(env).then(() => undefined).catch(() => undefined));
+  },
   async fetch(request: Request, env: Env, ctx: ExecutionContextLike): Promise<Response> {
     const url = new URL(request.url);
 
