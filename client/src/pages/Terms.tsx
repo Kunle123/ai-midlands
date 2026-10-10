@@ -23,6 +23,9 @@ export default function Terms() {
           <h2>Indicative assessments and pricing</h2>
           <p>Any automated process assessment, complexity label, delivery timeframe or price shown on the website is indicative only. It is not a quotation, guarantee of feasibility or contractual commitment. A binding proposal is only made after we have reviewed the actual process, systems, access constraints, data requirements and testing needs.</p>
 
+          <h2>Pay when you see it working</h2>
+          <p>Where an AI Midlands proposal includes a “pay when you see it working” arrangement, the scope, acceptance criteria and demonstration conditions will be agreed before work begins. Payment becomes due when the agreed solution has been demonstrated working against those acceptance criteria. This does not guarantee wider commercial outcomes that depend on factors outside the agreed solution, and any third-party licences, services or other separately stated costs may still be payable as set out in the proposal.</p>
+
           <h2>Demonstrations</h2>
           <p>Worked examples and animations labelled as demonstrations are illustrative. They show the kinds of workflows AI Midlands can design and build; they are not presented as customer case studies unless explicitly stated otherwise.</p>
 
