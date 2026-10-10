@@ -6,6 +6,9 @@ export function HeroCopy() {
       <p>
         When an enquiry arrives, a deal is won, or a customer needs an answer, your team should not have to move the same details between systems. AI Midlands helps you simplify the process first, then automate the parts that are safe and worth doing.
       </p>
+      <p className="font-semibold text-[#0f172b]">
+        Fixed-scope automation from £2,000. Agree the outcome up front. Pay when you see the agreed solution working.
+      </p>
       <div className="flex flex-wrap items-center gap-5 mt-1">
         <a
           href="https://calendly.com/kunle2000/30min"
