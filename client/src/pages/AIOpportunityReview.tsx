@@ -11,41 +11,62 @@ import {
 
 const BOOK_CALL_URL = "https://calendly.com/kunle2000/30min";
 
-const opportunities = [
+const opportunityLenses = [
+  { title: "Faster processing", text: "Where could AI shorten cycle times, remove waiting, or help work move sooner?" },
+  { title: "Reduced workload", text: "Where are people repeatedly reading, re-keying, checking, chasing, or preparing information?" },
+  { title: "Reduced cost", text: "Where could effort, rework, external spend, or avoidable processing cost be reduced?" },
+  { title: "Self-service", text: "Where could customers or staff get answers or complete useful tasks without waiting for someone else?" },
+  { title: "Data mining", text: "What useful insight, risk, pattern, or opportunity may already be hidden in the information you hold?" },
+  { title: "Quality and consistency", text: "Where could AI reduce errors, improve completeness, or help teams apply a process more consistently?" },
+  { title: "Capacity and scale", text: "Where could the business handle more work without increasing effort at the same rate?" },
+  { title: "Customer and revenue", text: "Where could faster responses, better information, or more relevant interactions improve service or growth?" },
+];
+
+const outputs = [
   {
-    title: "Find where AI is genuinely useful",
-    text: "Look across the work your teams already do and identify where AI or automation could remove effort, improve speed, or make better use of information.",
+    title: "AI Opportunity Map",
+    text: "A visual view of where AI could create value across efficiency, self-service, information, quality, capacity, customer experience, and growth.",
   },
   {
-    title: "Separate useful ideas from distractions",
-    text: "Not every process needs AI. We filter out ideas that are too risky, too complicated, or unlikely to create enough value to justify the effort.",
+    title: "Prioritised AI Roadmap",
+    text: "A ranked shortlist showing which opportunities are worth pursuing first, using value, feasibility, risk, effort, data readiness, and time to value.",
   },
   {
-    title: "Choose the right first move",
-    text: "Rank the strongest opportunities by value, feasibility, risk, and effort so you can start with something useful rather than something fashionable.",
+    title: "AI Change Delivery Pack",
+    text: "A practical pack for the selected opportunity covering future process, impacted roles, ownership, training, communications, adoption, benefits, risks, and readiness.",
   },
 ];
 
-const reviewSteps = [
+const engagementSteps = [
   {
     number: "01",
-    title: "Understand the business",
-    text: "We start with how the business works today: where time goes, where information gets stuck, what customers need, and where teams are doing repetitive work.",
+    title: "Listen",
+    text: "Start with the leadership context: why AI matters now, where the pressure is, and what the business is trying to improve. You do not need to arrive with a use case.",
   },
   {
     number: "02",
-    title: "Map the opportunities",
-    text: "We identify practical uses of AI and automation across operations, customer service, sales, finance, reporting, and internal workflows.",
+    title: "Scan",
+    text: "Speak to the people closest to the work and review the main workflows, systems, information sources, customer journeys, and recurring decisions.",
   },
   {
     number: "03",
-    title: "Prioritise what is worth doing",
-    text: "Each opportunity is assessed for likely value, complexity, data needs, risk, and how quickly it could be tested.",
+    title: "Map",
+    text: "Use the AI Midlands Opportunity Lens to identify where AI or automation could create useful value — and where it probably would not.",
   },
   {
     number: "04",
-    title: "Recommend the first move",
-    text: "You leave with a prioritised shortlist, a sensible first project, and a clear view of what to do next — including what not to pursue yet.",
+    title: "Prioritise",
+    text: "Assess the strongest opportunities for value, feasibility, risk, effort, data readiness, integration complexity, and how quickly useful evidence could be produced.",
+  },
+  {
+    number: "05",
+    title: "Prepare for change",
+    text: "For the selected opportunity, define what changes around the technology: process, roles, decisions, ownership, training, communications, adoption, and benefits measures.",
+  },
+  {
+    number: "06",
+    title: "Deliver",
+    text: "Your own change or transformation team can deliver against the pack, we can work alongside them, or AI Midlands can implement the first technical solution as a separate engagement.",
   },
 ];
 
@@ -60,7 +81,7 @@ export default function AIOpportunityReview() {
     }
     meta.setAttribute(
       "content",
-      "Not sure where AI fits your business? AI Midlands identifies practical opportunities, filters out distractions, and gives you a prioritised roadmap for what to do first.",
+      "AI Midlands helps leaders find where AI can create value, prioritise what is practical, and give their teams a clear route to deliver the change.",
     );
   }, []);
 
@@ -95,10 +116,10 @@ export default function AIOpportunityReview() {
             <div>
               <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em] mb-4">AI Opportunity Review</p>
               <h1 className="text-4xl md:text-6xl font-semibold tracking-[-0.05em] leading-[1.03] text-[#0f172b] mb-6">
-                Not sure where AI fits your business?
+                You do not need to know your AI use case.
               </h1>
               <p className="text-lg md:text-xl leading-relaxed text-slate-600 mb-7 max-w-3xl">
-                You do not need an AI strategy full of ideas. You need to know where AI could create real value, what is practical now, and what should wait. We help you find the opportunities worth pursuing and choose a sensible first move.
+                We help you find where AI can create value, decide what is practical, and give your team a clear route to deliver it. The aim is not a long AI strategy. It is a small number of useful decisions and a first move the business can actually carry through.
               </p>
               <div className="flex flex-wrap gap-3 mb-5">
                 <a
@@ -120,18 +141,15 @@ export default function AIOpportunityReview() {
             </div>
 
             <div className="rounded-[30px] border border-[#e5ddd5] bg-white p-6 md:p-8 shadow-[0_24px_60px_rgba(15,23,43,0.08)]">
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#b43a28] mb-5">What you leave with</p>
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#b43a28] mb-5">Three practical outputs</p>
               <div className="space-y-4">
-                {[
-                  "A practical shortlist of AI and automation opportunities",
-                  "A simple view of value, feasibility, effort, and risk",
-                  "The 2–3 opportunities worth exploring first",
-                  "A recommended first project and next-step roadmap",
-                  "A clear view of ideas that are not worth pursuing yet",
-                ].map((item) => (
-                  <div key={item} className="flex gap-3 rounded-2xl border border-[#eee7e0] bg-[#fffaf6] px-4 py-4">
-                    <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-[#c83927]" />
-                    <p className="text-slate-700 leading-relaxed">{item}</p>
+                {outputs.map((item, index) => (
+                  <div key={item.title} className="grid grid-cols-[auto_1fr] gap-4 rounded-2xl border border-[#eee7e0] bg-[#fffaf6] px-4 py-4">
+                    <span className="text-[#b43a28] text-xs font-bold tracking-[0.16em] pt-1">0{index + 1}</span>
+                    <div>
+                      <p className="font-semibold text-[#0f172b] mb-1">{item.title}</p>
+                      <p className="text-sm text-slate-600 leading-relaxed">{item.text}</p>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -145,13 +163,13 @@ export default function AIOpportunityReview() {
               <article className="rounded-[26px] border border-[#eadfd6] bg-white p-7">
                 <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#b43a28] mb-3">The situation</p>
                 <p className="text-lg leading-relaxed text-slate-700">
-                  AI is moving quickly. You can see competitors experimenting, your team is hearing about new tools, and there is pressure to do something — but no obvious place to start.
+                  You can see AI moving quickly and know the business should understand what it means. But buying tools before knowing where the value is risks creating experiments that never become useful change.
                 </p>
               </article>
               <article className="rounded-[26px] bg-[#0f172b] p-7 text-white">
                 <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#f0a08b] mb-3">The outcome</p>
                 <p className="text-lg leading-relaxed text-slate-100">
-                  A grounded view of where AI could help your business, which opportunities deserve attention now, and the first move most likely to produce useful evidence.
+                  A grounded view of where AI could help, the opportunities worth pursuing first, and what has to change around the technology for the benefit to be realised.
                 </p>
               </article>
             </div>
@@ -161,20 +179,19 @@ export default function AIOpportunityReview() {
         <section className="container py-20 md:py-24">
           <div className="max-w-6xl mx-auto">
             <div className="max-w-3xl mb-10">
-              <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em] mb-4">What the review is for</p>
+              <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em] mb-4">The AI Midlands Opportunity Lens</p>
               <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.06] mb-4">
-                Turn vague AI interest into a small number of decisions.
+                Look for value before looking for technology.
               </h2>
               <p className="text-lg text-slate-600 leading-relaxed">
-                The aim is not to produce a long list of possibilities. It is to reduce uncertainty and give you a practical route from curiosity to action.
+                We look across the business through a consistent set of lenses. That helps uncover opportunities executives can recognise even when nobody has yet defined an AI project.
               </p>
             </div>
-            <div className="grid md:grid-cols-3 gap-5">
-              {opportunities.map((item, index) => (
-                <article key={item.title} className="rounded-[24px] border border-[#e5ddd5] bg-white p-6">
-                  <span className="text-[#b43a28] text-xs font-bold tracking-[0.16em]">0{index + 1}</span>
-                  <h3 className="font-semibold text-[#0f172b] text-lg mt-6 mb-2">{item.title}</h3>
-                  <p className="text-slate-600 leading-relaxed text-sm">{item.text}</p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {opportunityLenses.map((item) => (
+                <article key={item.title} className="rounded-[22px] border border-[#e5ddd5] bg-white p-5">
+                  <h3 className="font-semibold text-[#0f172b] mb-2">{item.title}</h3>
+                  <p className="text-sm text-slate-600 leading-relaxed">{item.text}</p>
                 </article>
               ))}
             </div>
@@ -187,14 +204,17 @@ export default function AIOpportunityReview() {
               <div>
                 <div className="flex items-center gap-3 mb-4 text-[#0f172b] [--aim-icon-accent:#c83927]">
                   <WorkflowIcon className="w-6 h-6" />
-                  <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em]">How it works</p>
+                  <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em]">The engagement</p>
                 </div>
-                <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.06]">
-                  Start with the business, not the technology.
+                <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.04em] text-[#0f172b] leading-[1.06] mb-4">
+                  Listen. Scan. Map. Prioritise. Prepare for change. Deliver.
                 </h2>
+                <p className="text-slate-600 leading-relaxed">
+                  The technology is only part of the job. The process is designed to move from executive uncertainty to a deliverable change, without requiring you to know the answer at the start.
+                </p>
               </div>
               <div className="space-y-4">
-                {reviewSteps.map((step) => (
+                {engagementSteps.map((step) => (
                   <article key={step.number} className="grid grid-cols-[auto_1fr] gap-4 rounded-[22px] border border-[#e8e0d8] bg-[#faf8f5] p-5">
                     <span className="text-[#b43a28] text-xs font-bold tracking-[0.16em] pt-1">{step.number}</span>
                     <div>
@@ -209,37 +229,70 @@ export default function AIOpportunityReview() {
         </section>
 
         <section className="container py-20 md:py-24">
-          <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-6">
-            <article className="rounded-[26px] border border-[#eadfd6] bg-[#fff4ed] p-7">
+          <div className="max-w-6xl mx-auto grid lg:grid-cols-[0.95fr_1.05fr] gap-8 items-stretch">
+            <article className="rounded-[28px] border border-[#eadfd6] bg-[#fff4ed] p-7 md:p-8">
               <div className="flex items-center gap-3 mb-4 text-[#0f172b] [--aim-icon-accent:#c83927]">
                 <ControlIcon className="w-6 h-6" />
-                <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em]">No pressure to automate everything</p>
+                <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em]">The change dimension</p>
               </div>
-              <h2 className="text-2xl md:text-3xl font-semibold tracking-[-0.03em] text-[#0f172b] mb-3">
-                Sometimes the right answer is “not yet”.
+              <h2 className="text-3xl font-semibold tracking-[-0.03em] text-[#0f172b] mb-4">
+                Finding the opportunity is not enough.
               </h2>
-              <p className="text-slate-600 leading-relaxed">
-                We are as interested in ruling out weak ideas as finding strong ones. If a process is not ready, the data is not suitable, or the effort is unlikely to pay back, that should be visible before you invest in it.
+              <p className="text-slate-600 leading-relaxed mb-5">
+                A useful AI idea can still fail if the surrounding process, roles, ownership, decisions, training, communications, or measures do not change with it. For the selected opportunity, we make those dependencies explicit before delivery begins.
               </p>
+              <div className="grid sm:grid-cols-2 gap-3 text-sm text-slate-700">
+                {["Current and future process", "Impacted roles and teams", "Decision rights and human oversight", "Training and communications", "Adoption and readiness measures", "Benefits baseline and tracking", "Risks and resistance", "Ownership and support model"].map((item) => (
+                  <div key={item} className="flex gap-2 items-start"><span className="mt-1.5 h-2 w-2 rounded-full bg-[#c83927] shrink-0" />{item}</div>
+                ))}
+              </div>
             </article>
 
-            <article className="rounded-[26px] border border-[#e5ddd5] bg-white p-7">
+            <article className="rounded-[28px] border border-[#e5ddd5] bg-white p-7 md:p-8">
               <div className="flex items-center gap-3 mb-4 text-[#0f172b] [--aim-icon-accent:#c83927]">
-                <IntegrationIcon className="w-6 h-6" />
-                <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em]">If there is something worth building</p>
+                <ApprovalIcon className="w-6 h-6" />
+                <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.18em]">Built to work with your team</p>
               </div>
-              <h2 className="text-2xl md:text-3xl font-semibold tracking-[-0.03em] text-[#0f172b] mb-3">
-                The review can lead directly into implementation.
+              <h2 className="text-3xl font-semibold tracking-[-0.03em] text-[#0f172b] mb-4">
+                Your change team can deliver against the pack.
               </h2>
-              <p className="text-slate-600 leading-relaxed mb-4">
-                If the review identifies a worthwhile first project, AI Midlands can design and implement it. Our fixed-scope automation work starts from £2,000, with the outcome agreed up front.
+              <p className="text-slate-600 leading-relaxed mb-5">
+                If you already have change, transformation, operations, or delivery capability, the review is designed to strengthen it rather than replace it. We provide a practical AI Change Delivery Pack your team can take forward.
               </p>
-              <Link href="/">
-                <span className="inline-flex items-center gap-2 text-sm font-semibold text-[#a83324] cursor-pointer">
-                  See how we deliver automation <AimArrow className="w-4 h-4" />
-                </span>
-              </Link>
+              <p className="text-slate-600 leading-relaxed">
+                If you need more support, AI Midlands can work alongside that team or implement the first technical solution as a separate engagement.
+              </p>
             </article>
+          </div>
+        </section>
+
+        <section className="border-y border-[#e8e0d8] bg-white py-16">
+          <div className="container">
+            <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-6">
+              <article className="rounded-[26px] border border-[#eadfd6] bg-[#faf8f5] p-7">
+                <p className="text-[#b43a28] text-xs font-bold uppercase tracking-[0.16em] mb-3">We also rule things out</p>
+                <h2 className="text-2xl md:text-3xl font-semibold tracking-[-0.03em] text-[#0f172b] mb-3">Sometimes the right answer is “not yet”.</h2>
+                <p className="text-slate-600 leading-relaxed">
+                  If the data is not ready, the process is unstable, the risk is too high, or the likely benefit does not justify the effort, that should be visible before you spend money on implementation.
+                </p>
+              </article>
+
+              <article className="rounded-[26px] bg-[#0f172b] p-7 text-white">
+                <div className="flex items-center gap-3 mb-4 [--aim-icon-accent:#f0a08b]">
+                  <IntegrationIcon className="w-6 h-6" />
+                  <p className="text-[#f0a08b] text-xs font-semibold uppercase tracking-[0.18em]">When something is worth building</p>
+                </div>
+                <h2 className="text-2xl md:text-3xl font-semibold tracking-[-0.03em] mb-3">The roadmap can move directly into delivery.</h2>
+                <p className="text-slate-300 leading-relaxed mb-4">
+                  AI Midlands can design and implement a selected opportunity. Fixed-scope automation work starts from £2,000, with the outcome agreed up front.
+                </p>
+                <Link href="/">
+                  <span className="inline-flex items-center gap-2 text-sm font-semibold text-[#f0a08b] cursor-pointer">
+                    See how we deliver automation <AimArrow className="w-4 h-4" />
+                  </span>
+                </Link>
+              </article>
+            </div>
           </div>
         </section>
 
@@ -253,7 +306,7 @@ export default function AIOpportunityReview() {
                 </div>
                 <h2 className="text-3xl md:text-4xl font-semibold tracking-[-0.035em]">You do not need to know the use case before you call.</h2>
                 <p className="text-slate-300 mt-3 max-w-2xl">
-                  Tell us what the business does, where you think AI might matter, and what is creating pressure or curiosity. We will help you decide whether an Opportunity Review is the right next step.
+                  Tell us what the business does, what is creating pressure or curiosity, and where you think AI may matter. We will help you decide whether an Opportunity Review is the right next step.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
