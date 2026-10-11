@@ -8,6 +8,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import About from "./pages/About";
 import Home from "./pages/Home";
 import BBCArticle from "./pages/BBCArticle";
+import AIOpportunityReview from "./pages/AIOpportunityReview";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import {
@@ -24,6 +25,7 @@ function Router() {
       <Route path={"/about"} component={About} />
       <Route path={"/privacy"} component={Privacy} />
       <Route path={"/terms"} component={Terms} />
+      <Route path={"/ai-opportunity-review"} component={AIOpportunityReview} />
       <Route path={"/business-automation"} component={BusinessAutomationLanding} />
       <Route path={"/workflow-automation"} component={WorkflowAutomationLanding} />
       <Route path={"/customer-assistants"} component={CustomerAssistantsLanding} />
