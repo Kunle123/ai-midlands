@@ -72,11 +72,13 @@ describe("GA4 command format", () => {
     expect(commands.map((command) => (command as { [index: number]: unknown })[0])).toEqual([
       "js",
       "config",
+      "config",
       "event",
     ]);
     expect((commands[1] as { [index: number]: unknown })[1]).toBe("G-W3T6L19819");
     expect((commands[1] as { [index: number]: { send_page_view?: boolean } })[2].send_page_view).toBe(false);
-    expect((commands[2] as { [index: number]: unknown })[1]).toBe("page_view");
+    expect((commands[2] as { [index: number]: unknown })[1]).toBe("AW-18503929724");
+    expect((commands[3] as { [index: number]: unknown })[1]).toBe("page_view");
     expect(scripts.some((script) => script.src === "https://www.googletagmanager.com/gtag/js?id=G-W3T6L19819")).toBe(true);
     expect(isGtagCommand(["event", "page_view", {}])).toBe(false);
   });
@@ -90,5 +92,29 @@ describe("GA4 command format", () => {
 
     expect(window.dataLayer ?? []).toEqual([]);
     expect(window.gtag).toBeUndefined();
+  });
+});
+
+
+describe("Google Ads lead conversion", () => {
+  it("sends the existing Google Ads conversion destination after confirmed lead creation", async () => {
+    installBrowser();
+    const { setTrackingConsent, trackLeadCreated } = await loadTracking();
+    setTrackingConsent("granted");
+    trackLeadCreated("process_assessment");
+
+    const commands = (window.dataLayer ?? []).filter(isGtagCommand);
+    const events = commands.filter(command => (command as { [index: number]: unknown })[0] === "event");
+    expect(events.map(command => (command as { [index: number]: unknown })[1])).toEqual(["generate_lead", "conversion"]);
+    expect((events[1] as { [index: number]: { send_to: string; value: number; currency: string } })[2])
+      .toEqual({ send_to: "AW-18503929724/lEGYCI_dj5cdEPyervdE", value: 1, currency: "GBP" });
+  });
+
+  it("does not send conversion events without consent", async () => {
+    installBrowser();
+    const { setTrackingConsent, trackLeadCreated } = await loadTracking();
+    setTrackingConsent("denied");
+    trackLeadCreated("process_assessment");
+    expect(window.dataLayer ?? []).toEqual([]);
   });
 });
