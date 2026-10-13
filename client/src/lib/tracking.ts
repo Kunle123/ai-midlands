@@ -29,6 +29,11 @@ const ATTRIBUTION_KEYS = [
 let currentConsent: TrackingConsent = "unknown";
 let openAIInitialised = false;
 let gaInitialised = false;
+let googleAdsInitialised = false;
+
+// Existing Google Ads website conversion action: "Submit lead form".
+const GOOGLE_ADS_ID = "AW-18503929724";
+const GOOGLE_ADS_LEAD_DESTINATION = "AW-18503929724/lEGYCI_dj5cdEPyervdE";
 let firstTouchAttribution: Attribution | null = null;
 
 const debugEnabled = import.meta.env.VITE_TRACKING_DEBUG === "true";
@@ -159,6 +164,33 @@ function initialiseGA() {
   gaInitialised = true;
 }
 
+function initialiseGoogleAds() {
+  if (typeof window === "undefined" || googleAdsInitialised) return;
+
+  // Reuse the GA4 gtag queue when available. If GA4 is not configured,
+  // initialise the same queue and load Google's tag for the Ads destination.
+  const gaMeasurementId = import.meta.env.VITE_GA_MEASUREMENT_ID?.trim();
+  if (!window.gtag) {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function gtag() {
+      window.dataLayer?.push(arguments as unknown as unknown[]);
+    };
+    window.gtag("js", new Date());
+  }
+
+  window.gtag("config", GOOGLE_ADS_ID);
+
+  if (!gaMeasurementId && !document.querySelector('script[data-ai-midlands-google-ads="true"]')) {
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`;
+    script.dataset.aiMidlandsGoogleAds = "true";
+    document.head.appendChild(script);
+  }
+
+  googleAdsInitialised = true;
+}
+
 export function initialiseTracking(consent: TrackingConsent) {
   currentConsent = consent;
   captureFirstTouch();
@@ -170,6 +202,7 @@ export function initialiseTracking(consent: TrackingConsent) {
   if (consent === "granted") {
     persistAttribution();
     initialiseGA();
+    initialiseGoogleAds();
   }
 }
 
@@ -193,6 +226,7 @@ export function setTrackingConsent(consent: Exclude<TrackingConsent, "unknown">)
 
   if (consent === "granted") {
     initialiseGA();
+    initialiseGoogleAds();
   } else {
     window.gtag?.("consent", "update", {
       analytics_storage: "denied",
@@ -272,6 +306,12 @@ export function trackLeadCreated(intent?: string) {
 
   window.oaiq?.("measure", "lead_created", { type: "customer_action" });
   window.gtag?.("event", "generate_lead", gaParams({ intent }));
+  // Only called after /api/leads confirms successful persistence.
+  window.gtag?.("event", "conversion", {
+    send_to: GOOGLE_ADS_LEAD_DESTINATION,
+    value: 1.0,
+    currency: "GBP",
+  });
   debug("lead_created", intent);
 }
 
