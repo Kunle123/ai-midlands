@@ -118,3 +118,32 @@ describe("Google Ads lead conversion", () => {
     expect(window.dataLayer ?? []).toEqual([]);
   });
 });
+
+describe("Google Ads Calendly appointment conversion", () => {
+  it("fires once for a confirmed booking ID and includes transaction deduplication", async () => {
+    installBrowser();
+    const { setTrackingConsent, trackCalendlyAppointment } = await loadTracking();
+    setTrackingConsent("granted");
+    const id = "https://api.calendly.com/scheduled_events/abc-123";
+    expect(trackCalendlyAppointment(id)).toBe(true);
+    expect(trackCalendlyAppointment(id)).toBe(false);
+    const commands = (window.dataLayer ?? []).filter(isGtagCommand);
+    const events = commands.filter(command => (command as { [index: number]: unknown })[0] === "event");
+    expect(events.map(command => (command as { [index: number]: unknown })[1])).toEqual(["conversion", "appointment_booked"]);
+    expect((events[0] as { [index: number]: unknown })[2]).toEqual({
+      send_to: "AW-18503929724/gXYcCLzTwpwdEPyervdE",
+      value: 1.0,
+      currency: "GBP",
+      transaction_id: id,
+    });
+  });
+
+  it("does not record Calendly appointments without consent or a booking ID", async () => {
+    installBrowser();
+    const { setTrackingConsent, trackCalendlyAppointment } = await loadTracking();
+    setTrackingConsent("denied");
+    expect(trackCalendlyAppointment("https://api.calendly.com/scheduled_events/abc-123")).toBe(false);
+    expect(trackCalendlyAppointment("")).toBe(false);
+    expect(window.dataLayer ?? []).toEqual([]);
+  });
+});

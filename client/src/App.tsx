@@ -4,6 +4,7 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { TrackingConsent } from "./components/TrackingConsent";
+import { CalendlyBookingTracking } from "./components/CalendlyBookingTracking";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import About from "./pages/About";
 import Home from "./pages/Home";
@@ -45,6 +46,7 @@ function App() {
           <Toaster />
           <Router />
           <TrackingConsent />
+          <CalendlyBookingTracking />
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>
