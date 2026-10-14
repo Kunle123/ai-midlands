@@ -34,6 +34,8 @@ let googleAdsInitialised = false;
 // Existing Google Ads website conversion action: "Submit lead form".
 const GOOGLE_ADS_ID = "AW-18503929724";
 const GOOGLE_ADS_LEAD_DESTINATION = "AW-18503929724/lEGYCI_dj5cdEPyervdE";
+const GOOGLE_ADS_BOOKING_DESTINATION = "AW-18503929724/gXYcCLzTwpwdEPyervdE";
+const recordedBookingIds = new Set<string>();
 let firstTouchAttribution: Attribution | null = null;
 
 const debugEnabled = import.meta.env.VITE_TRACKING_DEBUG === "true";
@@ -313,6 +315,21 @@ export function trackLeadCreated(intent?: string) {
     currency: "GBP",
   });
   debug("lead_created", intent);
+}
+
+/** Called only for a confirmed Calendly event_scheduled message, never a booking click. */
+export function trackCalendlyAppointment(bookingId: string): boolean {
+  if (currentConsent !== "granted" || !bookingId || recordedBookingIds.has(bookingId)) return false;
+  recordedBookingIds.add(bookingId);
+  window.gtag?.("event", "conversion", {
+    send_to: GOOGLE_ADS_BOOKING_DESTINATION,
+    value: 1.0,
+    currency: "GBP",
+    transaction_id: bookingId,
+  });
+  window.gtag?.("event", "appointment_booked", gaParams({ booking_provider: "calendly" }));
+  debug("calendly_appointment_booked");
+  return true;
 }
 
 export function withUtmParams(target: string): string {
