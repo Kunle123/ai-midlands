@@ -108,11 +108,12 @@ export default function Home() {
       <header className="sticky top-0 z-30 border-b border-[#e8e0d8] bg-[#faf8f5]/94 backdrop-blur-xl">
         <div className="container min-h-[74px] flex items-center justify-between gap-6">
           <Link href="/"><div className="cursor-pointer shrink-0" aria-label="AI Midlands home"><img src="/brand/ai-midlands-logo.svg" alt="AI Midlands" className="h-[46px] w-auto object-contain" /></div></Link>
-          <nav className="hidden lg:flex items-center gap-8 text-sm">
+          <nav className="hidden lg:flex items-center gap-5 text-sm">
             <a href="#services" className="text-slate-600 hover:text-[#c83927] transition-colors">Services</a>
             <a href="#proof" className="text-slate-600 hover:text-[#c83927] transition-colors">Examples</a>
             <a href="#pricing" className="text-slate-600 hover:text-[#c83927] transition-colors">Pricing</a>
             <a href="#approach" className="text-slate-600 hover:text-[#c83927] transition-colors">How we work</a>
+            <Link href="/ai-opportunity-review"><span className="cursor-pointer text-slate-600 hover:text-[#c83927] transition-colors">AI Opportunity Review</span></Link>
             <Link href="/about"><span className="cursor-pointer text-slate-600 hover:text-[#c83927] transition-colors">About</span></Link>
           </nav>
           <div className="flex items-center gap-4">
@@ -168,6 +169,19 @@ export default function Home() {
               ))}
             </div>
           </div>
+        </section>
+
+        <section className="container pb-20 md:pb-28">
+          <Link href="/ai-opportunity-review">
+            <article className="group mx-auto flex max-w-6xl flex-col gap-5 rounded-[28px] border border-[#eadfd6] bg-white px-6 py-7 shadow-sm transition-colors hover:border-[#c83927]/50 md:flex-row md:items-center md:justify-between md:px-9 md:py-8 cursor-pointer">
+              <div className="max-w-3xl">
+                <p className="text-[#b43a28] text-xs font-semibold uppercase tracking-[0.16em] mb-2">Not sure where to start?</p>
+                <h2 className="text-2xl md:text-3xl font-semibold tracking-[-0.03em] text-[#0f172b] mb-2">Start with an AI Opportunity Review.</h2>
+                <p className="text-slate-600 leading-relaxed">Identify practical opportunities, prioritise the ones worth acting on, and leave with a delivery-ready first move.</p>
+              </div>
+              <span className="inline-flex shrink-0 items-center gap-2 font-semibold text-[#0f172b] group-hover:text-[#c83927]">Explore the review <AimArrow className="w-5 h-5 transition-transform group-hover:translate-x-1" /></span>
+            </article>
+          </Link>
         </section>
 
         <section id="proof" className="bg-white py-24 md:py-36">
@@ -263,7 +277,7 @@ export default function Home() {
               <div className="absolute -left-7 -top-7 h-28 w-28 border-l border-t border-[#c83927]/40" aria-hidden="true" />
               <div className="absolute -left-5 bottom-[-20px] w-[72%] h-[44%] bg-[#f4dfd5]" aria-hidden="true" />
               <div className="relative aspect-[4/5] overflow-hidden bg-[#eee6df]">
-                <img src={FOUNDER_IMAGE} alt="Kunle Ibidun, founder of AI Midlands" className="absolute inset-0 h-full w-full object-cover object-center" />
+                <img src={FOUNDER_IMAGE} srcSet="/brand/kunle-founder-640.webp 640w, /brand/kunle-founder-1200.webp 1200w" sizes="(min-width: 1024px) 40vw, 90vw" width={1200} height={1600} loading="lazy" decoding="async" alt="Kunle Ibidun, founder of AI Midlands" className="absolute inset-0 h-full w-full object-cover object-center" />
               </div>
             </figure>
             <div className="max-w-xl">

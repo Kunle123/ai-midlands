@@ -19,33 +19,47 @@ declare global {
  */
 export function CalendlyBookingTracking() {
   useEffect(() => {
-    const stylesheet = document.createElement("link");
-    stylesheet.rel = "stylesheet";
-    stylesheet.href = "https://assets.calendly.com/assets/external/widget.css";
-    stylesheet.dataset.aiMidlandsCalendly = "true";
-    document.head.appendChild(stylesheet);
-
-    const script = document.createElement("script");
-    script.async = true;
-    script.src = "https://assets.calendly.com/assets/external/widget.js";
-    script.dataset.aiMidlandsCalendly = "true";
-    document.head.appendChild(script);
-
     let popupOpened = false;
+    let calendlyLoad: Promise<void> | null = null;
+
+    const loadCalendly = () => {
+      if (window.Calendly?.initPopupWidget) return Promise.resolve();
+      if (calendlyLoad) return calendlyLoad;
+      calendlyLoad = new Promise<void>((resolve, reject) => {
+        const stylesheet = document.createElement("link");
+        stylesheet.rel = "stylesheet";
+        stylesheet.href = "https://assets.calendly.com/assets/external/widget.css";
+        stylesheet.dataset.aiMidlandsCalendly = "true";
+        document.head.appendChild(stylesheet);
+
+        const script = document.createElement("script");
+        script.async = true;
+        script.src = "https://assets.calendly.com/assets/external/widget.js";
+        script.dataset.aiMidlandsCalendly = "true";
+        script.onload = () => window.Calendly?.initPopupWidget ? resolve() : reject(new Error("Calendly did not initialise"));
+        script.onerror = () => reject(new Error("Calendly could not be loaded"));
+        document.head.appendChild(script);
+      });
+      return calendlyLoad;
+    };
 
     const handleClick = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
       const target = event.target;
       if (!(target instanceof Element)) return;
-      const anchor = target.closest("a[href]");
+      const anchor = target.closest<HTMLAnchorElement>("a[href]");
       if (!anchor) return;
       const url = new URL(anchor.href);
       if (url.origin !== CALENDLY_ORIGIN || url.pathname.replace(/\/$/, "") !== BOOKING_PATH) return;
-      // Do not break existing booking links if Calendly's script is unavailable.
-      if (!window.Calendly?.initPopupWidget) return;
       event.preventDefault();
-      popupOpened = true;
-      window.Calendly.initPopupWidget({ url: withUtmParams(url.toString()) });
+      void loadCalendly().then(() => {
+        if (!window.Calendly?.initPopupWidget) throw new Error("Calendly did not initialise");
+        popupOpened = true;
+        window.Calendly.initPopupWidget({ url: withUtmParams(url.toString()) });
+      }).catch(() => {
+        // Preserve the booking path if the optional popup script is unavailable.
+        window.location.assign(url.toString());
+      });
     };
 
     const handleMessage = (event: MessageEvent) => {
@@ -63,8 +77,7 @@ export function CalendlyBookingTracking() {
     return () => {
       document.removeEventListener("click", handleClick);
       window.removeEventListener("message", handleMessage);
-      script.remove();
-      stylesheet.remove();
+      document.querySelectorAll('[data-ai-midlands-calendly="true"]').forEach(element => element.remove());
     };
   }, []);
 
