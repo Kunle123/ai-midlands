@@ -79,25 +79,25 @@ export function TrackingConsent() {
   return (
     <>
       {settingsOpen && (
-        <div className="fixed inset-x-4 bottom-4 z-[1000] mx-auto max-w-3xl rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl shadow-slate-900/15 md:flex md:items-center md:gap-6">
+        <div className="fixed inset-x-3 bottom-3 z-[1000] mx-auto max-w-md rounded-2xl border border-slate-200 bg-white p-4 shadow-2xl shadow-slate-900/15">
           <div className="flex-1">
             <p className="font-semibold text-slate-900">Analytics & advertising measurement</p>
-            <p className="mt-1 text-sm leading-relaxed text-slate-600">
+            <p className="mt-1 text-xs leading-relaxed text-slate-600">
               We use measurement to understand which campaigns and pages lead to enquiries. No analytics or advertising measurement events are sent until you allow them.
             </p>
           </div>
-          <div className="mt-4 flex shrink-0 flex-wrap gap-2 md:mt-0">
+          <div className="mt-3 flex shrink-0 gap-2">
             <button
               type="button"
               onClick={() => choose("denied")}
-              className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
             >
               Essential only
             </button>
             <button
               type="button"
               onClick={() => choose("granted")}
-              className="rounded-lg bg-[#e85d2a] px-4 py-2 text-sm font-semibold text-white hover:bg-[#d14e1e]"
+              className="rounded-lg bg-[#e85d2a] px-3 py-2 text-xs font-semibold text-white hover:bg-[#d14e1e]"
             >
               Allow measurement
             </button>

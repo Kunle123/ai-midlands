@@ -52,6 +52,122 @@ const jsonHeaders = {
   "cache-control": "no-store",
 };
 
+const siteUrl = "https://ai-midlands.co.uk";
+const pageMetadata: Record<string, { title: string; description: string; type?: string; service?: string }> = {
+  "/": {
+    title: "AI Automation & Workflow Integration for Midlands Businesses | AI Midlands",
+    description: "Reduce repetitive admin and connect the systems your team already uses. Fixed-scope process redesign and automation from £2,000. Midlands-based, working UK-wide.",
+  },
+  "/about": {
+    title: "About AI Midlands | Founder-Led Automation and Integration",
+    description: "Meet Kunle Ibidun and learn how AI Midlands maps, simplifies and automates practical business processes with human oversight.",
+  },
+  "/ai-opportunity-review": {
+    title: "AI Opportunity Review for Businesses | AI Midlands",
+    description: "Identify practical AI opportunities, prioritise the ones worth acting on, and leave with a clear first move for your business.",
+    type: "service",
+    service: "AI Opportunity Review",
+  },
+  "/business-automation": {
+    title: "Email, Enquiry and Document Automation | AI Midlands",
+    description: "Capture useful details from emails, forms and documents, then move them into the right business records with review where it matters.",
+    type: "service",
+    service: "Business process automation",
+  },
+  "/workflow-automation": {
+    title: "Workflow Automation and System Integration | AI Midlands",
+    description: "Connect the systems your team already uses and reduce manual hand-offs between CRM, finance, email and operations.",
+    type: "service",
+    service: "Workflow automation and integration",
+  },
+  "/customer-assistants": {
+    title: "Customer Service Assistants with Human Handover | AI Midlands",
+    description: "Give customers useful answers and a clear next step, with escalation to a person for unclear or sensitive requests.",
+    type: "service",
+    service: "Customer service assistants",
+  },
+  "/sales-automation": {
+    title: "Sales Follow-Up Automation with Human Approval | AI Midlands",
+    description: "Use CRM context to prepare relevant sales follow-up while your team keeps control of what is sent.",
+    type: "service",
+    service: "Sales follow-up automation",
+  },
+  "/bbc-article": {
+    title: "AI, Customer Service and People | AI Midlands on BBC Radio",
+    description: "Read about Kunle Ibidun’s BBC Radio West Midlands conversation on AI, customer service and keeping people involved.",
+  },
+  "/privacy": {
+    title: "Privacy Notice | AI Midlands",
+    description: "How AI Midlands uses information submitted through the website and manages analytics and booking services.",
+  },
+  "/terms": {
+    title: "Terms of Use | AI Midlands",
+    description: "Terms covering the AI Midlands website, indicative assessments, prices and service information.",
+  },
+};
+
+function escapeAttribute(value: string): string {
+  return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function pageStructuredData(pathname: string, metadata: (typeof pageMetadata)[string]): string {
+  const organization = {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    name: "AI Midlands",
+    url: siteUrl,
+    logo: `${siteUrl}/brand/ai-midlands-mark.svg`,
+    email: "hello@ai-midlands.co.uk",
+    areaServed: ["Midlands", "United Kingdom"],
+  };
+  const website = { "@context": "https://schema.org", "@type": "WebSite", name: "AI Midlands", url: siteUrl };
+  const page = metadata.service ? {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: metadata.service,
+    description: metadata.description,
+    provider: { "@type": "Organization", name: "AI Midlands", url: siteUrl },
+    areaServed: ["Midlands", "United Kingdom"],
+    url: `${siteUrl}${pathname}`,
+  } : null;
+  return [organization, website, page].filter(Boolean).map(item => `<script type="application/ld+json">${JSON.stringify(item)}</script>`).join("");
+}
+
+async function addPageMetadata(request: Request, response: Response): Promise<Response> {
+  if (!(response.headers.get("content-type") || "").includes("text/html")) return response;
+  const url = new URL(request.url);
+  const metadata = pageMetadata[url.pathname];
+  if (!metadata) return response;
+
+  const canonical = `${siteUrl}${url.pathname === "/" ? "/" : url.pathname}`;
+  const title = escapeAttribute(metadata.title);
+  const description = escapeAttribute(metadata.description);
+  const image = `${siteUrl}/brand/hero-industrial-bg.jpg`;
+  const tags = [
+    `<title>${metadata.title}</title>`,
+    `<meta name="description" content="${description}">`,
+    `<link rel="canonical" href="${canonical}">`,
+    `<meta property="og:type" content="website">`,
+    `<meta property="og:site_name" content="AI Midlands">`,
+    `<meta property="og:title" content="${title}">`,
+    `<meta property="og:description" content="${description}">`,
+    `<meta property="og:url" content="${canonical}">`,
+    `<meta property="og:image" content="${image}">`,
+    `<meta name="twitter:card" content="summary_large_image">`,
+    `<meta name="twitter:title" content="${title}">`,
+    `<meta name="twitter:description" content="${description}">`,
+    `<meta name="twitter:image" content="${image}">`,
+    pageStructuredData(url.pathname, metadata),
+  ].join("");
+  let html = await response.text();
+  html = html.replace(/<title>[\s\S]*?<\/title>/i, "");
+  html = html.replace(/<\/head>/i, `${tags}</head>`);
+  const headers = new Headers(response.headers);
+  headers.delete("content-length");
+  headers.delete("etag");
+  return new Response(html, { status: response.status, statusText: response.statusText, headers });
+}
+
 function json(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), { status, headers: jsonHeaders });
 }
@@ -423,6 +539,7 @@ export default {
     }
 
     if (url.pathname.startsWith("/api/")) return json({ ok: false, code: "not_found" }, 404);
-    return env.ASSETS.fetch(request);
+    const assetResponse = await env.ASSETS.fetch(request);
+    return addPageMetadata(request, assetResponse);
   },
 };

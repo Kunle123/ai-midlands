@@ -1,17 +1,7 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { AimArrow, ApprovalIcon, AssessmentIcon, BookingIcon, ControlIcon, EnquiryIcon } from "@/components/brand/AiMidlandsIcons";
 import { getAttribution, trackCustomEvent, trackLeadCreated, withUtmParams } from "@/lib/tracking";
-
-type Assessment = {
-  title: string;
-  summary: string;
-  approach: string[];
-  systems: string[];
-  humanControl: string;
-  complexity: "Starter" | "Connected" | "Bespoke";
-  price: string;
-  timeframe: string;
-};
+import { buildAssessment, type Assessment, type ProcessDetails } from "@/lib/processAssessment";
 
 type LeadForm = {
   name: string;
@@ -21,94 +11,7 @@ type LeadForm = {
   website: string;
 };
 
-const systemMatchers: Array<[string, RegExp]> = [
-  ["Email", /email|inbox|outlook|gmail/i],
-  ["Spreadsheets", /spreadsheet|excel|csv|sheet/i],
-  ["CRM", /crm|salesforce|hubspot|pipedrive/i],
-  ["Finance", /invoice|finance|xero|quickbooks|sage|account/i],
-  ["Website", /website|web form|form|chatbot|customer enquiry/i],
-  ["Calendar", /calendar|booking|appointment|meeting/i],
-  ["APIs / internal systems", /api|erp|sap|internal system|database/i],
-  ["Documents", /pdf|document|attachment|word file/i],
-];
-
-function buildAssessment(process: string): Assessment {
-  const text = process.toLowerCase();
-  const systems = systemMatchers.filter(([, matcher]) => matcher.test(process)).map(([name]) => name);
-  const detectedSystems = systems.length ? systems : ["Existing business tools"];
-
-  let score = 0;
-  if (/api|erp|sap|database|legacy|custom system/.test(text)) score += 2;
-  if (/multiple|several|three|four|five|across systems|integration/.test(text)) score += 1;
-  if (systems.length >= 3) score += 1;
-  if (/sensitive|personal data|financial|regulated|confidential/.test(text)) score += 1;
-
-  let title = "A bounded workflow improvement looks practical";
-  let summary = "This looks like a repeatable process where the first job is to make the hand-offs simpler, then capture information once, move it to the right place and trigger the next useful step automatically.";
-  let approach = [
-    "Map the current trigger, hand-offs, decisions and final outcome.",
-    "Remove avoidable steps, duplicate entry or unnecessary tool changes first.",
-    "Connect the smallest number of systems needed to improve the whole process.",
-    "Keep exceptions visible so a person can intervene when needed.",
-  ];
-  let humanControl = "Review exceptions and approve any action that needs judgement.";
-
-  if (/spreadsheet|excel|csv|report|download|combine|copy and paste|copy/.test(text)) {
-    title = "This is a strong candidate for process and data automation";
-    summary = "The repetitive collection, copying or combining of information can usually be simplified first, then turned into one controlled workflow that leaves the team with a prepared output rather than manual consolidation.";
-    approach = [
-      "Identify the source files or systems and the fields that matter.",
-      "Remove duplicate collection or unnecessary transfer steps.",
-      "Automate the collection, cleaning and combination of the data.",
-      "Produce the report, record or update in the format the team already uses.",
-    ];
-    humanControl = "A person can review the prepared output before it is circulated or used for a decision.";
-  } else if (/customer|enquiry|question|chatbot|book|booking|appointment|website/.test(text)) {
-    title = "This could become a simpler customer journey with a useful assistant";
-    summary = "Rather than stopping at an answer or sending the customer into another journey, the process can be simplified so the assistant understands the request, gives a useful response and carries the customer into a booking, lead or follow-up workflow.";
-    approach = [
-      "Map the current customer journey and remove unnecessary hand-offs or repeat questions.",
-      "Define the questions the assistant should answer and the information it can use.",
-      "Connect the next action — for example booking, CRM lead creation or follow-up.",
-      "Record the outcome back into the business system so the team has a clean hand-off.",
-    ];
-    humanControl = "Escalate unclear requests and keep a person in control of exceptions or sensitive conversations.";
-  } else if (/invoice|won|order|finance|payment|crm/.test(text)) {
-    title = "This looks like a connected workflow between business systems";
-    summary = "The hand-off can usually be simplified so a change in one system becomes the trigger for the next step in another, avoiding duplicate entry and keeping the whole process visible end to end.";
-    approach = [
-      "Agree the event that starts the workflow and the data that must move.",
-      "Remove any duplicate checks or re-entry that add no value.",
-      "Create or update the downstream record automatically.",
-      "Return a confirmation or reference so the originating system stays current.",
-    ];
-    humanControl = "Use approval gates for financial, contractual or irreversible actions where appropriate.";
-  } else if (/prospect|sales|follow up|follow-up|outreach|personalised|personalized/.test(text)) {
-    title = "This could simplify the preparation around sales follow-up";
-    summary = "Existing customer and opportunity context can remove repetitive preparation and prepare the next communication automatically while keeping the final decision to send with your team.";
-    approach = [
-      "Map what the salesperson checks and prepares today, and remove duplicate steps.",
-      "Use the relevant account, contact and opportunity context already held in your systems.",
-      "Prepare the follow-up and present it for review rather than sending blindly.",
-      "Record the approved action back in CRM so activity remains visible.",
-    ];
-    humanControl = "Human approval stays immediately before anything is sent externally.";
-  }
-
-  const complexity: Assessment["complexity"] = score >= 4 ? "Bespoke" : score >= 2 ? "Connected" : "Starter";
-  const price = complexity === "Starter"
-    ? "from £2,000"
-    : complexity === "Connected"
-      ? "from £3,500"
-      : "scoped individually";
-  const timeframe = complexity === "Starter"
-    ? "often 1–2 weeks once access and rules are agreed"
-    : complexity === "Connected"
-      ? "often 2–4 weeks, depending on system access and testing"
-      : "confirmed after a short discovery and integration check";
-
-  return { title, summary, approach, systems: detectedSystems, humanControl, complexity, price, timeframe };
-}
+const emptyDetails: ProcessDetails = { trigger: "", systems: "", outcome: "", frequency: "" };
 
 function addCalendlyPrefill(url: string, lead: LeadForm): string {
   try {
@@ -127,6 +30,7 @@ function StepMark() {
 
 export function ProcessAssessment() {
   const [process, setProcess] = useState("");
+  const [details, setDetails] = useState<ProcessDetails>(emptyDetails);
   const [assessment, setAssessment] = useState<Assessment | null>(null);
   const [error, setError] = useState("");
   const [captureAvailable, setCaptureAvailable] = useState(false);
@@ -180,7 +84,11 @@ export function ProcessAssessment() {
       trackCustomEvent("assessment_started", { intent: "process_assessment" });
       started.current = true;
     }
-    const result = buildAssessment(clean);
+    if (!details.trigger || !details.systems.trim() || !details.outcome || !details.frequency) {
+      setError("Answer the four short questions so the first-pass assessment has enough context.");
+      return;
+    }
+    const result = buildAssessment(clean, details);
     setAssessment(result);
     setLeadId(null);
     setLeadState("idle");
@@ -233,6 +141,7 @@ export function ProcessAssessment() {
   const reset = () => {
     setAssessment(null);
     setProcess("");
+    setDetails(emptyDetails);
     setError("");
     setLead({ name: "", company: "", email: "", phone: "", website: "" });
     setLeadId(null);
@@ -276,6 +185,27 @@ export function ProcessAssessment() {
                 placeholder="For example: “Each Friday, we combine three sales spreadsheets before the team meeting.”"
                 className="w-full resize-none rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-800 outline-none transition focus:border-[#c83927] focus:ring-4 focus:ring-[#f8ddd3]"
               />
+              <div className="mt-5 space-y-4 border-t border-slate-200 pt-5">
+                <p className="text-sm font-semibold text-[#0f172b]">A few details to make the first view more relevant</p>
+                <label className="block text-sm text-slate-700">What starts the process?
+                  <select value={details.trigger} onChange={e => setDetails(current => ({ ...current, trigger: e.target.value }))} className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-slate-800 outline-none focus:border-[#c83927] focus:ring-4 focus:ring-[#f8ddd3]">
+                    <option value="">Choose one</option><option value="Email or shared inbox">Email or shared inbox</option><option value="Website form">Website form</option><option value="CRM status or sales event">CRM status or sales event</option><option value="Document or file arrives">Document or file arrives</option><option value="Approval is requested">Approval is requested</option><option value="Scheduled or recurring task">Scheduled or recurring task</option><option value="Customer question or request">Customer question or request</option><option value="Not sure">Not sure</option>
+                  </select>
+                </label>
+                <label className="block text-sm text-slate-700">Which systems are involved?
+                  <input value={details.systems} onChange={e => setDetails(current => ({ ...current, systems: e.target.value }))} placeholder="For example: Outlook, HubSpot and Xero" className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-slate-800 outline-none focus:border-[#c83927] focus:ring-4 focus:ring-[#f8ddd3]" />
+                </label>
+                <label className="block text-sm text-slate-700">What outcome is needed?
+                  <select value={details.outcome} onChange={e => setDetails(current => ({ ...current, outcome: e.target.value }))} className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-slate-800 outline-none focus:border-[#c83927] focus:ring-4 focus:ring-[#f8ddd3]">
+                    <option value="">Choose one</option><option value="Create or update a CRM record">Create or update a CRM record</option><option value="Prepare or send a follow-up">Prepare or send a follow-up</option><option value="Create an invoice or finance record">Create an invoice or finance record</option><option value="Route or assign work">Route or assign work</option><option value="Prepare a report">Prepare a report</option><option value="Answer a customer">Answer a customer</option><option value="Collect an approval">Collect an approval</option><option value="Not sure">Not sure</option>
+                  </select>
+                </label>
+                <label className="block text-sm text-slate-700">How often does it happen?
+                  <select value={details.frequency} onChange={e => setDetails(current => ({ ...current, frequency: e.target.value }))} className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-slate-800 outline-none focus:border-[#c83927] focus:ring-4 focus:ring-[#f8ddd3]">
+                    <option value="">Choose one</option><option value="Several times a day">Several times a day</option><option value="Daily">Daily</option><option value="Weekly">Weekly</option><option value="Monthly">Monthly</option><option value="Irregularly">Irregularly</option><option value="Not sure">Not sure</option>
+                  </select>
+                </label>
+              </div>
               {error && <p className="mt-2 text-sm text-red-700">{error}</p>}
               <div className="mt-4 flex justify-end">
                 <button type="submit" className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#c83927] px-5 py-3 font-semibold text-white transition-colors hover:bg-[#a92f21]">Get a first view of this process <AimArrow className="w-4 h-4 [--aim-icon-accent:#fff]" /></button>
@@ -300,9 +230,10 @@ export function ProcessAssessment() {
                     <button type="button" onClick={reset} className="text-xs text-slate-400 hover:text-white underline underline-offset-4">Start again</button>
                   </div>
 
-                  <p className="text-slate-300 leading-relaxed mb-6">{assessment.summary}</p>
+                    <p className="text-[#f0a08b] text-xs font-semibold uppercase tracking-wider mb-2">{assessment.processType} · {assessment.confidence === "clear" ? "First-pass view" : "Needs a little more detail"}</p>
+                    <p className="text-slate-300 leading-relaxed mb-6">{assessment.summary}</p>
                   <div className="grid sm:grid-cols-2 gap-3 mb-6">
-                    <div className="rounded-xl border border-slate-700 bg-slate-800/70 p-4"><p className="text-slate-500 text-xs uppercase tracking-wider mb-1">Likely level</p><p className="font-semibold">{assessment.complexity}</p></div>
+                    <div className="rounded-xl border border-slate-700 bg-slate-800/70 p-4"><p className="text-slate-500 text-xs uppercase tracking-wider mb-1">Indicative complexity</p><p className="font-semibold">{assessment.complexity}</p></div>
                     <div className="rounded-xl border border-slate-700 bg-slate-800/70 p-4"><p className="text-slate-500 text-xs uppercase tracking-wider mb-1">Indicative budget</p><p className="font-semibold">{assessment.price}</p></div>
                   </div>
 
@@ -318,9 +249,9 @@ export function ProcessAssessment() {
                       <p className="font-semibold mb-1">Send this assessment to AI Midlands</p>
                       <p className="text-sm text-slate-400 mb-4">Leave your details and we’ll have the process and first-pass assessment ready when we respond.</p>
                       <div className="grid sm:grid-cols-2 gap-3">
-                        <input value={lead.name} onChange={e => setLead(current => ({ ...current, name: e.target.value }))} placeholder="Your name *" autoComplete="name" className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-[#f0a08b]" />
+                        <input value={lead.name} onChange={e => setLead(current => ({ ...current, name: e.target.value }))} placeholder="Your name *" aria-label="Your name" autoComplete="name" required minLength={2} className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-[#f0a08b]" />
                         <input value={lead.company} onChange={e => setLead(current => ({ ...current, company: e.target.value }))} placeholder="Company" autoComplete="organization" className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-[#f0a08b]" />
-                        <input value={lead.email} onChange={e => setLead(current => ({ ...current, email: e.target.value }))} placeholder="Work email *" type="email" autoComplete="email" className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-[#f0a08b]" />
+                        <input value={lead.email} onChange={e => setLead(current => ({ ...current, email: e.target.value }))} placeholder="Work email *" aria-label="Work email" type="email" autoComplete="email" required className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-[#f0a08b]" />
                         <input value={lead.phone} onChange={e => setLead(current => ({ ...current, phone: e.target.value }))} placeholder="Phone (optional)" type="tel" autoComplete="tel" className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-[#f0a08b]" />
                       </div>
                       <input aria-hidden="true" tabIndex={-1} autoComplete="off" value={lead.website} onChange={e => setLead(current => ({ ...current, website: e.target.value }))} className="hidden" name="website" />
