@@ -288,18 +288,21 @@ function gaParams(extra: Record<string, string | number | boolean | undefined> =
 }
 
 export function trackPageView(path: string) {
-  if (currentConsent !== "granted" || typeof window === "undefined") return;
+  if (typeof window === "undefined") return;
 
   const pageId = path || window.location.pathname || "/";
-  window.oaiq?.("measure", "page_viewed", {
-    type: "contents",
-    contents: [{ id: pageId, name: document.title, content_type: "page" }],
-  });
+  if (currentConsent === "granted") {
+    window.oaiq?.("measure", "page_viewed", {
+      type: "contents",
+      contents: [{ id: pageId, name: document.title, content_type: "page" }],
+    });
+  }
 
-  window.gtag?.("event", "page_view", gaParams({
+  window.gtag?.("event", "page_view", {
     page_title: document.title,
     page_location: window.location.href,
-  }));
+    ...(currentConsent === "granted" ? gaParams() : {}),
+  });
 
   debug("page_view", pageId);
 }
