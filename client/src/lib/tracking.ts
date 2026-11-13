@@ -40,8 +40,9 @@ let firstTouchAttribution: Attribution | null = null;
 
 let googleConsentDefaultSet = false;
 
-// Basic Consent Mode v2: set defaults before configuration, and only load
-// Google tags after opt-in. No pre-consent cookieless measurement requests.
+// Advanced Consent Mode v2: load Google tags with consent denied by default.
+// Consent-denied requests may transmit cookieless signals; no optional cookies
+// or ad personalisation are authorised before an explicit opt-in.
 function ensureGoogleConsentDefault() {
   if (typeof window === "undefined" || googleConsentDefaultSet) return;
   window.dataLayer = window.dataLayer || [];
@@ -228,16 +229,14 @@ export function initialiseTracking(consent: TrackingConsent) {
   currentConsent = consent;
   captureFirstTouch();
   updateGoogleConsent(consent === "granted");
+  initialiseGA();
+  initialiseGoogleAds();
 
   // OpenAI's SDK supports consent being set before initialisation. With consent
   // denied/unknown it does not send measurement events or retain its cookies.
   initialiseOpenAIPixel(consent === "granted");
 
-  if (consent === "granted") {
-    persistAttribution();
-    initialiseGA();
-    initialiseGoogleAds();
-  }
+  if (consent === "granted") persistAttribution();
 }
 
 export function setTrackingConsent(consent: Exclude<TrackingConsent, "unknown">) {
