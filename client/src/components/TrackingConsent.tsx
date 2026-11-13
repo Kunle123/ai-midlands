@@ -26,7 +26,7 @@ export function TrackingConsent() {
   }, [consent]);
 
   useEffect(() => {
-    if (consent === "granted") trackPageView(location);
+    trackPageView(location);
   }, [consent, location]);
 
   useEffect(() => {
@@ -83,7 +83,7 @@ export function TrackingConsent() {
           <div className="flex-1">
             <p className="font-semibold text-slate-900">Analytics & advertising measurement</p>
             <p className="mt-1 text-sm leading-relaxed text-slate-600">
-              We use measurement to understand which campaigns and pages lead to enquiries. No analytics or advertising measurement events are sent until you allow them.
+              We use measurement to understand which campaigns and pages lead to enquiries. With your permission, we use analytics and advertising cookies to understand which campaigns and pages lead to enquiries. Before you choose, Google tags may send limited cookieless measurement signals. You can decline optional cookies.
             </p>
           </div>
           <div className="mt-4 flex shrink-0 flex-wrap gap-2 md:mt-0">
