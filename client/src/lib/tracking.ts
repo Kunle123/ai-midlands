@@ -38,6 +38,37 @@ const GOOGLE_ADS_BOOKING_DESTINATION = "AW-18503929724/gXYcCLzTwpwdEPyervdE";
 const recordedBookingIds = new Set<string>();
 let firstTouchAttribution: Attribution | null = null;
 
+let googleConsentDefaultSet = false;
+
+// Basic Consent Mode v2: set defaults before configuration, and only load
+// Google tags after opt-in. No pre-consent cookieless measurement requests.
+function ensureGoogleConsentDefault() {
+  if (typeof window === "undefined" || googleConsentDefaultSet) return;
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function gtag() {
+    window.dataLayer?.push(arguments as unknown as unknown[]);
+  };
+  window.gtag("consent", "default", {
+    analytics_storage: "denied",
+    ad_storage: "denied",
+    ad_user_data: "denied",
+    ad_personalization: "denied",
+    wait_for_update: 500,
+  });
+  googleConsentDefaultSet = true;
+}
+
+function updateGoogleConsent(granted: boolean) {
+  ensureGoogleConsentDefault();
+  window.gtag?.("consent", "update", {
+    analytics_storage: granted ? "granted" : "denied",
+    ad_storage: granted ? "granted" : "denied",
+    ad_user_data: granted ? "granted" : "denied",
+    ad_personalization: granted ? "granted" : "denied",
+  });
+}
+
+
 const debugEnabled = import.meta.env.VITE_TRACKING_DEBUG === "true";
 
 function debug(...args: unknown[]) {
@@ -196,6 +227,7 @@ function initialiseGoogleAds() {
 export function initialiseTracking(consent: TrackingConsent) {
   currentConsent = consent;
   captureFirstTouch();
+  updateGoogleConsent(consent === "granted");
 
   // OpenAI's SDK supports consent being set before initialisation. With consent
   // denied/unknown it does not send measurement events or retain its cookies.
@@ -223,19 +255,13 @@ export function setTrackingConsent(consent: Exclude<TrackingConsent, "unknown">)
     }
   }
 
+  updateGoogleConsent(consent === "granted");
   initialiseOpenAIPixel(consent === "granted");
   window.oaiq?.("consent", consent === "granted");
 
   if (consent === "granted") {
     initialiseGA();
     initialiseGoogleAds();
-  } else {
-    window.gtag?.("consent", "update", {
-      analytics_storage: "denied",
-      ad_storage: "denied",
-      ad_user_data: "denied",
-      ad_personalization: "denied",
-    });
   }
 }
 
@@ -250,12 +276,7 @@ export function resetTrackingConsent() {
   }
   currentConsent = "unknown";
   window.oaiq?.("consent", false);
-  window.gtag?.("consent", "update", {
-    analytics_storage: "denied",
-    ad_storage: "denied",
-    ad_user_data: "denied",
-    ad_personalization: "denied",
-  });
+  updateGoogleConsent(false);
 }
 
 function gaParams(extra: Record<string, string | number | boolean | undefined> = {}) {
