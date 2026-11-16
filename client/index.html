@@ -3,6 +3,21 @@
 
   <head>
     <meta charset="UTF-8" />
+    <!-- Set consent before loading Google Tag Manager on every page. -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('consent', 'default', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        wait_for_update: 500
+      });
+      gtag('js', new Date());
+      window.__aiMidlandsGoogleBootstrapped = true;
+    </script>
+    <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-5MF8NW5W"></script>
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1" />

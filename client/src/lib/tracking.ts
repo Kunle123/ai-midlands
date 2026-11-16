@@ -12,6 +12,7 @@ declare global {
     oaiq?: OpenAIQueue;
     dataLayer?: unknown[][];
     gtag?: (...args: unknown[]) => void;
+    __aiMidlandsGoogleBootstrapped?: boolean;
   }
 }
 
@@ -44,7 +45,7 @@ let googleConsentDefaultSet = false;
 // Consent-denied requests may transmit cookieless signals; no optional cookies
 // or ad personalisation are authorised before an explicit opt-in.
 function ensureGoogleConsentDefault() {
-  if (typeof window === "undefined" || googleConsentDefaultSet) return;
+  if (typeof window === "undefined" || googleConsentDefaultSet || window.__aiMidlandsGoogleBootstrapped) return;
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function gtag() {
     window.dataLayer?.push(arguments as unknown as unknown[]);
@@ -184,7 +185,8 @@ function initialiseGA() {
     window.dataLayer?.push(arguments as unknown as unknown[]);
   };
 
-  window.gtag("js", new Date());
+  // The shared HTML already initialises this queue before loading GTM.
+  if (!window.__aiMidlandsGoogleBootstrapped) window.gtag("js", new Date());
   window.gtag("config", measurementId, { send_page_view: false });
 
   if (!document.querySelector('script[data-ai-midlands-ga="true"]')) {
