@@ -7,6 +7,7 @@ import { TrackingConsent } from "./components/TrackingConsent";
 import { CalendlyBookingTracking } from "./components/CalendlyBookingTracking";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import About from "./pages/About";
+import AdminPerformance from "./pages/AdminPerformance";
 import Home from "./pages/Home";
 import BBCArticle from "./pages/BBCArticle";
 import AIOpportunityReview from "./pages/AIOpportunityReview";
@@ -24,6 +25,7 @@ function Router() {
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path={"/about"} component={About} />
+      <Route path={"/admin/performance"} component={AdminPerformance} />
       <Route path={"/privacy"} component={Privacy} />
       <Route path={"/terms"} component={Terms} />
       <Route path={"/ai-opportunity-review"} component={AIOpportunityReview} />
