@@ -37,7 +37,7 @@ export function CalendlyBookingTracking() {
       if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
       const target = event.target;
       if (!(target instanceof Element)) return;
-      const anchor = target.closest("a[href]");
+      const anchor = target.closest<HTMLAnchorElement>("a[href]");
       if (!anchor) return;
       const url = new URL(anchor.href);
       if (url.origin !== CALENDLY_ORIGIN || url.pathname.replace(/\/$/, "") !== BOOKING_PATH) return;

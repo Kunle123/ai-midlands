@@ -6,6 +6,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { TrackingConsent } from "./components/TrackingConsent";
 import { CalendlyBookingTracking } from "./components/CalendlyBookingTracking";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import BusinessSaleReadiness from "./pages/BusinessSaleReadiness";
 import About from "./pages/About";
 import Home from "./pages/Home";
 import BBCArticle from "./pages/BBCArticle";
@@ -27,6 +28,7 @@ function Router() {
       <Route path={"/privacy"} component={Privacy} />
       <Route path={"/terms"} component={Terms} />
       <Route path={"/ai-opportunity-review"} component={AIOpportunityReview} />
+      <Route path={"/business-sale-readiness"} component={BusinessSaleReadiness} />
       <Route path={"/business-automation"} component={BusinessAutomationLanding} />
       <Route path={"/workflow-automation"} component={WorkflowAutomationLanding} />
       <Route path={"/customer-assistants"} component={CustomerAssistantsLanding} />
